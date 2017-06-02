@@ -1,4 +1,4 @@
-package com.blackboxindia.keepit;
+package com.blackboxindia.TakeIT;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.blackboxindia.keepit", appContext.getPackageName());
+        assertEquals("com.blackboxindia.TakeIT", appContext.getPackageName());
     }
 }

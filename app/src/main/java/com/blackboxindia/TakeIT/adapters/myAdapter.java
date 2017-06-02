@@ -1,4 +1,4 @@
-package com.blackboxindia.keepit.adapters;
+package com.blackboxindia.TakeIT.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.blackboxindia.keepit.dataModels;
+package com.blackboxindia.TakeIT.dataModels;
 
 /**
  * Created by Raghav on 01-Jun-17.

@@ -1,4 +1,4 @@
-package com.blackboxindia.keepit.activities;
+package com.blackboxindia.TakeIT.activities;
 
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import com.blackboxindia.keepit.R;
+import com.blackboxindia.TakeIT.R;
 
 public class LoginActivity extends AppCompatActivity {
 

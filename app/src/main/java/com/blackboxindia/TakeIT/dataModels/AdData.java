@@ -1,4 +1,4 @@
-package com.blackboxindia.keepit.dataModels;
+package com.blackboxindia.TakeIT.dataModels;
 
 import java.util.ArrayList;
 

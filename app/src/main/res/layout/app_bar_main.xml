@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.blackboxindia.keepit.MainActivity">
+    tools:context="com.blackboxindia.TakeIT.activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -18,9 +18,19 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+
+
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <!--<include layout="@layout/content_main" />
+    -->
+    <fragment
+        android:id="@+id/fragment"
+        android:name="com.blackboxindia.TakeIT.Fragments.CreateAccount"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_create_account" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

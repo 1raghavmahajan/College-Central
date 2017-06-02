@@ -1,4 +1,4 @@
-package com.blackboxindia.keepit;
+package com.blackboxindia.TakeIT;
 
 import org.junit.Test;
 

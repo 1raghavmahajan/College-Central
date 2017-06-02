@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.blackboxindia.keepit.activities.LoginActivity">
+    tools:context="com.blackboxindia.TakeIT.activities.LoginActivity">
 
     <TextView
         android:id="@+id/login_tvTitle"
