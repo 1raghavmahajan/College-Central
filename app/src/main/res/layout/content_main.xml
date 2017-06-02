@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.blackboxindia.keepit.activities.MainActivity"
-    tools:showIn="@layout/activity_main"
-    android:layout_columnWeight="1">
+    tools:context="com.blackboxindia.keepit.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
 
     <Button
         android:id="@+id/btn_Search"
@@ -21,6 +21,7 @@
 
     <EditText
         android:id="@+id/eT_search"
+        android:inputType="textAutoComplete"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@id/btn_Search"
@@ -41,7 +42,10 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintHorizontal_weight="1"
         app:layout_constraintVertical_weight="1"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"/>
 
 
 </android.support.constraint.ConstraintLayout>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.blackboxindia.keepit.activities.ProfileActivity">
+
+    <FrameLayout
+        android:id="@+id/profile_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="30dp"
+        >
+        <ImageView
+            android:id="@+id/profile_img"
+            android:contentDescription="Profile Image"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/thumb_human"
+            android:adjustViewBounds="true"
+
+            />
+        <Button
+            android:id="@+id/profile_btnImageChange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="10dp"
+            android:layout_gravity="bottom|end"
+            android:background="@color/img_button"
+            android:text="Change"
+            android:textSize="12sp"
+            android:textColor="@android:color/black"
+            />
+    </FrameLayout>
+
+    <!--
+    <FrameLayout
+        android:id="@+id/profile_nameFrame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/profile_frame"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent">
+        <TextView
+            android:id="@+id/profile_tvName"
+            android:inputType="textPersonName"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="FirstName LastName"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:paddingTop="8dp"
+            />
+        -->
+        <EditText
+            android:id="@+id/profile_etName"
+            android:text="FirstName LastName"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:inputType="textPersonName"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/profile_frame"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:paddingTop="8dp"
+            />
+    <!--
+        <ImageButton
+            android:id="@+id/profile_btnNameChange"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="bottom|end"
+            android:background="@color/img_button"
+            android:src="@drawable/ic_edit"
+            />
+    </FrameLayout>
+    -->
+
+
+    <TextView
+        android:id="@+id/profile_tvEmail"
+        android:textSize="17sp"
+        android:text="Email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/profile_etEmail"
+        android:layout_marginStart="36dp"
+        />
+    <EditText
+        android:id="@+id/profile_etEmail"
+        android:ems="10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/profile_etName"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="45dp"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+
+
+    <TextView
+        android:id="@+id/profile_tvAddress"
+        android:textSize="17sp"
+        android:text="Address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/profile_etAddress"
+        android:layout_marginStart="36dp"
+        />
+    <EditText
+        android:id="@+id/profile_etAddress"
+        android:ems="10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/profile_etEmail"
+        android:layout_marginEnd="45dp"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+
+    <TextView
+        android:id="@+id/profile_tvMobile"
+        android:text="Phone"
+        android:textSize="17sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/profile_etMobile"
+        android:layout_marginStart="36dp"
+        />
+    <EditText
+        android:id="@+id/profile_etMobile"
+        android:ems="10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/profile_etAddress"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="45dp"
+        />
+
+
+
+    <TextView
+        android:id="@+id/profile_tvPassword"
+        android:text="Password"
+        android:textSize="17sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/profile_etPassword"
+        android:layout_marginStart="36dp"
+        />
+    <EditText
+        android:id="@+id/profile_etPassword"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/profile_etMobile"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="45dp"
+        />
+
+    <Button
+        android:id="@+id/profile_btnUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/profile_etPassword"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:text="Update Changes"/>
+
+
+</android.support.constraint.ConstraintLayout>
