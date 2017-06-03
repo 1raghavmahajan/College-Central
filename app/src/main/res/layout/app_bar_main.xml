@@ -46,20 +46,17 @@
         </LinearLayout>
 
 
-
     </android.support.design.widget.AppBarLayout>
 
     <!--
-    <include layout="@layout/content_main" />
+    <include layout="@layout/frag_main" />
     -->
 
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?android:attr/actionBarSize">
-
-    </FrameLayout>
+        android:layout_marginTop="100dp"/>
 
 
     <android.support.design.widget.FloatingActionButton

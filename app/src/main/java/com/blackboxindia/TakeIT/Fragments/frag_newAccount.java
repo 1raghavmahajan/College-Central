@@ -16,7 +16,7 @@ public class frag_newAccount extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        //return inflater.inflate(R.layout.create_account,container,false);
-        return inflater.inflate(R.layout.create_account,container,false);
+        //return inflater.inflate(R.layout.frag_newaccount,container,false);
+        return inflater.inflate(R.layout.frag_newaccount,container,false);
     }
 }

@@ -2,11 +2,14 @@ package com.blackboxindia.TakeIT.activities;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,27 +19,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.Fragments.frag_loginPage;
 import com.blackboxindia.TakeIT.Fragments.frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.frag_allAds;
 import com.blackboxindia.TakeIT.Fragments.frag_myProfile;
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.adapters.customAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
+    Context context;
     AppBarLayout appBarLayout;
     LinearLayout linearLayout;
     FragmentManager fragmentManager;
     Toolbar toolbar;
     DrawerLayout drawer;
-
-    /////////// Login Page Variables /////////////////
-    TextInputLayout inputLayoutID, inputLayoutPassword;
-    EditText etID, etPassword;
-    //////////////////////////////////////////////////
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +51,9 @@ public class MainActivity extends AppCompatActivity {
         linearLayout = (LinearLayout) findViewById(R.id.appbar_extra);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
         fragmentManager = getFragmentManager();
+        context = getApplicationContext();
 
         setUpFragment();
-
-        setUpRecyclerView();
 
         setUpFab();
 
@@ -102,7 +102,11 @@ public class MainActivity extends AppCompatActivity {
                     setUpFragment();
                 }
                 else if (id == R.id.nav_manage) {
-
+                    linearLayout.setVisibility(View.GONE);
+                    frag_loginPage loginPage= new frag_loginPage();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.frame_layout,loginPage);
+                    fragmentTransaction.commit();
                 }
                 else if (id == R.id.nav_profile) {
                     linearLayout.setVisibility(View.GONE);
@@ -124,69 +128,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getString(R.string.app_name));
     }
-
-    private void setUpRecyclerView() {
-
-    }
-
-
-////////////////////////////////// Login Page Related //////////////////////////////////////////////
-
-    public void setUpLoginPage() {
-        inputLayoutID = (TextInputLayout) findViewById(R.id.login_IDLayout);
-        inputLayoutPassword = (TextInputLayout) findViewById(R.id.login_layoutPassword);
-
-        etID = (EditText) findViewById(R.id.login_etID);
-        etPassword = (EditText) findViewById(R.id.login_etPassword);
-    }
-
-    public void validateAndLogin(View view) {
-        String id = etID.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
-        if(isIDValid(id) && isPasswordValid(password))
-        {
-            //Todo: Login
-        }
-    }
-
-    private boolean isPasswordValid(String password) {
-        if(password.length()<8)
-        {
-            inputLayoutPassword.setError("Minimum 8 characters required.");
-            return false;
-        }
-        else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))
-        {
-            inputLayoutPassword.setError("Password can\'t contain \", \\, \', or ;");
-            return false;
-        }
-        else
-            return true;
-    }
-
-    private boolean isIDValid(String id) {
-        if (id.length() < 4)
-        {
-            inputLayoutPassword.setError("Minimum 4 characters required.");
-            return false;
-        }
-        else if (id.contains("\"") || id.contains("\\") || id.contains("\'") || id.contains(";"))
-        {
-            inputLayoutID.setError("ID can\'t contain \", \\, \', or ;");
-            return false;
-        }
-        else if(!id.contains("@"))
-        {
-            inputLayoutID.setError("Not a valid email format.");
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public void onBackPressed() {
