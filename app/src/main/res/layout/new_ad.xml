@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <EditText
+            android:id="@+id/newAd_tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:text="Set Title"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:maxLines="2"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/newAd_imgRecycler"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/darker_gray"
+            android:maxHeight="220dp"
+            android:minHeight="150dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/newAd_tvTitle"/>
+
+        <TextView
+            android:id="@+id/newAd_tvPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/newAd_etPrice"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_margin="12dp"
+            />
+
+        <EditText
+            android:id="@+id/newAd_etPrice"
+            android:inputType="number"
+            android:ems="6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            app:layout_constraintLeft_toRightOf="@+id/newAd_tvPrice"
+            app:layout_constraintTop_toBottomOf="@+id/newAd_imgRecycler"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/newAd_tvDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/strDescription"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@+id/newAd_etPrice"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_margin="12dp"
+            />
+
+        <EditText
+            android:id="@+id/newAd_etDescription"
+            android:inputType="textMultiLine"
+            android:hint="..."
+            android:textSize="15sp"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/newAd_tvDescription"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="12dp"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Ad"
+            app:layout_constraintTop_toBottomOf="@id/newAd_etDescription"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_margin="12dp"/>
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>

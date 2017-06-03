@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.adapters.customAdapter;
 
-public class frag_allAds extends Fragment {
+public class frag_Main extends Fragment {
 
     RecyclerView recyclerView;
     View view;

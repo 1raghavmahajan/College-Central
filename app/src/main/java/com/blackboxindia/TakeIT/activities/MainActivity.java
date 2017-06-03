@@ -6,10 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,16 +17,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.Fragments.frag_ViewAd;
 import com.blackboxindia.TakeIT.Fragments.frag_loginPage;
 import com.blackboxindia.TakeIT.Fragments.frag_newAccount;
-import com.blackboxindia.TakeIT.Fragments.frag_allAds;
+import com.blackboxindia.TakeIT.Fragments.frag_Main;
 import com.blackboxindia.TakeIT.Fragments.frag_myProfile;
+import com.blackboxindia.TakeIT.Fragments.frag_newAd;
 import com.blackboxindia.TakeIT.R;
-import com.blackboxindia.TakeIT.adapters.customAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     Toolbar toolbar;
     DrawerLayout drawer;
+    FloatingActionButton fab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,23 +61,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpFragment() {
         linearLayout.setVisibility(View.VISIBLE);
-        frag_allAds mc = new frag_allAds();
+        frag_Main mc = new frag_Main();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, mc);
         fragmentTransaction.commit();
     }
 
     private void setUpFab() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
-                linearLayout.setVisibility(View.GONE);
+                /*linearLayout.setVisibility(View.GONE);
                 frag_newAccount fragnewAccount = new frag_newAccount();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.frame_layout, fragnewAccount);
+                fragmentTransaction.commit();*/
+                linearLayout.setVisibility(View.GONE);
+                frag_newAd newAd = new frag_newAd();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, newAd);
                 fragmentTransaction.commit();
             }
         });
@@ -98,8 +103,15 @@ public class MainActivity extends AppCompatActivity {
 
                 if (id == R.id.nav_allAds) {
                     // Handle the camera action
-                    Toast.makeText(MainActivity.this, "Hello", Toast.LENGTH_SHORT).show();
-                    setUpFragment();
+                    /*Toast.makeText(MainActivity.this, "Hello", Toast.LENGTH_SHORT).show();
+                    setUpFragment();*/
+                    fab.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.GONE);
+                    frag_ViewAd fragViewAd= new frag_ViewAd();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.frame_layout,fragViewAd);
+                    fragmentTransaction.commit();
+
                 }
                 else if (id == R.id.nav_manage) {
                     linearLayout.setVisibility(View.GONE);
@@ -125,8 +137,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
         toolbar.setTitle(getString(R.string.app_name));
+        //CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsibleToolbar);
+        //collapsingToolbarLayout.setTitle("Title");
+        toolbar.setSubtitle("all ads");
     }
 
     @Override

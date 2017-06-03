@@ -20,6 +20,12 @@ public class AdDataMini {
     AdDataMini(){
         adID = null;
     }
+    AdDataMini(AdDataMini adDataMini){
+        adID = adDataMini.getAdID();
+        title = adDataMini.getTitle();
+        majorImage = adDataMini.getMajorImage();
+        price = adDataMini.getPrice();
+    }
 
     public String getTitle() {
         return title;
