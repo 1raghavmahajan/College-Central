@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.blackboxindia.TakeIT.activities.LoginActivity">
+    >
 
     <TextView
         android:id="@+id/login_tvTitle"
@@ -66,6 +66,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/login_layoutPassword"
-        android:onClick="validateAndLogin"/>
+        />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,19 +1,16 @@
-<FrameLayout 
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context="com.blackboxindia.TakeIT.Fragments.CreateAccount">
-
-    <android.support.v4.widget.NestedScrollView
+<android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="com.blackboxindia.TakeIT.Fragments.frag_newAccount">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
+
             <FrameLayout
                 android:id="@+id/create_frame"
                 android:layout_width="wrap_content"
@@ -183,5 +180,3 @@
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
-
-</FrameLayout>

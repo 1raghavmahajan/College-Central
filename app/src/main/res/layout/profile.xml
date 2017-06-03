@@ -5,7 +5,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.blackboxindia.TakeIT.activities.ProfileActivity">
+    >
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -43,7 +43,6 @@
                 android:text="Change"
                 android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:onClick="changeImage"
                 />
         </FrameLayout>
 
