@@ -19,9 +19,9 @@ import java.util.List;
 
 public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHolder> {
 
+    private final ImageClickListener mListener;
     private List<AdDataMini> adList;
     private LayoutInflater inflater;
-    private final ImageClickListener mListener;
 
     public mainAdapter(Context context, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
@@ -52,6 +52,11 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         return adList.size();
     }
 
+    public interface ImageClickListener {
+
+        void onKittenClicked(adItemViewHolder holder, int position, AdDataMini currentAd);
+    }
+
     public class adItemViewHolder extends RecyclerView.ViewHolder{
 
         ImageView majorImage;
@@ -60,11 +65,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         Context context;
         CardView cardView;
 
-        public ImageView getMajorImage() {
-            return majorImage;
-        }
-
-        public adItemViewHolder(View itemView) {
+        adItemViewHolder(View itemView) {
             super(itemView);
             majorImage = (ImageView) itemView.findViewById(R.id.adItem_Image);
             tv_title = (TextView) itemView.findViewById(R.id.adItem_Title);
@@ -73,7 +74,11 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             context = itemView.getContext();
         }
 
-        public void setData(AdDataMini currentAd, int position, adItemViewHolder holder) {
+        public ImageView getMajorImage() {
+            return majorImage;
+        }
+
+        void setData(AdDataMini currentAd, int position, adItemViewHolder holder) {
             Log.i("YOYO", "Setting data for adItem " + position);
             setListeners(currentAd, holder, position);
             majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
@@ -82,7 +87,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             if(currentAd.getPrice()==0)
                 tv_Price.setText(R.string.free);
             else
-                tv_Price.setText(context.getString(R.string.currency) + currentAd.getPrice());
+                tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
         }
 
         private void setListeners(final AdDataMini currentAd, final adItemViewHolder holder, final int position) {
@@ -104,7 +109,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 //                    args.putInt("Price", currentAd.getPrice());
 //
 //                    fragViewAd.setArguments(args);
-//                    mainActivity.launchFragment(fragViewAd);
+//                    mainActivity.launchOtherFragment(fragViewAd);
 //                }
 //            });
 //
@@ -117,16 +122,6 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
                 }
             });
         }
-    }
-
-    public interface ImageClickListener {
-        /**
-         * Called when a kitten is clicked
-         * @param holder The ViewHolder for the clicked kitten
-         * @param position The position in the grid of the kitten that was clicked
-         * @param currentAd
-         */
-        void onKittenClicked(adItemViewHolder holder, int position, AdDataMini currentAd);
     }
 
 }

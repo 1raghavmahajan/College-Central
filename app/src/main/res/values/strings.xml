@@ -4,8 +4,8 @@
     <string name="btn_search">Search</string>
     <string name="title_activity_main">TakeIT</string>
 
-    <string name="navigation_drawer_open">Open drawer</string>
-    <string name="navigation_drawer_close">Close drawer</string>
+    <string name="navDrawer_open">Open drawer</string>
+    <string name="navDrawer_close">Close drawer</string>
 
     <string name="action_settings">Settings</string>
 
@@ -17,9 +17,34 @@
     </string>
 
     <string name="free">Free</string>
-    <string name="currency">Rs </string>
+    <string name="currency">Rs %1$d</string>
     <string name="maxTitle">123456789123456789123456789123456789</string>
-    <string name="strDescription">Description:</string>
 
+
+    <string name="labelDescription">Description:</string>
+
+    <!-- Navigation Drawer -->
+    <string name="new_account">New Account</string>
+    <string name="settings">Settings</string>
+    <string name="my_ads">My Ads</string>
+    <string name="my_profile">My Profile</string>
+    <string name="all_ads">All ads</string>
+
+    <!-- Login Page -->
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+
+    <!-- Ad -->
+    <string name="set_title">Set Title</string>
+    <string name="setPrice">Price:</string>
+    <string name="strDescription">Describe in max 2000 characters.</string>
+    <string name="create_ad">Create Ad</string>
+    <string name="label_Profile_image">Profile Image</string>
+    <string name="change_btn">Change</string>
+    <string name="label_Name">FirstName LastName</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="label_update_changes">Update Changes</string>
 
 </resources>

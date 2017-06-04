@@ -5,22 +5,26 @@
         <item
             android:id="@+id/nav_allAds"
             android:icon="@drawable/ic_all"
-            android:title="All ads" />
+            android:title="@string/all_ads" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_profile"
-            android:title="My Profile" />
+            android:title="@string/my_profile" />
         <item
             android:id="@+id/nav_myAds"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="My Ads" />
+            android:title="@string/my_ads" />
 
     </group>
     <group android:id="@+id/nav_secondGroup">
-    <item
-        android:id="@+id/nav_manage"
-        android:icon="@drawable/ic_menu_manage"
-        android:title="Settings" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="@string/settings" />
+        <item
+            android:id="@+id/nav_newAccount"
+            android:icon="@drawable/ic_new"
+            android:title="@string/new_account" />
     </group>
     <!--
 

@@ -9,16 +9,12 @@ import android.view.ViewGroup;
 
 import com.blackboxindia.TakeIT.R;
 
-/**
- * Created by Raghav on 04-Jun-17.
- */
-
 public class frag_newAd extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.new_ad,container,false);
+        View view = inflater.inflate(R.layout.frag_newad, container, false);
         return view;
     }
 }

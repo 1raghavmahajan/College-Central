@@ -13,10 +13,6 @@ import android.widget.EditText;
 
 import com.blackboxindia.TakeIT.R;
 
-/**
- * Created by Raghav on 03-Jun-17.
- */
-
 public class frag_loginPage extends Fragment {
 
     TextInputLayout inputLayoutID, inputLayoutPassword;
@@ -39,6 +35,22 @@ public class frag_loginPage extends Fragment {
             public void onClick(View v) {
                 Log.i("YOYO", "onClick");
                 validateAndLogin();
+            }
+        });
+
+        etID.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                Log.i("YOYO", "etID onClick");
+                inputLayoutID.setErrorEnabled(false);
+            }
+        });
+
+        etPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("YOYO", "etPassword onClick");
+                inputLayoutPassword.setErrorEnabled(false);
             }
         });
 

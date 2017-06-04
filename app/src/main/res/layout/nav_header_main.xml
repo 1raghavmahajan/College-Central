@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/img_back_new"
-    android:gravity="bottom"
-    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:contentDescription="Profile Image"
-        android:layout_width="70dp"
+    <TextView
+        android:id="@+id/nav_email"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        app:srcCompat="@drawable/thumb_human" />
+        android:paddingTop="2dp"
+        android:text="@string/sample_email"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/nav_ID"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/sample_ID"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintBottom_toTopOf="@id/nav_email"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
-    <TextView
-        android:id="@+id/nav_email"
-        android:paddingTop="2dp"
+    <Button
+        android:id="@+id/nav_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sample_email"
+        android:text="@string/login"
+        app:layout_constraintBaseline_toBaselineOf="@id/nav_ID"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/label_Profile_image"
+        app:layout_constraintBottom_toTopOf="@id/nav_ID"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:srcCompat="@drawable/thumb_human"
         />
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

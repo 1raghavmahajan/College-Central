@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     >
 
     <android.support.constraint.ConstraintLayout
@@ -15,34 +15,34 @@
             android:id="@+id/profile_frame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="16dp"
             >
             <ImageView
                 android:id="@+id/profile_img"
-                android:contentDescription="Profile Image"
                 android:layout_width="140dp"
                 android:layout_height="140dp"
-                android:src="@drawable/thumb_human"
                 android:adjustViewBounds="true"
+                android:contentDescription="@string/label_Profile_image"
+                android:src="@drawable/thumb_human"
 
                 />
             <Button
                 android:id="@+id/profile_btnImageChange"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
-                android:padding="10dp"
                 android:layout_gravity="bottom|end"
                 android:background="@color/img_button"
-                android:text="Change"
-                android:textSize="12sp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="10dp"
+                android:text="@string/change_btn"
                 android:textColor="@android:color/black"
+                android:textSize="12sp"
                 />
         </FrameLayout>
 
@@ -67,16 +67,16 @@
             -->
             <EditText
                 android:id="@+id/profile_etName"
-                android:text="FirstName LastName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:inputType="textPersonName"
+                android:text="@string/label_Name"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:inputType="textPersonName"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/profile_frame"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginTop="4dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile_frame"
                 />
         <!--
             <ImageButton
@@ -92,82 +92,82 @@
 
 
         <android.support.design.widget.TextInputLayout
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
             android:id="@+id/profile_etEmailFrame"
-            app:layout_constraintTop_toBottomOf="@+id/profile_etName"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="8dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp">
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_etName">
 
             <EditText
                 android:id="@+id/create_etEmail"
-                android:inputType="textEmailAddress"
-                android:hint="Email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
                 />
 
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
             android:id="@+id/profile_etAddressFrame"
-            app:layout_constraintTop_toBottomOf="@+id/profile_etEmailFrame"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_etEmailFrame">
 
             <EditText
                 android:id="@+id/profile_etAddress"
-                android:inputType="textPostalAddress"
-                android:hint="Address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/address"
+                android:inputType="textPostalAddress"
                 />
 
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
             android:id="@+id/profile_etPhoneFrame"
-            app:layout_constraintTop_toBottomOf="@+id/profile_etAddressFrame"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_etAddressFrame">
 
             <EditText
                 android:id="@+id/profile_etPhone"
-                android:inputType="phone"
-                android:hint="Email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/phone"
+                android:inputType="phone"
                 />
 
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
             android:id="@+id/profile_etPasswordFrame"
-            app:layout_constraintTop_toBottomOf="@+id/profile_etPhoneFrame"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_etPhoneFrame">
 
             <EditText
                 android:id="@+id/profile_etPassword"
-                android:inputType="textPassword"
-                android:hint="Password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:inputType="textPassword"
                 />
 
         </android.support.design.widget.TextInputLayout>
@@ -176,11 +176,11 @@
             android:id="@+id/profile_btnUpdate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/profile_etPasswordFrame"
+            android:layout_marginTop="12dp"
+            android:text="@string/label_update_changes"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="12dp"
-            android:text="Update Changes"/>
+            app:layout_constraintTop_toBottomOf="@+id/profile_etPasswordFrame" />
 
 
     </android.support.constraint.ConstraintLayout>
