@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "805645447847",
+    "firebase_url": "https://takeit-6e751.firebaseio.com",
+    "project_id": "takeit-6e751",
+    "storage_bucket": "takeit-6e751.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805645447847:android:c3553c13aa472f54",
+        "android_client_info": {
+          "package_name": "com.blackboxindia.TakeIT"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "805645447847-9aimhtkhbuconr3ue70hub37uet3kmfu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.blackboxindia.TakeIT",
+            "certificate_hash": "316627ab9138fa1d8f5db2f0d67162f7e9cbeff1"
+          }
+        },
+        {
+          "client_id": "805645447847-ba39a0ljm06vosklnqf20qhhg5ei0k6p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4SjK8NtjGYeECfNuoW-jgvBCpmijGqMQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "805645447847-ba39a0ljm06vosklnqf20qhhg5ei0k6p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
