@@ -24,20 +24,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/img_back"
-                android:adjustViewBounds="true" />
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"/>
             <TextView
                 android:id="@+id/adItem_Price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
                 android:text="@string/free"
-                android:textSize="17sp"
+                android:textSize="15sp"
                 android:textStyle="italic"
-                android:elevation="10dp"
+                android:elevation="7dp"
                 android:textColor="@android:color/black"
                 android:background="@color/img_text"
                 android:fadingEdgeLength="3dp"
-                android:padding="3dp"/>
+                android:padding="2dp"/>
         </FrameLayout>
         <TextView
             android:id="@+id/adItem_Title"

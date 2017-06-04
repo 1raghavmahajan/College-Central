@@ -1,7 +1,7 @@
 package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,9 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blackboxindia.TakeIT.Fragments.frag_ViewAd;
 import com.blackboxindia.TakeIT.R;
-import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdDataMini;
 
 import java.util.List;
@@ -23,10 +21,12 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     private List<AdDataMini> adList;
     private LayoutInflater inflater;
+    private final ImageClickListener mListener;
 
-    public mainAdapter(Context context) {
+    public mainAdapter(Context context, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
         adList = AdDataMini.getList();
+        mListener = listener;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
     @Override
     public void onBindViewHolder(adItemViewHolder holder, int position) {
         AdDataMini currentAd = adList.get(position);
-        holder.setData(currentAd, position);
+        holder.setData(currentAd, position, holder);
         /**
          * Todo:
          * to not put strain on the network
@@ -52,13 +52,17 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         return adList.size();
     }
 
-    class adItemViewHolder extends RecyclerView.ViewHolder{
+    public class adItemViewHolder extends RecyclerView.ViewHolder{
 
         ImageView majorImage;
         TextView tv_title;
         TextView tv_Price;
         Context context;
         CardView cardView;
+
+        public ImageView getMajorImage() {
+            return majorImage;
+        }
 
         public adItemViewHolder(View itemView) {
             super(itemView);
@@ -69,9 +73,9 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             context = itemView.getContext();
         }
 
-        public void setData(AdDataMini currentAd, int position) {
+        public void setData(AdDataMini currentAd, int position, adItemViewHolder holder) {
             Log.i("YOYO", "Setting data for adItem " + position);
-            setListeners(currentAd);
+            setListeners(currentAd, holder, position);
             majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
             tv_title.setText(currentAd.getTitle());
 
@@ -81,29 +85,48 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
                 tv_Price.setText(context.getString(R.string.currency) + currentAd.getPrice());
         }
 
-        private void setListeners(final AdDataMini currentAd) {
-            Log.i("YOYO", "Setting Listeners.");
+        private void setListeners(final AdDataMini currentAd, final adItemViewHolder holder, final int position) {
+            Log.i("YOYO", "Setting Listeners.");//            cardView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Log.i("YOYO", "AdItem clicked!");
+//
+//                    MainActivity mainActivity = (MainActivity)context;
+//                    frag_ViewAd fragViewAd = new frag_ViewAd();
+//                    Bundle args = new Bundle();
+//                    /**
+//                     * Todo:
+//                     * Send AdID so that the specific ad can be viewed
+//                     */
+//                    //args.putInt("id", currentAd.getAdID());
+//                    args.putString("Title",currentAd.getTitle());
+//                    args.putInt("majorImage", currentAd.getMajorImage());
+//                    args.putInt("Price", currentAd.getPrice());
+//
+//                    fragViewAd.setArguments(args);
+//                    mainActivity.launchFragment(fragViewAd);
+//                }
+//            });
+//
+            ViewCompat.setTransitionName(holder.getMajorImage(), String.valueOf(position) + "_image");
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.i("YOYO", "AdItem clicked!");
-
-                    MainActivity mainActivity = (MainActivity)context;
-                    frag_ViewAd fragViewAd = new frag_ViewAd();
-                    Bundle args = new Bundle();
-                    /**
-                     * Todo:
-                     * Send AdID so that the specific ad can be viewed
-                     */
-                    //args.putInt("id", currentAd.getAdID());
-                    args.putString("Title",currentAd.getTitle());
-                    args.putInt("majorImage", currentAd.getMajorImage());
-                    args.putInt("Price", currentAd.getPrice());
-
-                    fragViewAd.setArguments(args);
-                    mainActivity.launchFragment(fragViewAd);
+                    Log.i("YOYO", "onClick");
+                    mListener.onKittenClicked(holder, position, currentAd);
                 }
             });
         }
     }
+
+    public interface ImageClickListener {
+        /**
+         * Called when a kitten is clicked
+         * @param holder The ViewHolder for the clicked kitten
+         * @param position The position in the grid of the kitten that was clicked
+         * @param currentAd
+         */
+        void onKittenClicked(adItemViewHolder holder, int position, AdDataMini currentAd);
+    }
+
 }
