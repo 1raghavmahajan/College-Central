@@ -160,7 +160,8 @@
             android:layout_marginStart="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_etPhoneFrame">
+            app:layout_constraintTop_toBottomOf="@+id/profile_etPhoneFrame"
+            >
 
             <EditText
                 android:id="@+id/profile_etPassword"
@@ -180,7 +181,8 @@
             android:text="@string/label_update_changes"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_etPasswordFrame" />
+            app:layout_constraintTop_toBottomOf="@+id/profile_etPasswordFrame"
+            />
 
 
     </android.support.constraint.ConstraintLayout>

@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.blackboxindia.TakeIT.Fragments.frag_Main;
 import com.blackboxindia.TakeIT.Fragments.frag_loginPage;
 import com.blackboxindia.TakeIT.Fragments.frag_myProfile;
+import com.blackboxindia.TakeIT.Fragments.frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.frag_newAd;
 import com.blackboxindia.TakeIT.R;
 
@@ -82,17 +83,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                int id = item.getItemId();
-
-                if (id == R.id.nav_allAds) {
-                    Toast.makeText(context, "All ads Clicked", Toast.LENGTH_SHORT).show();
-                }
-                else if (id == R.id.nav_manage) {
-                    Toast.makeText(context, "Settings Clicked", Toast.LENGTH_SHORT).show();
-                    launchOtherFragment(new frag_loginPage(), "LOGIN_PAGE");
-                }
-                else if (id == R.id.nav_profile) {
-                    launchOtherFragment(new frag_myProfile(), "MY_PROFILE");
+                switch (item.getItemId()) {
+                    case R.id.nav_allAds:
+                        Toast.makeText(context, "All ads Clicked", Toast.LENGTH_SHORT).show();
+                        onBackPressed();
+                        break;
+                    case R.id.nav_manage:
+                        Toast.makeText(context, "Settings Clicked", Toast.LENGTH_SHORT).show();
+                        launchOtherFragment(new frag_loginPage(), "LOGIN_PAGE");
+                        break;
+                    case R.id.nav_profile:
+                        launchOtherFragment(new frag_myProfile(), "MY_PROFILE");
+                        break;
+                    case R.id.nav_newAccount:
+                        launchOtherFragment(new frag_newAccount(), "NEW_ACCOUNT");
+                        break;
                 }
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -46,5 +46,9 @@
     <string name="address">Address</string>
     <string name="phone">Phone</string>
     <string name="label_update_changes">Update Changes</string>
+    <string name="create_account">Create Account</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create_new_account">Create New Account</string>
+    <string name="forgot_password">Forgot Password?</string>
 
 </resources>

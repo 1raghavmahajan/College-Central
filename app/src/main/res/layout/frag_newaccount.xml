@@ -1,182 +1,183 @@
 <android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.blackboxindia.TakeIT.Fragments.frag_newAccount"
+    android:id="@+id/create_main">
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        tools:context="com.blackboxindia.TakeIT.Fragments.frag_newAccount">
+        >
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <FrameLayout
+            android:id="@+id/create_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="12dp"
             >
+            <ImageView
+                android:id="@+id/create_img"
+                android:contentDescription="@string/label_Profile_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/thumb_human"
+                android:adjustViewBounds="true"
 
-            <FrameLayout
-                android:id="@+id/create_frame"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="12dp"
-                >
-                <ImageView
-                    android:id="@+id/create_img"
-                    android:contentDescription="Profile Image"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@drawable/thumb_human"
-                    android:adjustViewBounds="true"
-
-                    />
-                <Button
-                    android:id="@+id/create_btnImageChange"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:padding="10dp"
-                    android:layout_gravity="bottom|end"
-                    android:background="@color/img_button"
-                    android:text="Change"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/black"
-                    android:onClick="addImage"
-                    />
-            </FrameLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:id="@+id/create_etNameFrame"
-                app:layout_constraintTop_toBottomOf="@+id/create_frame"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp">
-
-                <EditText
-                    android:id="@+id/create_etName"
-                    android:inputType="textPersonName"
-                    android:hint="Name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:id="@+id/create_etEmailFrame"
-                app:layout_constraintTop_toBottomOf="@+id/create_etNameFrame"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp">
-
-                <EditText
-                    android:id="@+id/create_etEmail"
-                    android:inputType="textEmailAddress"
-                    android:hint="Email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:id="@+id/create_etAddressFrame"
-                app:layout_constraintTop_toBottomOf="@+id/create_etEmailFrame"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp">
-
-                <EditText
-                    android:id="@+id/create_etAddress"
-                    android:inputType="textPostalAddress"
-                    android:hint="Address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:id="@+id/create_etPhoneFrame"
-                app:layout_constraintTop_toBottomOf="@+id/create_etAddressFrame"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp">
-
-                <EditText
-                    android:id="@+id/create_etPhone"
-                    android:inputType="phone"
-                    android:hint="Email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:id="@+id/create_etPasswordFrame"
-                app:layout_constraintTop_toBottomOf="@+id/create_etPhoneFrame"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp">
-
-                <EditText
-                    android:id="@+id/create_etPassword"
-                    android:inputType="textPassword"
-                    android:hint="Password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:id="@+id/create_etPasswordConfirmFrame"
-                app:layout_constraintTop_toBottomOf="@+id/create_etPasswordFrame"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp">
-
-                <EditText
-                    android:id="@+id/create_etPasswordConfirm"
-                    android:inputType="textPassword"
-                    android:hint="Confirm Password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </android.support.design.widget.TextInputLayout>
-
+                />
             <Button
-                android:id="@+id/create_btnCreate"
+                android:id="@+id/create_btnImageChange"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/create_etPasswordConfirmFrame"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginTop="16dp"
-                android:text="Create Account"/>
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="10dp"
+                android:layout_gravity="bottom|end"
+                android:background="@color/img_button"
+                android:text="@string/change_btn"
+                android:textSize="12sp"
+                android:textColor="@android:color/black"
+                android:onClick="addImage"
+                />
+        </FrameLayout>
 
-        </android.support.constraint.ConstraintLayout>
-    </android.support.v4.widget.NestedScrollView>
+        <android.support.design.widget.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:id="@+id/create_etNameFrame"
+            app:layout_constraintTop_toBottomOf="@+id/create_frame"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
+
+            <EditText
+                android:id="@+id/create_etName"
+                android:inputType="textPersonName"
+                android:hint="@string/label_Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:id="@+id/create_etEmailFrame"
+            app:layout_constraintTop_toBottomOf="@+id/create_etNameFrame"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
+
+            <EditText
+                android:id="@+id/create_etEmail"
+                android:inputType="textEmailAddress"
+                android:hint="@string/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:id="@+id/create_etAddressFrame"
+            app:layout_constraintTop_toBottomOf="@+id/create_etEmailFrame"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
+
+            <EditText
+                android:id="@+id/create_etAddress"
+                android:inputType="textPostalAddress"
+                android:hint="@string/address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:id="@+id/create_etPhoneFrame"
+            app:layout_constraintTop_toBottomOf="@+id/create_etAddressFrame"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
+
+            <EditText
+                android:id="@+id/create_etPhone"
+                android:inputType="phone"
+                android:hint="@string/phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:id="@+id/create_etPasswordFrame"
+            app:layout_constraintTop_toBottomOf="@+id/create_etPhoneFrame"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
+
+            <EditText
+                android:id="@+id/create_etPassword"
+                android:inputType="textPassword"
+                android:hint="@string/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:id="@+id/create_etPasswordConfirmFrame"
+            app:layout_constraintTop_toBottomOf="@+id/create_etPasswordFrame"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp">
+
+            <EditText
+                android:id="@+id/create_etPasswordConfirm"
+                android:inputType="textPassword"
+                android:hint="@string/confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/create_btnCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/create_etPasswordConfirmFrame"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="16dp"
+            android:text="@string/create_account"/>
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>

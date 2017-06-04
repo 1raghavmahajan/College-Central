@@ -10,51 +10,71 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.activities.MainActivity;
 
 public class frag_loginPage extends Fragment {
 
     TextInputLayout inputLayoutID, inputLayoutPassword;
     EditText etID, etPassword;
     Button btn_login;
+    TextView tvCreateNew;
+    View view;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_login, container, false);
-        inputLayoutID = (TextInputLayout) view.findViewById(R.id.login_IDLayout);
-        inputLayoutPassword = (TextInputLayout) view.findViewById(R.id.login_layoutPassword);
+        view = inflater.inflate(R.layout.frag_login, container, false);
+
+        initVariables();
+
+        setListeners();
+
+        return view;
+    }
+
+    private void initVariables() {
+        inputLayoutID = (TextInputLayout) view.findViewById(R.id.login_IDFrame);
+        inputLayoutPassword = (TextInputLayout) view.findViewById(R.id.login_PasswordFrame);
 
         etID = (EditText) view.findViewById(R.id.login_etID);
         etPassword = (EditText) view.findViewById(R.id.login_etPassword);
         btn_login = (Button) view.findViewById(R.id.login_btnLogin);
 
+        tvCreateNew = (TextView) view.findViewById(R.id.login_tvCreate);
+    }
+
+    private void setListeners() {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("YOYO", "onClick");
                 validateAndLogin();
+            }
+        });
+
+        tvCreateNew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity mainActivity = (MainActivity)v.getContext();
+                mainActivity.launchOtherFragment(new frag_newAccount(), "NEW_ACCOUNT");
             }
         });
 
         etID.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                Log.i("YOYO", "etID onClick");
                 inputLayoutID.setErrorEnabled(false);
             }
         });
 
-        etPassword.setOnClickListener(new View.OnClickListener() {
+        etPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View v) {
-                Log.i("YOYO", "etPassword onClick");
+            public void onFocusChange(View v, boolean hasFocus) {
                 inputLayoutPassword.setErrorEnabled(false);
             }
         });
-
-        return view;
     }
 
     public void validateAndLogin() {
@@ -102,4 +122,5 @@ public class frag_loginPage extends Fragment {
             return true;
         }
     }
+
 }
