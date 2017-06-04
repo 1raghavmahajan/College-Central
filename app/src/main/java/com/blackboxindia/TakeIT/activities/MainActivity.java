@@ -1,5 +1,6 @@
 package com.blackboxindia.TakeIT.activities;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     Context context;
     AppBarLayout appBarLayout;
-    LinearLayout linearLayout;
+    public LinearLayout linearLayout;
     FragmentManager fragmentManager;
     Toolbar toolbar;
     DrawerLayout drawer;
@@ -63,8 +65,19 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.setVisibility(View.VISIBLE);
         frag_Main mc = new frag_Main();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout, mc);
+        fragmentTransaction.replace(R.id.frame_layout, mc, "MAIN_FRAG");
         fragmentTransaction.commit();
+        /*
+        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Log.i("YOYO","onBackStackChanged");
+                Fragment main_frag = fragmentManager.findFragmentByTag("MAIN_FRAG");
+                if(main_frag.isVisible())
+                    linearLayout.setVisibility(View.VISIBLE);
+            }
+        });
+        */
     }
 
     private void setUpFab() {
@@ -109,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
                     linearLayout.setVisibility(View.GONE);
                     frag_ViewAd fragViewAd= new frag_ViewAd();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.frame_layout,fragViewAd);
+                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    fragmentTransaction.replace(R.id.frame_layout,fragViewAd).addToBackStack("sasa");
                     fragmentTransaction.commit();
 
                 }
@@ -117,14 +131,16 @@ public class MainActivity extends AppCompatActivity {
                     linearLayout.setVisibility(View.GONE);
                     frag_loginPage loginPage= new frag_loginPage();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.frame_layout,loginPage);
+                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    fragmentTransaction.replace(R.id.frame_layout,loginPage).addToBackStack("potty");
                     fragmentTransaction.commit();
                 }
                 else if (id == R.id.nav_profile) {
                     linearLayout.setVisibility(View.GONE);
                     frag_myProfile profile = new frag_myProfile();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.frame_layout,profile);
+                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    fragmentTransaction.replace(R.id.frame_layout,profile).addToBackStack("susu");
                     fragmentTransaction.commit();
                 }
 
@@ -137,15 +153,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-        toolbar.setTitle(getString(R.string.app_name));
-        //CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsibleToolbar);
-        //collapsingToolbarLayout.setTitle("Title");
-        toolbar.setSubtitle("all ads");
+        final CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+        collapsingToolbarLayout.setTitle(getString(R.string.app_name));
+        collapsingToolbarLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+    }
+
+    public void launchFragment(Fragment frag) {
+        linearLayout.setVisibility(View.GONE);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack("mou");
+        fragmentTransaction.commit();
     }
 
     @Override
     public void onBackPressed() {
+        Log.i("YOYO", "onBackPressed");
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);

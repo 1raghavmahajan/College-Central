@@ -11,46 +11,55 @@
         android:id="@+id/appbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:elevation="7dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         >
-
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleGravity="top"
+            app:expandedTitleMarginStart="52dp"
+            app:expandedTitleMarginTop="15dp"
+            android:fitsSystemWindows="true">
+            <LinearLayout
+                android:id="@+id/appbar_extra"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:gravity="bottom"
+                android:orientation="horizontal"
+                app:layout_collapseMode="parallax"
+                >
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:hint="Search..."
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="16dp"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:text="GO"
+                    android:textColor="@android:color/white"
+                    android:background="@color/colorPrimaryDark"
+                    android:minHeight="32dp"
+                    android:minWidth="70dp"
+                    />
+            </LinearLayout>
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_collapseMode="pin"
             />
 
-        <LinearLayout
-            android:id="@+id/appbar_extra"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_scrollFlags="scroll|enterAlways"
-            >
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="Search..."
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="16dp"
-                />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="GO"
-                android:textColor="@android:color/white"
-                android:background="@color/colorPrimaryDark"
-                android:minHeight="32dp"
-                android:minWidth="70dp"
-                />
-        </LinearLayout>
-
+        </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
