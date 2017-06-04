@@ -83,7 +83,7 @@ public class frag_Main extends Fragment implements mainAdapter.ImageClickListene
 
         getActivity().getFragmentManager()
                 .beginTransaction()
-                .addSharedElement(holder.getMajorImage(), "kittenImage")
+                .addSharedElement(holder.getMajorImage(), "adImage0")
                 .replace(R.id.frame_layout, fragViewAd)
                 .addToBackStack(null)
                 .commit();

@@ -40,7 +40,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imgViewHolde
 
     @Override
     public void onBindViewHolder(imgViewHolder holder, int position) {
-        holder.setData(images.get(position));
+        holder.setData(images.get(position), position);
     }
 
     @Override
@@ -57,8 +57,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imgViewHolde
             imageView = (ImageView) itemView.findViewById(R.id.imgCard_img);
         }
 
-        public void setData(Integer resID) {
+        public void setData(Integer resID, Integer position) {
             imageView.setImageResource(resID);
+            imageView.setTransitionName("adImage" + position);
         }
     }
 
