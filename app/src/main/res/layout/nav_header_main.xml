@@ -20,7 +20,7 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
-        android:id="@+id/nav_ID"
+        android:id="@+id/nav_Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -30,20 +30,20 @@
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <Button
-        android:id="@+id/nav_btn"
+        android:id="@+id/nav_btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login"
-        app:layout_constraintBaseline_toBaselineOf="@id/nav_ID"
+        app:layout_constraintBaseline_toBaselineOf="@id/nav_Name"
         app:layout_constraintRight_toRightOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/nav_profileImg"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:contentDescription="@string/label_Profile_image"
-        app:layout_constraintBottom_toTopOf="@id/nav_ID"
+        app:layout_constraintBottom_toTopOf="@id/nav_Name"
         app:layout_constraintLeft_toLeftOf="parent"
         app:srcCompat="@drawable/thumb_human"
         />
