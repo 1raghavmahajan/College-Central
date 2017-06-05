@@ -27,8 +27,9 @@ public class frag_newAccount extends Fragment {
 
         View view = inflater.inflate(R.layout.frag_newaccount,container,false);
 
-        NestedScrollView nestedScrollView = (NestedScrollView) view.findViewById(R.id.create_main);
-        nestedScrollView.setNestedScrollingEnabled(false);
+//        NestedScrollView nestedScrollView = (NestedScrollView) view.findViewById(R.id.create_main);
+//        nestedScrollView.setNestedScrollingEnabled(false);
+//
 
         etName = (EditText) view.findViewById(R.id.create_etName);
         etPhone = (EditText) view.findViewById(R.id.create_etPhone);
@@ -53,7 +54,7 @@ public class frag_newAccount extends Fragment {
                 {
                     if(isPasswordValid())
                     {
-                        if(userInfo.newUser(etPassword.getText().toString().trim()))
+                        if(userInfo.newUser(etPassword.getText().toString().trim(), v.getContext()))
                         {
                             /**
                              * Account creation successful
@@ -68,6 +69,7 @@ public class frag_newAccount extends Fragment {
 
         return view;
     }
+
 
 
     boolean validateDetails(UserInfo userInfo) {
