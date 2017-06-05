@@ -18,7 +18,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Fragments.frag_Main;
@@ -27,6 +29,7 @@ import com.blackboxindia.TakeIT.Fragments.frag_myProfile;
 import com.blackboxindia.TakeIT.Fragments.frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.frag_newAd;
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -140,6 +143,13 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack(tag);
         fragmentTransaction.commit();
+    }
+
+    public void UpdateUIonLogin(UserInfo userInfo)
+    {
+        ((TextView) findViewById(R.id.nav_Name)).setText("");
+        TextView tvEmail = (TextView) findViewById(R.id.nav_email);
+        (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
     }
 
     /**
