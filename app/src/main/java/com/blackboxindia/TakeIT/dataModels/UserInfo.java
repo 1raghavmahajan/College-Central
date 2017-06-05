@@ -1,15 +1,19 @@
 package com.blackboxindia.TakeIT.dataModels;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
+
+import com.blackboxindia.TakeIT.Network.networkMethods;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Date;
 
 public class UserInfo {
 
     String uID;
-    String authKey;
+    //String authKey;
 
     String name;
 
@@ -37,29 +41,7 @@ public class UserInfo {
         }
     }
 
-
-    public void setuID(String uID) {
-        this.uID = uID;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-
-    public boolean newUser(String password){
+    public boolean newUser(String password, Context context){
         /**
          * Todo:
          * add new user
@@ -67,6 +49,15 @@ public class UserInfo {
          *  set authKey
          *  set uID
          */
+        networkMethods.newInterface anInterface = new networkMethods.newInterface() {
+            @Override
+            public void onResult(FirebaseAuth Auth) {
+                Log.i("YOYO", "onResult: " + Auth.getCurrentUser().getDisplayName());
+            }
+        };
+
+        networkMethods net = new networkMethods(context, anInterface);
+        net.Create_Account(this,password);
         return true;
     }
 
@@ -108,4 +99,50 @@ public class UserInfo {
             return bundle;
         }
     }
+
+
+    public void setuID(String uID) {
+        this.uID = uID;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getuID() {
+        return uID;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+//    public String getAuthKey() {
+//        return authKey;
+//    }
+
 }
