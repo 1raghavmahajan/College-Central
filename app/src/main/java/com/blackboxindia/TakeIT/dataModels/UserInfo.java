@@ -2,6 +2,8 @@ package com.blackboxindia.TakeIT.dataModels;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,20 +13,29 @@ import com.blackboxindia.TakeIT.Network.onResultListener;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class UserInfo {
+public class UserInfo implements Parcelable {
 
     //region Variables
 
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
     private String uID;
     //String authKey;
     private String name;
     private String email;
     private String address;
-    private String phone;
 
     //endregion
 
     //region Constructors
+    private String phone;
 
     public UserInfo(){
     }
@@ -40,6 +51,25 @@ public class UserInfo {
         {
             Log.i("YOYO", e.toString());
         }
+    }
+
+    public UserInfo(String uID, String name, String email, String address, String phone) {
+        this.uID = uID;
+        this.name = name;
+        this.email = email;
+        this.address = address;
+        this.phone = phone;
+    }
+
+    public UserInfo(Parcel in) {
+        String[] data = new String[5];
+        in.readStringArray(data);
+        // the order needs to be the same as in writeToParcel() method
+        this.uID = data[0];
+        this.name = data[1];
+        this.email = data[2];
+        this.address = data[3];
+        this.phone = data[4];
     }
 
     //endregion
@@ -136,6 +166,23 @@ public class UserInfo {
         else
             return allDet;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeStringArray(new String[]{this.uID,
+                this.name,
+                this.email,
+                this.address,
+                this.phone});
+
+    }
+
 
     //region Getters and Setters
 

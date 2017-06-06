@@ -106,7 +106,18 @@ public class MainActivity extends AppCompatActivity {
                         launchOtherFragment(new frag_loginPage(), "LOGIN_PAGE");
                         break;
                     case R.id.nav_profile:
-                        launchOtherFragment(new frag_myProfile(), "MY_PROFILE");
+                        if (userInfo != null) {
+                            frag_myProfile fragMyProfile = new frag_myProfile();
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("UserInfo", userInfo);
+                            fragMyProfile.setArguments(bundle);
+                            launchOtherFragment(fragMyProfile, "MY_PROFILE");
+                        } else {
+                            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                                drawer.closeDrawer(GravityCompat.START);
+                            }
+                            Toast.makeText(context, "Please login First", Toast.LENGTH_SHORT).show();
+                        }
                         break;
                     case R.id.nav_newAccount:
                         launchOtherFragment(new frag_newAccount(), "NEW_ACCOUNT");
@@ -178,10 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    super.onBackPressed();
                 }
-
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack(tag);
@@ -192,8 +200,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
                     drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    super.onBackPressed();
                 }
 
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -232,8 +238,6 @@ public class MainActivity extends AppCompatActivity {
 
     //endregion
 
-    //region Updating UI
-
     public void UpdateUIonLogin(UserInfo userInfo, FirebaseAuth auth) {
         mAuth = auth;
         this.userInfo = userInfo;
@@ -246,8 +250,6 @@ public class MainActivity extends AppCompatActivity {
 
         goToMainFragment();
     }
-
-    //endregion
 
     //This works apparently
     public void addImage(View view) {

@@ -103,7 +103,7 @@
             app:layout_constraintTop_toBottomOf="@+id/profile_etName">
 
             <EditText
-                android:id="@+id/create_etEmail"
+                android:id="@+id/profile_etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
@@ -168,8 +168,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/password"
-                android:inputType="textPassword"
-                />
+                android:inputType="textPassword" />
 
         </android.support.design.widget.TextInputLayout>
 
