@@ -7,23 +7,17 @@ import android.transition.ChangeTransform;
 import android.transition.TransitionSet;
 import android.util.AttributeSet;
 
-/**
- * Transition that performs almost exactly like {@link android.transition.AutoTransition}, but has an
- * added {@link ChangeImageTransform} to support properly scaling up our gorgeous kittens.
- *
- * @author bherbst
- */
-public class adViewTransiton extends TransitionSet {
+public class adViewTransition extends TransitionSet {
 
 
-    public adViewTransiton() {
+    public adViewTransition() {
         init();
     }
 
     /**
      * This constructor allows us to use this transition in XML
      */
-    public adViewTransiton(Context context, AttributeSet attrs) {
+    public adViewTransition(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
@@ -34,4 +28,5 @@ public class adViewTransiton extends TransitionSet {
                 addTransition(new ChangeTransform()).
                 addTransition(new ChangeImageTransform());
     }
+
 }

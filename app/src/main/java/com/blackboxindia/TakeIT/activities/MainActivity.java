@@ -15,10 +15,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,8 +28,11 @@ import com.blackboxindia.TakeIT.Fragments.frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.frag_newAd;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
+
+    //region Variables
 
     public LinearLayout linearLayout;
     Context context;
@@ -40,7 +41,14 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     DrawerLayout drawer;
     FloatingActionButton fab;
+    //View headerView;
 
+    FirebaseAuth mAuth;
+    UserInfo userInfo;
+
+    //endregion
+
+    //region Initial Setup
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,14 +90,16 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        //headerView =  navigationView.getHeaderView(0);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 switch (item.getItemId()) {
                     case R.id.nav_allAds:
-                        Toast.makeText(context, "All ads Clicked", Toast.LENGTH_SHORT).show();
-                        onBackPressed();
+                        goToMainFragment();
                         break;
                     case R.id.nav_manage:
                         Toast.makeText(context, "Settings Clicked", Toast.LENGTH_SHORT).show();
@@ -102,12 +112,18 @@ public class MainActivity extends AppCompatActivity {
                         launchOtherFragment(new frag_newAccount(), "NEW_ACCOUNT");
                         break;
                 }
-
-                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
             }
         });
+
+//        Button btnLogin = (Button) navigationView.findViewById(R.id.nav_btnLogin);
+//        btnLogin.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                launchOtherFragment(new frag_loginPage(),"LOGIN_PAGE");
+//            }
+//        });
     }
 
     private void setUpMainFragment() {
@@ -116,15 +132,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, mc, "MAIN_FRAG");
         fragmentTransaction.commit();
-//        fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-//            @Override
-//            public void onBackStackChanged() {
-//                Log.i("YOYO","onBackStackChanged");
-//                Fragment main_frag = fragmentManager.findFragmentByTag("MAIN_FRAG");
-//                if(main_frag.isVisible())
-//                    linearLayout.setVisibility(View.VISIBLE);
-//            }
-//        });
     }
 
     private void setUpFab() {
@@ -137,28 +144,85 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //endregion
+
+    //region Movement
+
+    void goToMainFragment() {
+        linearLayout.setVisibility(View.VISIBLE);
+        if (fragmentManager.findFragmentByTag("MAIN_FRAG") != null) {
+            if (!fragmentManager.findFragmentByTag("MAIN_FRAG").isVisible()) {
+
+                //Todo:Handle frag already exists
+
+                frag_Main mc = new frag_Main();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.frame_layout, mc, "MAIN_FRAG");
+                fragmentTransaction.commit();
+            }
+        } else {
+            linearLayout.setVisibility(View.VISIBLE);
+            frag_Main mc = new frag_Main();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.frame_layout, mc, "MAIN_FRAG");
+            fragmentTransaction.commit();
+        }
+    }
+
     public void launchOtherFragment(Fragment frag, String tag) {
         linearLayout.setVisibility(View.GONE);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack(tag);
-        fragmentTransaction.commit();
+        if (fragmentManager.findFragmentByTag(tag) != null) {
+
+            //noinspection StatementWithEmptyBody
+            if (!fragmentManager.findFragmentByTag(tag).isVisible()) {
+
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    super.onBackPressed();
+                }
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack(tag);
+                fragmentTransaction.commit();
+            } else {
+
+                //Todo: handle if fragment already in back stack but not visible
+
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                } else {
+                    super.onBackPressed();
+                }
+
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack(tag);
+                fragmentTransaction.commit();
+
+            }
+        } else {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
+
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack(tag);
+            fragmentTransaction.commit();
+        }
     }
 
-    public void UpdateUIonLogin(UserInfo userInfo)
-    {
-        ((TextView) findViewById(R.id.nav_Name)).setText("");
-        TextView tvEmail = (TextView) findViewById(R.id.nav_email);
-        (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
+    public void NavLoginButtonClicked(View view) {
+        launchOtherFragment(new frag_loginPage(), "LOGIN_PAGE");
     }
 
-    /**
-     * For closing the Drawer if open onBackPress
-     */
     @Override
     public void onBackPressed() {
-        Log.i("YOYO", "onBackPressed");
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        // For closing the Drawer if open onBackPress
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -166,7 +230,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //endregion
+
+    //region Updating UI
+
+    public void UpdateUIonLogin(UserInfo userInfo, FirebaseAuth auth) {
+        mAuth = auth;
+        this.userInfo = userInfo;
+
+        //Drawer
+        ((TextView) findViewById(R.id.nav_Name)).setText(userInfo.getName());
+        ((TextView) findViewById(R.id.nav_email)).setText(userInfo.getEmail());
+
+        (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
+
+        goToMainFragment();
+    }
+
+    //endregion
+
+    //This works apparently
     public void addImage(View view) {
         Toast.makeText(this, "Heleoeo", Toast.LENGTH_SHORT).show();
     }
+
 }

@@ -4,8 +4,6 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.widget.NestedScrollView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,18 +16,35 @@ import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 public class frag_newAccount extends Fragment {
 
+    //region Variables
     EditText etName, etPhone, etAddress, etEmail, etPassword, etConfirmPass;
     TextInputLayout nameFrame, phoneFrame, mailFrame, passFrame, cPassFrame;
+    Button btnCreate;
+    //endregion
 
+    //region Initial Setup
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.frag_newaccount,container,false);
 
-//        NestedScrollView nestedScrollView = (NestedScrollView) view.findViewById(R.id.create_main);
-//        nestedScrollView.setNestedScrollingEnabled(false);
-//
+        initVariables(view);
+
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserInfo userInfo = new UserInfo(etName, etEmail, etAddress, etPhone);
+                if (validateDetails(userInfo))
+                    if (isPasswordValid())
+                        userInfo.newUser(etPassword.getText().toString().trim(), v.getContext());
+            }
+        });
+
+        return view;
+    }
+
+    private void initVariables(View view) {
 
         etName = (EditText) view.findViewById(R.id.create_etName);
         etPhone = (EditText) view.findViewById(R.id.create_etPhone);
@@ -44,36 +59,13 @@ public class frag_newAccount extends Fragment {
         passFrame = (TextInputLayout) view.findViewById(R.id.create_etPasswordFrame);
         cPassFrame = (TextInputLayout) view.findViewById(R.id.create_etPasswordConfirmFrame);
 
-
-        Button btnCreate = (Button) view.findViewById(R.id.create_btnCreate);
-        btnCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserInfo userInfo = new UserInfo(etName,etEmail,etAddress,etPhone);
-                if(validateDetails(userInfo));
-                {
-                    if(isPasswordValid())
-                    {
-                        if(userInfo.newUser(etPassword.getText().toString().trim(), v.getContext()))
-                        {
-                            /**
-                             * Account creation successful
-                             * Update UI
-                             */
-                            Log.i("YOYO", "FINALLY");
-                        }
-                    }
-                }
-            }
-        });
-
-        return view;
+        btnCreate = (Button) view.findViewById(R.id.create_btnCreate);
     }
 
-
+    //endregion
 
     boolean validateDetails(UserInfo userInfo) {
-        Bundle bundle = userInfo.validateEntry();
+        Bundle bundle = userInfo.validateNewAccountDetails();
         return bundle.getBoolean("allGood");
     }
 

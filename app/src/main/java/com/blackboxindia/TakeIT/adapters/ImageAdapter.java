@@ -12,17 +12,12 @@ import com.blackboxindia.TakeIT.R;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Raghav on 04-Jun-17.
- */
-
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imgViewHolder> {
 
-    LayoutInflater inflater;
-    List<Integer> images;
+    private LayoutInflater inflater;
+    private List<Integer> images;
 
-    public ImageAdapter(Context context, Integer img)
-    {
+    public ImageAdapter(Context context, Integer img) {
         inflater = LayoutInflater.from(context);
         //Todo:
         //getAllImages
@@ -34,8 +29,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imgViewHolde
     @Override
     public imgViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.img_card, parent, false);
-        imgViewHolder holder = new imgViewHolder(view);
-        return holder;
+        return new imgViewHolder(view);
     }
 
     @Override
@@ -52,12 +46,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imgViewHolde
 
         ImageView imageView;
 
-        public imgViewHolder(View itemView) {
+        imgViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.imgCard_img);
         }
 
-        public void setData(Integer resID, Integer position) {
+        void setData(Integer resID, Integer position) {
             imageView.setImageResource(resID);
             imageView.setTransitionName("adImage" + position);
         }

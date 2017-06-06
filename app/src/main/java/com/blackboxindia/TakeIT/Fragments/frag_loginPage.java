@@ -4,7 +4,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.util.Log;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +14,11 @@ import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
+import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 public class frag_loginPage extends Fragment {
+
+    //region Variables
 
     TextInputLayout inputLayoutID, inputLayoutPassword;
     EditText etID, etPassword;
@@ -23,10 +26,17 @@ public class frag_loginPage extends Fragment {
     TextView tvCreateNew;
     View view;
 
+    //endregion
+
+    //region Initial setup
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_login, container, false);
+
+        NestedScrollView nestedScrollView = (NestedScrollView) view.findViewById(R.id.profile_main);
+        nestedScrollView.setNestedScrollingEnabled(false);
 
         initVariables();
 
@@ -50,7 +60,7 @@ public class frag_loginPage extends Fragment {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateAndLogin();
+                validateAndLogin(v);
             }
         });
 
@@ -77,12 +87,15 @@ public class frag_loginPage extends Fragment {
         });
     }
 
-    public void validateAndLogin() {
+    //endregion
+
+    public void validateAndLogin(View v) {
         String id = etID.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
-        if(isIDValid(id) && isPasswordValid(password))
+        UserInfo userInfo = new UserInfo();
+        if (userInfo.isIDValid(id) && isPasswordValid(password))
         {
-            //Todo: Login
+            userInfo.login(id, password, v.getContext());
         }
     }
 
@@ -99,28 +112,6 @@ public class frag_loginPage extends Fragment {
         }
         else
             return true;
-    }
-
-    private boolean isIDValid(String id) {
-        if (id.length() < 4)
-        {
-            inputLayoutPassword.setError("Minimum 4 characters required.");
-            return false;
-        }
-        else if (id.contains("\"") || id.contains("\\") || id.contains("\'") || id.contains(";"))
-        {
-            inputLayoutID.setError("ID can\'t contain \", \\, \', or ;");
-            return false;
-        }
-        else if(!id.contains("@"))
-        {
-            inputLayoutID.setError("Not a valid email format.");
-            return false;
-        }
-        else
-        {
-            return true;
-        }
     }
 
 }

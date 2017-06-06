@@ -54,7 +54,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     public interface ImageClickListener {
 
-        void onKittenClicked(adItemViewHolder holder, int position, AdDataMini currentAd);
+        void onClick(adItemViewHolder holder, int position, AdDataMini currentAd);
     }
 
     public class adItemViewHolder extends RecyclerView.ViewHolder{
@@ -79,7 +79,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         }
 
         void setData(AdDataMini currentAd, int position, adItemViewHolder holder) {
-            Log.i("YOYO", "Setting data for adItem " + position);
+
             setListeners(currentAd, holder, position);
             majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
             tv_title.setText(currentAd.getTitle());
@@ -91,34 +91,13 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         }
 
         private void setListeners(final AdDataMini currentAd, final adItemViewHolder holder, final int position) {
-            Log.i("YOYO", "Setting Listeners.");//            cardView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Log.i("YOYO", "AdItem clicked!");
-//
-//                    MainActivity mainActivity = (MainActivity)context;
-//                    frag_ViewAd fragViewAd = new frag_ViewAd();
-//                    Bundle args = new Bundle();
-//                    /**
-//                     * Todo:
-//                     * Send AdID so that the specific ad can be viewed
-//                     */
-//                    //args.putInt("id", currentAd.getAdID());
-//                    args.putString("Title",currentAd.getTitle());
-//                    args.putInt("majorImage", currentAd.getMajorImage());
-//                    args.putInt("Price", currentAd.getPrice());
-//
-//                    fragViewAd.setArguments(args);
-//                    mainActivity.launchOtherFragment(fragViewAd);
-//                }
-//            });
-//
+
             ViewCompat.setTransitionName(holder.getMajorImage(), String.valueOf(position) + "_image");
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.i("YOYO", "onClick");
-                    mListener.onKittenClicked(holder, position, currentAd);
+                    mListener.onClick(holder, position, currentAd);
                 }
             });
         }

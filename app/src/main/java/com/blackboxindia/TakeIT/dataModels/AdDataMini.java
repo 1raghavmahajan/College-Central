@@ -1,15 +1,15 @@
 package com.blackboxindia.TakeIT.dataModels;
 
+import android.os.Bundle;
+
 import com.blackboxindia.TakeIT.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Raghav on 01-Jun-17.
- */
-
 public class AdDataMini {
+
+    //region Variables
 
     private Integer adID;
 
@@ -17,9 +17,14 @@ public class AdDataMini {
     private Integer majorImage;
     private Integer price;
 
-    AdDataMini(){
-        adID = null;
+    //endregion
+
+    //region Constructors
+
+    private AdDataMini() {
+        adID = 0;
     }
+
     AdDataMini(AdDataMini adDataMini){
         adID = adDataMini.getAdID();
         title = adDataMini.getTitle();
@@ -27,41 +32,15 @@ public class AdDataMini {
         price = adDataMini.getPrice();
     }
 
-    public String getTitle() {
-        return title;
+    public AdDataMini(Bundle bundle) {
+
+        adID = bundle.getInt("adID", 0);
+        title = bundle.getString("Title");
+        price = bundle.getInt("Price");
+        majorImage = bundle.getInt("majorImage");
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
-    public void setMajorImage(Integer majorImage) {
-        this.majorImage = majorImage;
-    }
-
-    /**
-     * Todo:
-     * getMajorImage to get the Image of the ad from network
-     */
-    public Integer getMajorImage() {
-        return majorImage;
-    }
-
-    public Integer getAdID() {
-        return adID;
-    }
-
-    public void setAdID(Integer adID) {
-        this.adID = adID;
-    }
+    //endregion
 
     public static List<AdDataMini> getList() {
 
@@ -114,4 +93,46 @@ public class AdDataMini {
         return data;
 
     }
+
+    /**
+     * Todo:
+     * getMajorImage to get the Image of the ad from network
+     */
+    public Integer getMajorImage() {
+        return majorImage;
+    }
+
+
+    //region Getters and Setters
+
+    public void setMajorImage(Integer majorImage) {
+        this.majorImage = majorImage;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public Integer getAdID() {
+        return adID;
+    }
+
+    public void setAdID(Integer adID) {
+        this.adID = adID;
+    }
+
+    //endregion
+
 }
