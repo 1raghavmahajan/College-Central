@@ -1,6 +1,7 @@
 package com.blackboxindia.TakeIT.dataModels;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -26,14 +27,13 @@ public class UserInfo implements Parcelable {
             return new UserInfo[size];
         }
     };
+    private Bitmap profile;
     private String uID;
-    //String authKey;
     private String name;
     private String email;
-    private String address;
 
     //endregion
-
+    private String address;
     //region Constructors
     private String phone;
 
@@ -61,6 +61,8 @@ public class UserInfo implements Parcelable {
         this.phone = phone;
     }
 
+    //endregion
+
     public UserInfo(Parcel in) {
         String[] data = new String[5];
         in.readStringArray(data);
@@ -71,8 +73,6 @@ public class UserInfo implements Parcelable {
         this.address = data[3];
         this.phone = data[4];
     }
-
-    //endregion
 
     public void newUser(String password, final Context context) {
 
@@ -101,6 +101,8 @@ public class UserInfo implements Parcelable {
         net.Create_Account(this,password);
     }
 
+    //region Validators
+
     public void login(String email, String password, final Context context) {
 
         networkMethods net = new networkMethods(context, new onResultListener() {
@@ -126,8 +128,6 @@ public class UserInfo implements Parcelable {
         net.Login(email, password);
     }
 
-    //region Validators
-
     public Bundle validateNewAccountDetails() {
         Bundle result = new Bundle();
         result.putBoolean("ID", isIDValid(email));
@@ -140,11 +140,13 @@ public class UserInfo implements Parcelable {
         return result;
     }
 
+    //endregion
+
+    //region Parcelable
+
     public boolean isIDValid(String id) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(id).matches();
     }
-
-    //endregion
 
     @Override
     public String toString() {
@@ -183,6 +185,7 @@ public class UserInfo implements Parcelable {
 
     }
 
+    //endregion
 
     //region Getters and Setters
 

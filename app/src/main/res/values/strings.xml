@@ -50,5 +50,7 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="create_new_account">Create New Account</string>
     <string name="forgot_password">Forgot Password?</string>
+    <string name="search">Search…</string>
+    <string name="go">GO</string>
 
 </resources>

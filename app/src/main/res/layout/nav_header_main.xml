@@ -44,9 +44,9 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:contentDescription="@string/label_Profile_image"
+        android:src="@drawable/thumb_human"
         app:layout_constraintBottom_toTopOf="@id/nav_Name"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:srcCompat="@drawable/thumb_human"
         />
 
 </android.support.constraint.ConstraintLayout>

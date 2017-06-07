@@ -1,5 +1,6 @@
 package com.blackboxindia.TakeIT.activities;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -13,13 +14,13 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.blackboxindia.TakeIT.Fragments.frag_Main;
 import com.blackboxindia.TakeIT.Fragments.frag_loginPage;
@@ -30,7 +31,7 @@ import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     //region Variables
 
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     AppBarLayout appBarLayout;
     FragmentManager fragmentManager;
     Toolbar toolbar;
+    CollapsingToolbarLayout cTLayout;
     DrawerLayout drawer;
     FloatingActionButton fab;
     //View headerView;
@@ -76,7 +78,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        CollapsingToolbarLayout cTLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_add);
+        setActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!drawer.isDrawerOpen(Gravity.START))
+                    drawer.openDrawer(Gravity.START);
+                else
+                    drawer.closeDrawer(Gravity.START);
+            }
+        });
+        cTLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         cTLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         cTLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
         cTLayout.setTitle(getString(R.string.app_name));
@@ -85,13 +98,11 @@ public class MainActivity extends AppCompatActivity {
     private void setUpDrawer() {
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navDrawer_open, R.string.navDrawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, R.string.navDrawer_open, R.string.navDrawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-
-        //headerView =  navigationView.getHeaderView(0);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -113,10 +124,8 @@ public class MainActivity extends AppCompatActivity {
                             fragMyProfile.setArguments(bundle);
                             launchOtherFragment(fragMyProfile, "MY_PROFILE");
                         } else {
-                            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                                drawer.closeDrawer(GravityCompat.START);
-                            }
-                            Toast.makeText(context, "Please login First", Toast.LENGTH_SHORT).show();
+                            launchOtherFragment(new frag_myProfile(), "MY_PROFILE");
+                            //Toast.makeText(context, "Please login First", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case R.id.nav_newAccount:
@@ -161,6 +170,11 @@ public class MainActivity extends AppCompatActivity {
 
     void goToMainFragment() {
         linearLayout.setVisibility(View.VISIBLE);
+        AppBarLayout.LayoutParams params =
+                (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
+        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        cTLayout.setLayoutParams(params);
+
         if (fragmentManager.findFragmentByTag("MAIN_FRAG") != null) {
             if (!fragmentManager.findFragmentByTag("MAIN_FRAG").isVisible()) {
 
@@ -182,9 +196,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchOtherFragment(Fragment frag, String tag) {
         linearLayout.setVisibility(View.GONE);
+        appBarLayout.setExpanded(false, true);
+
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
+        params.setScrollFlags(0);
+        cTLayout.setLayoutParams(params);
+
         if (fragmentManager.findFragmentByTag(tag) != null) {
 
-            //noinspection StatementWithEmptyBody
             if (!fragmentManager.findFragmentByTag(tag).isVisible()) {
 
                 if (drawer.isDrawerOpen(GravityCompat.START)) {
