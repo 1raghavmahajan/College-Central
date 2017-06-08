@@ -44,7 +44,6 @@
                 android:text="@string/change_btn"
                 android:textSize="12sp"
                 android:textColor="@android:color/black"
-                android:onClick="addImage"
                 />
         </FrameLayout>
 

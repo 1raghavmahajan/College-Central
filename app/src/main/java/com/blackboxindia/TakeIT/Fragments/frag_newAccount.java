@@ -103,7 +103,7 @@ public class frag_newAccount extends Fragment {
 
     @Override
     public void onResume() {
-        ((MainActivity)getActivity()).hideSearchBar();
+        ((MainActivity)getActivity()).hideIT();
         super.onResume();
     }
 }

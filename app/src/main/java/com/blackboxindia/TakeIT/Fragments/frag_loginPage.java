@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 public class frag_loginPage extends Fragment {
+
+    private static String TAG = frag_loginPage.class.getSimpleName() + " YOYO";
 
     //region Variables
 
@@ -34,6 +37,7 @@ public class frag_loginPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_login, container, false);
+        Log.i(TAG,"onCreateView");
 
         initVariables();
 
@@ -65,7 +69,7 @@ public class frag_loginPage extends Fragment {
             @Override
             public void onClick(View v) {
                 MainActivity mainActivity = (MainActivity)v.getContext();
-                mainActivity.launchOtherFragment(new frag_newAccount(), "NEW_ACCOUNT");
+                mainActivity.launchOtherFragment(new frag_newAccount(), MainActivity.NEW_ACCOUNT_TAG);
             }
         });
 
@@ -117,7 +121,7 @@ public class frag_loginPage extends Fragment {
 
     @Override
     public void onResume() {
-        ((MainActivity)getActivity()).hideSearchBar();
+        ((MainActivity)getActivity()).hideIT();
         super.onResume();
     }
 

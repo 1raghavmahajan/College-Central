@@ -14,7 +14,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +35,14 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends Activity {
 
     //region Variables
+    public final static String MAIN_FRAG_TAG = "MAIN_FRAG";
+    public final static String LOGIN_PAGE_TAG = "LOGIN_PAGE";
+    public final static String MY_PROFILE_TAG = "MY_PROFILE";
+    public final static String NEW_ACCOUNT_TAG = "NEW_ACCOUNT";
+    public final static String MY_ADS_TAG = "MY_ADS";
+    public final static String NEW_AD_TAG = "NEW_AD";
+    public final static String VIEW_AD_TAG = "VIEW_AD";
+
 
     public LinearLayout linearLayout;
     Context context;
@@ -65,10 +72,9 @@ public class MainActivity extends Activity {
 
         setUpDrawer();
 
-        setUpMainFragment();
-
         setUpFab();
 
+        setUpMainFragment();
     }
 
     private void initVariables() {
@@ -110,7 +116,7 @@ public class MainActivity extends Activity {
         btn_nav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchOtherFragment(new frag_loginPage(), "LOGIN_PAGE");
+                launchOtherFragment(new frag_loginPage(), LOGIN_PAGE_TAG);
                 if(drawer.isDrawerOpen(Gravity.START))
                     drawer.closeDrawer(Gravity.START);
             }
@@ -119,6 +125,7 @@ public class MainActivity extends Activity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
                 drawer.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.nav_allAds:
@@ -126,7 +133,7 @@ public class MainActivity extends Activity {
                         break;
                     case R.id.nav_manage:
                         Toast.makeText(context, "Settings Clicked", Toast.LENGTH_SHORT).show();
-                        launchOtherFragment(new frag_loginPage(), "LOGIN_PAGE");
+                        launchOtherFragment(new frag_loginPage(), LOGIN_PAGE_TAG);
                         break;
                     case R.id.nav_profile:
                         if (userInfo != null) {
@@ -134,14 +141,14 @@ public class MainActivity extends Activity {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable("UserInfo", userInfo);
                             fragMyProfile.setArguments(bundle);
-                            launchOtherFragment(fragMyProfile, "MY_PROFILE");
+                            launchOtherFragment(fragMyProfile, MY_PROFILE_TAG);
                         } else {
-                            launchOtherFragment(new frag_myProfile(), "MY_PROFILE");
+                            launchOtherFragment(new frag_myProfile(), MY_PROFILE_TAG);
                             //Toast.makeText(context, "Please login First", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case R.id.nav_newAccount:
-                        launchOtherFragment(new frag_newAccount(), "NEW_ACCOUNT");
+                        launchOtherFragment(new frag_newAccount(), NEW_ACCOUNT_TAG);
                         break;
                 }
                 return true;
@@ -151,11 +158,11 @@ public class MainActivity extends Activity {
 
     private void setUpMainFragment() {
 
-        Log.i("YOYO", "setUpMainFragment ");
-        linearLayout.setVisibility(View.VISIBLE);
+        showIT();
+
         frag_Main mc = new frag_Main();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout, mc, "MAIN_FRAG");
+        fragmentTransaction.replace(R.id.frame_layout, mc, MAIN_FRAG_TAG);
         fragmentTransaction.commit();
     }
 
@@ -164,7 +171,7 @@ public class MainActivity extends Activity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchOtherFragment(new frag_newAd(), "NEW_AD");
+                launchOtherFragment(new frag_newAd(), NEW_AD_TAG);
             }
         });
     }
@@ -175,50 +182,86 @@ public class MainActivity extends Activity {
 
     void goToMainFragment() {
 
-        fab.setVisibility(View.VISIBLE);
+        showIT();
+        if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)!=null) {
 
-        linearLayout.setVisibility(View.VISIBLE);
-        AppBarLayout.LayoutParams params =
-                (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
-        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-        cTLayout.setLayoutParams(params);
-
-        if (fragmentManager.findFragmentByTag("MAIN_FRAG") != null) {
-            if (!fragmentManager.findFragmentByTag("MAIN_FRAG").isVisible()) {
-
-                //Todo:Handle frag already exists
-
-                frag_Main mc = new frag_Main();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.frame_layout, mc, "MAIN_FRAG");
-                fragmentTransaction.commit();
+            if (!fragmentManager.findFragmentByTag(MAIN_FRAG_TAG).isVisible()) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.frame_layout,fragmentManager.findFragmentByTag(MAIN_FRAG_TAG), MAIN_FRAG_TAG)
+                        //.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .commit();
+                fragmentManager.beginTransaction()
+                        .show(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .commit();
             }
-        } else {
-            linearLayout.setVisibility(View.VISIBLE);
-            frag_Main mc = new frag_Main();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.frame_layout, mc, "MAIN_FRAG");
-            fragmentTransaction.commit();
         }
+        else
+            setUpMainFragment();
+
     }
 
     public void launchOtherFragment(Fragment frag, String tag) {
+        
+        if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG) != null) {
+            if (fragmentManager.findFragmentByTag(MAIN_FRAG_TAG).isVisible()) {
+                fragmentManager.beginTransaction()
+                        .hide(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))
+                        .commit();
 
-        if (fragmentManager.findFragmentByTag("MAIN_FRAG").isVisible()) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("MAIN_FRAG"))
-                    .commit();
 
+                fragmentManager.beginTransaction()
+                        .add(R.id.frame_layout, frag, tag)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .commit();
 
-            fragmentManager.beginTransaction()
-                    .add(R.id.frame_layout, frag, tag)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                    .commit();
+            } else {
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                if(fragmentManager.findFragmentByTag(tag)!=null) {
+                    if (!fragmentManager.findFragmentByTag(tag).isVisible()) {
 
-        } else {
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.frame_layout, frag);
-            transaction.commit();
+                    }
+                }
+                else {
+
+                    if(fragmentManager.findFragmentByTag(NEW_ACCOUNT_TAG)!=null) {
+                        if (fragmentManager.findFragmentByTag(NEW_ACCOUNT_TAG).isVisible())
+                            transaction.remove(fragmentManager.findFragmentByTag(NEW_ACCOUNT_TAG));
+                    }
+
+                    else if(fragmentManager.findFragmentByTag(LOGIN_PAGE_TAG)!=null) {
+                        if (fragmentManager.findFragmentByTag(LOGIN_PAGE_TAG).isVisible())
+                            transaction.remove(fragmentManager.findFragmentByTag(LOGIN_PAGE_TAG));
+                    }
+
+                    else if(fragmentManager.findFragmentByTag(MY_PROFILE_TAG)!=null) {
+                        if (fragmentManager.findFragmentByTag(MY_PROFILE_TAG).isVisible())
+                            transaction.remove(fragmentManager.findFragmentByTag(MY_PROFILE_TAG));
+                    }
+
+                    else if(fragmentManager.findFragmentByTag(MY_ADS_TAG)!=null) {
+                        if (fragmentManager.findFragmentByTag(MY_ADS_TAG).isVisible())
+                            transaction.remove(fragmentManager.findFragmentByTag(MY_ADS_TAG));
+                    }
+
+                    else if(fragmentManager.findFragmentByTag(NEW_AD_TAG)!=null) {
+                        if (fragmentManager.findFragmentByTag(NEW_AD_TAG).isVisible())
+                            transaction.remove(fragmentManager.findFragmentByTag(NEW_AD_TAG));
+                    }
+
+                    else if(fragmentManager.findFragmentByTag(VIEW_AD_TAG)!=null) {
+                        if (fragmentManager.findFragmentByTag(VIEW_AD_TAG).isVisible())
+                            transaction.remove(fragmentManager.findFragmentByTag(VIEW_AD_TAG));
+                    }
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                    transaction.commit();
+                    fragmentManager.beginTransaction()
+                            .add(R.id.frame_layout, frag, tag)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit();
+                }
+
+            }
         }
     }
 
@@ -228,13 +271,14 @@ public class MainActivity extends Activity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            goToMainFragment();
+            //super.onBackPressed();
         }
     }
 
     //endregion
 
-    public void hideSearchBar(){
+    public void hideIT() {
         fab.setVisibility(View.GONE);
 
         linearLayout.setVisibility(View.GONE);
@@ -242,6 +286,16 @@ public class MainActivity extends Activity {
 
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
         params.setScrollFlags(0);
+        cTLayout.setLayoutParams(params);
+    }
+
+    public void showIT() {
+        fab.setVisibility(View.VISIBLE);
+
+        linearLayout.setVisibility(View.VISIBLE);
+        AppBarLayout.LayoutParams params =
+                (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
+        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
         cTLayout.setLayoutParams(params);
     }
 
@@ -258,8 +312,4 @@ public class MainActivity extends Activity {
         goToMainFragment();
     }
 
-    //This works apparently
-    public void addImage(View view) {
-        Toast.makeText(this, "Heleoeo", Toast.LENGTH_SHORT).show();
-    }
 }

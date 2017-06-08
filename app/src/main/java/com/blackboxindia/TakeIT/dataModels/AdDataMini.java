@@ -31,7 +31,7 @@ public class AdDataMini {
         createdBy = adDataMini.getCreatedBy();
         adID = adDataMini.getAdID();
         title = adDataMini.getTitle();
-        //majorImage = adDataMini.getMajorImage();
+        majorImage = adDataMini.getMajorImage();
         price = adDataMini.getPrice();
     }
 
@@ -40,6 +40,7 @@ public class AdDataMini {
         createdBy = bundle.getString("createdBy","null");
         title = bundle.getString("Title", "title");
         price = bundle.getInt("Price", -1);
+        majorImage = bundle.getInt("majorImage",-1);
     }
 
     //endregion

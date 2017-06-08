@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +23,8 @@ import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 public class frag_myProfile extends Fragment {
+
+    private static String TAG = frag_myProfile.class.getSimpleName() + " YOYO";
 
     //region Variables
 
@@ -44,9 +45,8 @@ public class frag_myProfile extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_myprofile, container, false);
         context = view.getContext();
-        // Todo: Do this for all fragments
-        NestedScrollView nestedScrollView = (NestedScrollView) view.findViewById(R.id.profile_main);
-        nestedScrollView.setNestedScrollingEnabled(false);
+
+        Log.i(TAG,"onCreateView");
 
         initVariables();
 
@@ -124,7 +124,7 @@ public class frag_myProfile extends Fragment {
 
     @Override
     public void onResume() {
-        ((MainActivity)getActivity()).hideSearchBar();
+        ((MainActivity)getActivity()).hideIT();
         super.onResume();
     }
 

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,24 +20,14 @@ import com.blackboxindia.TakeIT.dataModels.AdDataMini;
 
 public class frag_Main extends Fragment {
 
+    private static String TAG = frag_Main.class.getSimpleName() + " YOYO";
+
     //region variables
     View view;
     Context context;
     //endregion
 
     //region Initial Setup
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.context = context;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity)getActivity()).linearLayout.setVisibility(View.VISIBLE);
-    }
 
     @Nullable
     @Override
@@ -78,7 +69,7 @@ public class frag_Main extends Fragment {
                 getActivity().getFragmentManager()
                         .beginTransaction()
                         .addSharedElement(holder.getMajorImage(), "adImage0")
-                        .replace(R.id.frame_layout, fragViewAd)
+                        .replace(R.id.frame_layout, fragViewAd, MainActivity.VIEW_AD_TAG)
                         .addToBackStack(null)
                         .commit();
 
@@ -88,5 +79,60 @@ public class frag_Main extends Fragment {
     }
 
     //endregion
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG,"onResume");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+        Log.i(TAG,"onAttach");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG,"onCreate");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG,"onStart");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG,"onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(TAG,"onStop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(TAG,"onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG,"onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i(TAG,"onDetach");
+    }
 
 }
