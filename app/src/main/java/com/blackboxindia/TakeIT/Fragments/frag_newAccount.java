@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 
@@ -83,21 +84,27 @@ public class frag_newAccount extends Fragment {
 
         if(!password.equals(cPassword))
         {
-            cPassFrame.setError("Passwords don\'t match.");
+            cPassFrame.setError(getString(R.string.pass_dont_match));
             return false;
         }
-        else if(password.length()<8)
+        else if(password.length()<getResources().getInteger(R.integer.Min_Password_Size))
         {
-            passFrame.setError("Minimum 8 characters required.");
+            passFrame.setError(String.format(getString(R.string.pass_min_size),getResources().getInteger(R.integer.Min_Password_Size)));
             return false;
         }
         else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))
         {
-            passFrame.setError("Password can\'t contain \", \\, \', or ;");
+            passFrame.setError(getString(R.string.pass_illegal_char));
             return false;
         }
         else
             return true;
+    }
+
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideSearchBar();
+        super.onResume();
     }
 }
 

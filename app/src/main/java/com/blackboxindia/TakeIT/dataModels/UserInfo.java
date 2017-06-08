@@ -10,35 +10,31 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.blackboxindia.TakeIT.Network.networkMethods;
-import com.blackboxindia.TakeIT.Network.onResultListener;
+import com.blackboxindia.TakeIT.Network.NetworkMethods;
+import com.blackboxindia.TakeIT.Network.onLoginResultListener;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
 
 public class UserInfo implements Parcelable {
 
     //region Variables
 
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public UserInfo createFromParcel(Parcel in) {
-            return new UserInfo(in);
-        }
-
-        public UserInfo[] newArray(int size) {
-            return new UserInfo[size];
-        }
-    };
     private Bitmap profile;
     private String uID;
     private String name;
     private String email;
     private String address;
+    private String phone;
+    private ArrayList<String> userAdKeys;
 
     //endregion
-    private String phone;
 
     //region Constructors
+
     public UserInfo(){
+        userAdKeys = new ArrayList<>();
     }
 
     public UserInfo(Parcel in) {
@@ -80,7 +76,7 @@ public class UserInfo implements Parcelable {
 
     public void newUser(String password, final Context context, final ProgressDialog progressDialog) {
 
-        networkMethods net = new networkMethods(context, new onResultListener() {
+        NetworkMethods net = new NetworkMethods(context, new onLoginResultListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 if (Auth.getCurrentUser() != null) {
@@ -108,7 +104,7 @@ public class UserInfo implements Parcelable {
 
     public void login(String email, String password, final Context context, final ProgressDialog progressDialog) {
 
-        networkMethods net = new networkMethods(context, new onResultListener() {
+        NetworkMethods net = new NetworkMethods(context, new onLoginResultListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 Log.i("YOYO", "Logged in - OnLogin: " + this.toString());
@@ -151,12 +147,11 @@ public class UserInfo implements Parcelable {
         return result;
     }
 
-
-    //region Parcelable
-
     public boolean isIDValid(String id) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(id).matches();
     }
+
+    //region Parcelable
 
     @Override
     public String toString() {
@@ -194,6 +189,16 @@ public class UserInfo implements Parcelable {
                 this.phone});
 
     }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
 
     //endregion
 
@@ -239,9 +244,15 @@ public class UserInfo implements Parcelable {
         this.address = address;
     }
 
-//    public String getAuthKey() {
-//        return authKey;
-//    }
+    public ArrayList<String> getUserAdKeys() {
+        return userAdKeys;
+    }
+
+    public void addUserAd(String userAdKey) {
+        if(userAdKeys==null)
+            userAdKeys = new ArrayList<>();
+        userAdKeys.add(userAdKey);
+    }
 
     //endregion
 

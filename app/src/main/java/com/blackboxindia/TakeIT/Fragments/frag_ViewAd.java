@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.R;
-import com.blackboxindia.TakeIT.adapters.ImageAdapter;
+import com.blackboxindia.TakeIT.activities.MainActivity;
+import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdDataMini;
 
 public class frag_ViewAd extends Fragment {
@@ -56,12 +57,18 @@ public class frag_ViewAd extends Fragment {
     }
 
     void setUpImgRecycler(Integer img) {
-        ImageAdapter adapter = new ImageAdapter(context, img);
+        ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, img);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);
         imgRecyclerView.setAdapter(adapter);
     }
 
     //endregion
+
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideSearchBar();
+        super.onResume();
+    }
 }
 

@@ -16,9 +16,10 @@
             android:layout_alignParentTop="true"
             android:layout_margin="6dp"
             android:maxLines="2"
+            android:maxLength="@integer/Max_Title_Length"
             android:text="@string/maxTitle"
             android:textAlignment="center"
-            android:textSize="32sp"
+            android:textSize="@dimen/title_text_size"
             android:textStyle="bold"
             />
 
@@ -62,7 +63,8 @@
             android:layout_marginEnd="6dp"
             android:layout_marginStart="6dp"
             android:text="@string/loremIpsum"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            android:maxLength="@integer/Max_Description_Size"/>
 
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

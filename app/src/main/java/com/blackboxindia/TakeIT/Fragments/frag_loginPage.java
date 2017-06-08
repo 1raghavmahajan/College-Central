@@ -115,4 +115,10 @@ public class frag_loginPage extends Fragment {
             return true;
     }
 
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideSearchBar();
+        super.onResume();
+    }
+
 }

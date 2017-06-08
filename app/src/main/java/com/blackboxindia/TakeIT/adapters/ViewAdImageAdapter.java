@@ -12,12 +12,12 @@ import com.blackboxindia.TakeIT.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.imgViewHolder> {
+public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.imgViewHolder> {
 
     private LayoutInflater inflater;
     private List<Integer> images;
 
-    public ImageAdapter(Context context, Integer img) {
+    public ViewAdImageAdapter(Context context, Integer img) {
         inflater = LayoutInflater.from(context);
         //Todo:
         //getAllImages

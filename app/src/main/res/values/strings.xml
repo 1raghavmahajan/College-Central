@@ -7,8 +7,6 @@
     <string name="navDrawer_open">Open drawer</string>
     <string name="navDrawer_close">Close drawer</string>
 
-    <string name="action_settings">Settings</string>
-
     <string name="sample_ID">Not Logged In</string>
     <string name="sample_email">loginFirst@iiti.ac.in</string>
     <string name="loremIpsum">
@@ -19,7 +17,6 @@
     <string name="free">Free</string>
     <string name="currency">Rs %1$d</string>
     <string name="maxTitle">123456789123456789123456789123456789</string>
-
 
     <string name="labelDescription">Description:</string>
 
@@ -52,5 +49,11 @@
     <string name="forgot_password">Forgot Password?</string>
     <string name="search">Search…</string>
     <string name="go">GO</string>
+
+
+    <string name="pass_dont_match">Passwords don\'t match.</string>
+    <string name="pass_illegal_char">Password can\'t contain \", \\, \', or ;</string>
+    <string name="pass_min_size">Minimum %1$d characters required.</string>
+    <string name="add_photo">Add Photo</string>
 
 </resources>

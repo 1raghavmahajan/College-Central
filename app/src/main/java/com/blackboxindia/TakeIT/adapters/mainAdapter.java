@@ -82,6 +82,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
             setListeners(currentAd, holder, position);
             majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
+
             tv_title.setText(currentAd.getTitle());
 
             if(currentAd.getPrice()==0)

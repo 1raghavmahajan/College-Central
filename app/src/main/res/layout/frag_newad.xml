@@ -15,11 +15,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
-            android:inputType="textNoSuggestions"
+            android:inputType="textMultiLine"
             android:maxLines="2"
-            android:text="@string/set_title"
+            android:maxLength="@integer/Max_Title_Length"
+            android:text="@string/maxTitle"
             android:textAlignment="center"
-            android:textSize="32sp"
+            android:textSize="@dimen/title_text_size"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -35,6 +36,17 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newAd_etTitle" />
+
+        <Button
+            android:id="@+id/newAd_btnAddImg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/newAd_imgRecycler"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="3dp"
+            android:text="@string/add_photo"
+            />
 
         <TextView
             android:id="@+id/newAd_tvPrice"
@@ -80,6 +92,7 @@
             android:hint="@string/strDescription"
             android:inputType="textMultiLine"
             android:textSize="15sp"
+            android:maxLength="@integer/Max_Description_Size"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newAd_tvDescription"

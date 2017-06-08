@@ -18,31 +18,38 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class networkMethods {
+public class NetworkMethods {
 
     //region Variables
 
-    private final static String TAG = networkMethods.class.getSimpleName() + "YOYO";
+    private final static String TAG = NetworkMethods.class.getSimpleName() + "YOYO";
 
     private FirebaseAuth mAuth;
-    private onResultListener loginListener;
+    private onLoginResultListener loginListener;
 
     private Context context;
 
     //endregion
 
     //region Constructors
-    public networkMethods(Context context, onResultListener i) {
+
+    public NetworkMethods(Context context, FirebaseAuth auth) {
+        this.context = context;
+        mAuth = auth;
+    }
+
+    public NetworkMethods(Context context, onLoginResultListener i) {
         this.context = context;
         loginListener = i;
         mAuth = FirebaseAuth.getInstance();
     }
 
-    public networkMethods(Context context, onResultListener i, FirebaseAuth auth) {
+    public NetworkMethods(Context context, onLoginResultListener i, FirebaseAuth auth) {
         this.context = context;
         loginListener = i;
         mAuth = auth;
     }
+
     //endregion
 
     //region User Related
@@ -137,8 +144,41 @@ public class networkMethods {
 
     //region Ad Related
 
-    public void createNewAd(AdData adData) {
-        //Todo:
+    public void createNewAd(UserInfo userInfo, AdData adData, onCreateNewAdListener listener) {
+
+        final DatabaseReference mDatabase;
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        if(mAuth==null)
+        {
+            listener.onFailure(new Exception("Not Logged In"));
+        }
+        else if(mAuth.getCurrentUser() == null)
+        {
+            listener.onFailure(new Exception("Not Logged In"));
+        }
+        else {
+
+            String key = mDatabase.child("posts").push().getKey();
+            String uID = mAuth.getCurrentUser().getUid();
+            adData.setAdID(key);
+            //adData.setCreatedBy(userInfo.getuID());
+            userInfo.addUserAd(key);
+
+            mDatabase.child("ads").child(key).setValue(adData);
+
+            listener.onSuccess(adData);
+
+        }
+        //
+//        Map<String, Object> postValues = post.toMap();
+//
+//        Map<String, Object> childUpdates = new HashMap<>();
+//        childUpdates.put("/posts/" + key, postValues);
+//        childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
+//
+//        mDatabase.updateChildren(childUpdates);
+
     }
 
     public void getAdDetails(AdDataMini adDataMini) {

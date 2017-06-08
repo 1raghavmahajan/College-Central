@@ -47,8 +47,8 @@ public class MainActivity extends Activity {
     FloatingActionButton fab;
     //View headerView;
 
-    FirebaseAuth mAuth;
-    UserInfo userInfo;
+    public FirebaseAuth mAuth;
+    public UserInfo userInfo;
 
     //endregion
 
@@ -110,8 +110,9 @@ public class MainActivity extends Activity {
         btn_nav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("YOYO", "onClick");
                 launchOtherFragment(new frag_loginPage(), "LOGIN_PAGE");
+                if(drawer.isDrawerOpen(Gravity.START))
+                    drawer.closeDrawer(Gravity.START);
             }
         });
 
@@ -149,6 +150,8 @@ public class MainActivity extends Activity {
     }
 
     private void setUpMainFragment() {
+
+        Log.i("YOYO", "setUpMainFragment ");
         linearLayout.setVisibility(View.VISIBLE);
         frag_Main mc = new frag_Main();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -171,6 +174,9 @@ public class MainActivity extends Activity {
     //region Movement
 
     void goToMainFragment() {
+
+        fab.setVisibility(View.VISIBLE);
+
         linearLayout.setVisibility(View.VISIBLE);
         AppBarLayout.LayoutParams params =
                 (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
@@ -197,12 +203,6 @@ public class MainActivity extends Activity {
     }
 
     public void launchOtherFragment(Fragment frag, String tag) {
-        linearLayout.setVisibility(View.GONE);
-        appBarLayout.setExpanded(false, true);
-
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
-        params.setScrollFlags(0);
-        cTLayout.setLayoutParams(params);
 
         if (fragmentManager.findFragmentByTag("MAIN_FRAG").isVisible()) {
             fragmentManager.beginTransaction()
@@ -233,6 +233,17 @@ public class MainActivity extends Activity {
     }
 
     //endregion
+
+    public void hideSearchBar(){
+        fab.setVisibility(View.GONE);
+
+        linearLayout.setVisibility(View.GONE);
+        appBarLayout.setExpanded(false, true);
+
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
+        params.setScrollFlags(0);
+        cTLayout.setLayoutParams(params);
+    }
 
     public void UpdateUIonLogin(UserInfo userInfo, FirebaseAuth auth) {
         mAuth = auth;

@@ -11,7 +11,8 @@ public class AdDataMini {
 
     //region Variables
 
-    private Integer adID;
+    private String adID;
+    private String createdBy;
 
     private String title;
     private Integer majorImage;
@@ -22,22 +23,23 @@ public class AdDataMini {
     //region Constructors
 
     private AdDataMini() {
-        adID = 0;
+        adID = "null";
     }
 
     AdDataMini(AdDataMini adDataMini){
+
+        createdBy = adDataMini.getCreatedBy();
         adID = adDataMini.getAdID();
         title = adDataMini.getTitle();
-        majorImage = adDataMini.getMajorImage();
+        //majorImage = adDataMini.getMajorImage();
         price = adDataMini.getPrice();
     }
 
     public AdDataMini(Bundle bundle) {
 
-        adID = bundle.getInt("adID", 0);
-        title = bundle.getString("Title");
-        price = bundle.getInt("Price");
-        majorImage = bundle.getInt("majorImage");
+        createdBy = bundle.getString("createdBy","null");
+        title = bundle.getString("Title", "title");
+        price = bundle.getInt("Price", -1);
     }
 
     //endregion
@@ -125,12 +127,20 @@ public class AdDataMini {
         this.price = price;
     }
 
-    public Integer getAdID() {
+    public String getAdID() {
         return adID;
     }
 
-    public void setAdID(Integer adID) {
+    public void setAdID(String adID) {
         this.adID = adID;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     //endregion

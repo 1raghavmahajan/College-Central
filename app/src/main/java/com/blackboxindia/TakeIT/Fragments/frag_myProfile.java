@@ -19,12 +19,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 public class frag_myProfile extends Fragment {
 
-    public static final int PICK_PHOTO_CODE = 120;
+    //region Variables
+
+    private static final int PICK_PHOTO_CODE = 120;
     EditText etName, etEmail, etAddress, etPhone, etPassword;
     Button btn_update, btn_ImageChange;
     View view;
@@ -32,6 +35,10 @@ public class frag_myProfile extends Fragment {
     ImageView imageView;
     ImageUtils imageUtils;
 
+    //endregion
+
+
+    //region Initial Setup
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -93,6 +100,7 @@ public class frag_myProfile extends Fragment {
 
         imageView = (ImageView) view.findViewById(R.id.profile_img);
     }
+    //endregion
 
     void populateViews(UserInfo userInfo) {
         etName.setText(userInfo.getName());
@@ -113,4 +121,11 @@ public class frag_myProfile extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         imageUtils.onActivityResult(requestCode, resultCode, data);
     }
+
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideSearchBar();
+        super.onResume();
+    }
+
 }
