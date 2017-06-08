@@ -1,6 +1,7 @@
 package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -20,6 +21,7 @@ public class frag_newAccount extends Fragment {
     EditText etName, etPhone, etAddress, etEmail, etPassword, etConfirmPass;
     TextInputLayout nameFrame, phoneFrame, mailFrame, passFrame, cPassFrame;
     Button btnCreate;
+    View view;
     //endregion
 
     //region Initial Setup
@@ -27,7 +29,7 @@ public class frag_newAccount extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.frag_newaccount,container,false);
+        view = inflater.inflate(R.layout.frag_newaccount, container, false);
 
         initVariables(view);
 
@@ -36,8 +38,13 @@ public class frag_newAccount extends Fragment {
             public void onClick(View v) {
                 UserInfo userInfo = new UserInfo(etName, etEmail, etAddress, etPhone);
                 if (validateDetails(userInfo))
-                    if (isPasswordValid())
-                        userInfo.newUser(etPassword.getText().toString().trim(), v.getContext());
+                    if (isPasswordValid()) {
+                        ProgressDialog progressDialog = new ProgressDialog(view.getContext(), ProgressDialog.STYLE_SPINNER);
+                        progressDialog.setTitle("Creating New Account...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+                        userInfo.newUser(etPassword.getText().toString().trim(), v.getContext(), progressDialog);
+                    }
             }
         });
 

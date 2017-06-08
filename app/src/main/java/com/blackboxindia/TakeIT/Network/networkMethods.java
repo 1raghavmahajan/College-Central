@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.AdDataMini;
@@ -96,9 +95,7 @@ public class networkMethods {
                             Log.i("YOYO", "isAuth Null: " + String.valueOf(mAuth == null));
                         } else {
                             Log.w(TAG, task.getException());
-                            Toast.makeText(context, "Login failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            loginListener.onSuccess(null, null);
+                            loginListener.onFailure(task.getException());
                         }
                     }
                 });

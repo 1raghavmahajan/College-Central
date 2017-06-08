@@ -14,9 +14,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,10 +106,19 @@ public class MainActivity extends Activity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
+        Button btn_nav = (Button) navigationView.getHeaderView(0).findViewById(R.id.nav_btnLogin);
+        btn_nav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("YOYO", "onClick");
+                launchOtherFragment(new frag_loginPage(), "LOGIN_PAGE");
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
+                drawer.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.nav_allAds:
                         goToMainFragment();
@@ -132,18 +143,9 @@ public class MainActivity extends Activity {
                         launchOtherFragment(new frag_newAccount(), "NEW_ACCOUNT");
                         break;
                 }
-                drawer.closeDrawer(GravityCompat.START);
                 return true;
             }
         });
-
-//        Button btnLogin = (Button) navigationView.findViewById(R.id.nav_btnLogin);
-//        btnLogin.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                launchOtherFragment(new frag_loginPage(),"LOGIN_PAGE");
-//            }
-//        });
     }
 
     private void setUpMainFragment() {
@@ -202,47 +204,22 @@ public class MainActivity extends Activity {
         params.setScrollFlags(0);
         cTLayout.setLayoutParams(params);
 
-        if (fragmentManager.findFragmentByTag(tag) != null) {
+        if (fragmentManager.findFragmentByTag("MAIN_FRAG").isVisible()) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("MAIN_FRAG"))
+                    .commit();
 
-            if (!fragmentManager.findFragmentByTag(tag).isVisible()) {
 
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                }
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack(tag);
-                fragmentTransaction.commit();
-            } else {
+            fragmentManager.beginTransaction()
+                    .add(R.id.frame_layout, frag, tag)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                    .commit();
 
-                //Todo: handle if fragment already in back stack but not visible
-
-                if (drawer.isDrawerOpen(GravityCompat.START)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                }
-
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack(tag);
-                fragmentTransaction.commit();
-
-            }
         } else {
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
-            } else {
-                super.onBackPressed();
-            }
-
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            fragmentTransaction.replace(R.id.frame_layout, frag).addToBackStack(tag);
-            fragmentTransaction.commit();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.frame_layout, frag);
+            transaction.commit();
         }
-    }
-
-    public void NavLoginButtonClicked(View view) {
-        launchOtherFragment(new frag_loginPage(), "LOGIN_PAGE");
     }
 
     @Override
@@ -274,5 +251,4 @@ public class MainActivity extends Activity {
     public void addImage(View view) {
         Toast.makeText(this, "Heleoeo", Toast.LENGTH_SHORT).show();
     }
-
 }

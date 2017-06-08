@@ -33,7 +33,6 @@
         android:id="@+id/nav_btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="NavLoginButtonClicked"
         android:text="@string/login"
         app:layout_constraintBaseline_toBaselineOf="@id/nav_Name"
         app:layout_constraintRight_toRightOf="parent" />

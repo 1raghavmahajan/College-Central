@@ -1,5 +1,6 @@
 package com.blackboxindia.TakeIT.dataModels;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -31,13 +32,27 @@ public class UserInfo implements Parcelable {
     private String uID;
     private String name;
     private String email;
+    private String address;
 
     //endregion
-    private String address;
-    //region Constructors
     private String phone;
 
+    //region Constructors
     public UserInfo(){
+    }
+
+    public UserInfo(Parcel in) {
+        String[] data = new String[5];
+        in.readStringArray(data);
+
+        byte[] bytes = new byte[200];
+        in.readByteArray(bytes);
+        // the order needs to be the same as in writeToParcel() method
+        this.uID = data[0];
+        this.name = data[1];
+        this.email = data[2];
+        this.address = data[3];
+        this.phone = data[4];
     }
 
     public UserInfo(EditText nm, EditText em, EditText add, EditText ph) {
@@ -63,25 +78,14 @@ public class UserInfo implements Parcelable {
 
     //endregion
 
-    public UserInfo(Parcel in) {
-        String[] data = new String[5];
-        in.readStringArray(data);
-        // the order needs to be the same as in writeToParcel() method
-        this.uID = data[0];
-        this.name = data[1];
-        this.email = data[2];
-        this.address = data[3];
-        this.phone = data[4];
-    }
-
-    public void newUser(String password, final Context context) {
+    public void newUser(String password, final Context context, final ProgressDialog progressDialog) {
 
         networkMethods net = new networkMethods(context, new onResultListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 if (Auth.getCurrentUser() != null) {
+                    progressDialog.cancel();
                     Log.i("YOYO", "newUser onSuccess: " + this.toString());
-
                     MainActivity mainActivity = (MainActivity) context;
                     mainActivity.UpdateUIonLogin(userInfo, Auth);
                 }
@@ -90,6 +94,7 @@ public class UserInfo implements Parcelable {
             @Override
             public void onFailure(Exception e) {
                 if (e != null) {
+                    progressDialog.cancel();
                     Log.w("YOYO", "new User: onFailure", e);
                     if (e.getMessage().contains("network"))
                         Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
@@ -101,14 +106,14 @@ public class UserInfo implements Parcelable {
         net.Create_Account(this,password);
     }
 
-    //region Validators
-
-    public void login(String email, String password, final Context context) {
+    public void login(String email, String password, final Context context, final ProgressDialog progressDialog) {
 
         networkMethods net = new networkMethods(context, new onResultListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 Log.i("YOYO", "Logged in - OnLogin: " + this.toString());
+
+                progressDialog.cancel();
 
                 MainActivity mainActivity = (MainActivity) context;
                 mainActivity.UpdateUIonLogin(userInfo, Auth);
@@ -117,11 +122,17 @@ public class UserInfo implements Parcelable {
             @Override
             public void onFailure(Exception e) {
                 if (e != null) {
-                    Log.w("YOYO", "new User: onFailure", e);
-                    if (e.getMessage().contains("network"))
+                    Log.w("YOYO", "Login: onFailure", e);
+                    progressDialog.cancel();
+                    if (e.getMessage().contains("network")) {
                         Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
-                    else
+                    } else if (e.getMessage().contains("password") && e.getMessage().contains("invalid")) {
+                        Toast.makeText(context, "Invalid Password.", Toast.LENGTH_SHORT).show();
+                    } else if (e.getMessage().contains("no user record")) {
+                        Toast.makeText(context, "Invalid Email ID.", Toast.LENGTH_SHORT).show();
+                    } else {
                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
@@ -140,7 +151,6 @@ public class UserInfo implements Parcelable {
         return result;
     }
 
-    //endregion
 
     //region Parcelable
 

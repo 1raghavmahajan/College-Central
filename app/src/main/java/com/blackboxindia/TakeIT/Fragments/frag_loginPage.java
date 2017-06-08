@@ -1,6 +1,7 @@
 package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -91,7 +92,11 @@ public class frag_loginPage extends Fragment {
         UserInfo userInfo = new UserInfo();
         if (userInfo.isIDValid(id) && isPasswordValid(password))
         {
-            userInfo.login(id, password, v.getContext());
+            ProgressDialog progressDialog = new ProgressDialog(v.getContext(), ProgressDialog.STYLE_SPINNER);
+            progressDialog.setTitle("Logging in...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+            userInfo.login(id, password, v.getContext(), progressDialog);
         }
     }
 
