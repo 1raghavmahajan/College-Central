@@ -498,7 +498,6 @@ public class ImageUtils {
                                         code);
                             }
                         });
-                return;
             } else {
                 ActivityCompat.requestPermissions(current_activity,
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},

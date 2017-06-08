@@ -136,6 +136,8 @@ public class frag_newAd extends Fragment {
             @Override
             public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
                 adapter.addImage(file);
+                NetworkMethods methods = new NetworkMethods(context, ((MainActivity)context).mAuth);
+                methods.uploadPic(uri,filename);
             }
         });
 
