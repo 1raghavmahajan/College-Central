@@ -1,13 +1,17 @@
 package com.blackboxindia.TakeIT.Network;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.cameraIntentHelper.BitmapHelper;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.AdDataMini;
@@ -33,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@SuppressWarnings("VisibleForTests")
 public class NetworkMethods {
 
     //region Variables
@@ -181,9 +186,12 @@ public class NetworkMethods {
 
     //region Ad Related
 
-    public void createNewAd(final UserInfo userInfo, final AdData adData, ArrayList<Uri> imgURIs, Bitmap major, final AdListener listener) {
+
+    private Boolean once;
+    public void createNewAd(final UserInfo userInfo, final AdData adData, final ArrayList<Uri> imgURIs, Bitmap major, final AdListener listener) {
 
         Log.i(TAG,"createNewAd: begin");
+        once = true;
 
         if(mAuth==null)
         {
@@ -203,30 +211,41 @@ public class NetworkMethods {
 
             storage = FirebaseStorage.getInstance();
 
-//            final ProgressDialog progressDialog = ProgressDialog.show(context, "Uploading Files",
-//                    "File #"+key.substring(key.length()-1), false, false);
-//            final ProgressBar progressBar = ((MainActivity)context).progressBar;
-//            progressBar.setVisibility(View.VISIBLE);
-//            progressBar.setProgress(0);
-
             uploadBitmap(key,major);
-            for(int i=0;i<imgURIs.size();i++) {
-                uploadPic(imgURIs.get(i),key,i);
-            }
 
-            Task<Void> ads = mDatabase.child("ads").child(key).setValue(adData);
-            ads.addOnFailureListener(new OnFailureListener() {
+            uploadPics(imgURIs, key, new KeepTrackMain() {
                 @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.i(TAG,"createNewAd: onFailure",e);
-                    listener.onFailure(e);
+                public void onSuccess() {
+
+                    mDatabase.child("ads").child(key).setValue(adData)
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.i(TAG,"createNewAd: onFailure",e);
+                                    listener.onFailure(e);
+                                }
+                            }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.i(TAG,"createNewAd: onSuccess");
+                                userInfo.addUserAd(key);
+                                listener.onSuccess(adData);
+                            }
+                            });
+
                 }
-            }).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
-                public void onSuccess(Void aVoid) {
-                    Log.i(TAG,"createNewAd: onSuccess");
-                    userInfo.addUserAd(key);
-                    listener.onSuccess(adData);
+                public void onFailure(Exception e) {
+
+                    storage.getReference().child("images/" + key + "/0s").delete();
+                    for(int i=0;i<imgURIs.size();i++)
+                        storage.getReference().child("images/" + key + "/" + i).delete();
+                    if(once)
+                    {
+                        once=false;
+                        listener.onFailure(e);
+                    }
+
                 }
             });
         }
@@ -274,52 +293,111 @@ public class NetworkMethods {
 
     //endregion
 
+    private ArrayList<Integer> progress;
+    private ArrayList<Boolean> allGood;
+    private ArrayList<Integer> retryNo;
+    private void uploadPics(final ArrayList<Uri> imgURIs, final String key, final KeepTrackMain mainListener) {
 
+        final ProgressDialog progressDialog = ProgressDialog.show(context, "Uploading Images", "", true, false);
+        final ProgressBar progressBar = ((MainActivity)context).progressBar;
+        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setProgress(0);
 
-    @SuppressWarnings("VisibleForTests")
-    private void uploadPic(Uri uri, String key, final int i) {
+        final int total = imgURIs.size();
+        progress = new ArrayList<>(total);
+        allGood = new ArrayList<>(total);
+        retryNo = new ArrayList<>(total);
+        for(int j=0;j<total;j++) {
+            progress.set(j, 0);
+            allGood.set(j,false);
+            retryNo.set(j,0);
+        }
 
-        StorageReference reference = storage.getReference().child("images/"+key+"/"+i);
-
-        reference.putFile(uri).addOnFailureListener(new OnFailureListener() {
+        KeepTrack listener = new KeepTrack() {
             @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-                Log.i(TAG,"uploadPic: onFailure"+i,exception);
-                Toast.makeText(context, exception.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onSuccess(int i) {
+                progressBar.incrementProgressBy((100-progress.get(i))/total);
+                allGood.set(i,true);
+                Boolean b=true;
+                for(int j=0;j<total;j++)
+                    b = b && allGood.get(j);
+                if(b)
+                {
+                    progressBar.setVisibility(View.GONE);
+                    progressDialog.cancel();
+                    mainListener.onSuccess();
+                }
             }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
             @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                    progressBar.setProgress(100,true);
-//                } else
-//                    progressBar.setProgress(100);
-//
-//                progressDialog.cancel();
-//                progressBar.setVisibility(View.GONE);
-                Log.i(TAG,"uploadPic: onSuccess"+i);
+            public void failure(Exception e, int i) {
+                Log.i(TAG,"failure of #"+i+" Due to " + e.getMessage());
+                if(retryNo.get(i)<5) {
+                    retryNo.set(i,retryNo.get(i)+1);
+                    Log.i(TAG, "Retrying.. #" + retryNo.get(i));
+                    uploadPic(imgURIs.get(i),key,i,this);
+                }
+                else {
+                    //Cancel task
+                    progressBar.setVisibility(View.GONE);
+                    progressDialog.cancel();
+                    mainListener.onFailure(e);
+                }
             }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+
             @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-
-                long p = (100*taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
-                Log.i(TAG,"uploadPic: onProgress"+i+": " + p);
-
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                    progressBar.setProgress((int) p,true);
-//                }
-//                else
-//                    progressBar.setProgress((int) p);
-
+            public void onProgressUpdate(int i, int p) {
+                progress.set(i,p);
+                progressBar.incrementProgressBy((p-progress.get(i))/total);
             }
-        });
+        };
+
+        for(int i=0;i<total;i++) {
+            uploadPic(imgURIs.get(i),key, i, listener);
+        }
     }
 
-    @SuppressWarnings("VisibleForTests")
-    public void uploadBitmap(String AdID, Bitmap bitmap){
+    private void uploadPic(Uri uri, String key, final int i, final KeepTrack listener) {
+
+        StorageReference reference = storage.getReference().child("images/" + key + "/" + i);
+
+        reference.putFile(uri)
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.i(TAG, "uploadPics: onFailure" + i, exception);
+                    listener.failure(exception, i);
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.i(TAG, "uploadPics: onSuccess" + i);
+                listener.onSuccess(i);
+            }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    long p = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    Log.i(TAG, "uploadPics: onProgress" + i + ": " + p);
+                    listener.onProgressUpdate(i, (int) p);
+                }
+            });
+    }
+
+    interface KeepTrack {
+
+        void onSuccess(int i);
+        void failure(Exception e,int i);
+        void onProgressUpdate(int i, int p);
+
+    }
+
+    interface KeepTrackMain {
+        void onSuccess();
+        void onFailure(Exception e);
+    }
+
+    private void uploadBitmap(String AdID, Bitmap bitmap){
 
         StorageReference riversRef = storage.getReference().child("images/"+AdID+"/0s");
 
