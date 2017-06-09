@@ -18,8 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.Network.AdListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
-import com.blackboxindia.TakeIT.Network.onCreateNewAdListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.NewAdImageAdapter;
@@ -43,6 +43,7 @@ public class frag_newAd extends Fragment {
 
     UserInfo userInfo;
     ImageUtils imageUtils;
+    ArrayList<Uri> imgURIs;
 
     @Nullable
     @Override
@@ -72,6 +73,7 @@ public class frag_newAd extends Fragment {
         btn_Create = (Button) view.findViewById(R.id.newAd_btnCreate);
 
         context = view.getContext();
+        imgURIs = new ArrayList<>();
     }
 
     private void setUpRecycler() {
@@ -100,28 +102,20 @@ public class frag_newAd extends Fragment {
             bundle.putInt("Price", Integer.valueOf(etPrice.getText().toString()));
 
             AdData adData = new AdData(bundle);
-            ArrayList<Bitmap> images = adapter.getImages();
+            //ArrayList<Bitmap> images = adapter.getImages();
             adData.setMajorImage(0);
-            adData.setMinorImages(images);
             adData.setDescription(etDescription.getText().toString().trim());
 
-//        final ProgressDialog progressDialog = new ProgressDialog(context, ProgressDialog.STYLE_SPINNER);
-//        progressDialog.setTitle("Creating ad...");
-//        progressDialog.setCancelable(false);
-//        progressDialog.show();
-
             NetworkMethods networkMethods = new NetworkMethods(context, ((MainActivity) context).mAuth);
-            networkMethods.createNewAd(userInfo, adData, new onCreateNewAdListener() {
+            networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
                 @Override
                 public void onSuccess(AdData adData) {
                     Toast.makeText(context, "onSuccess", Toast.LENGTH_SHORT).show();
-                    Log.i(TAG, "AdID: " + adData.getAdID());
                 }
 
                 @Override
                 public void onFailure(Exception e) {
                     Toast.makeText(context, "onFailure:", Toast.LENGTH_SHORT).show();
-                    Log.w(TAG, "onFailure: ", e);
                 }
             });
         }
@@ -135,16 +129,15 @@ public class frag_newAd extends Fragment {
         imageUtils = new ImageUtils(getActivity(), this, true, new ImageUtils.ImageAttachmentListener() {
             @Override
             public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
+                imgURIs.add(uri);
                 adapter.addImage(file);
-                NetworkMethods methods = new NetworkMethods(context, ((MainActivity)context).mAuth);
-                methods.uploadPic(uri,filename);
+                Log.i(TAG,"image Received:"+imgURIs.size());
             }
         });
 
         btn_newImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("YOYO", "onClick");
                 imageUtils.imagepicker(ADD_PHOTO_CODE);
             }
         });

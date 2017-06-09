@@ -46,6 +46,7 @@ public class NewAdImageAdapter extends RecyclerView.Adapter<NewAdImageAdapter.im
     public ArrayList<Bitmap> getImages() {
         return images;
     }
+    public Bitmap getMajor(){return images.get(0);}
 
     class imgViewHolder extends RecyclerView.ViewHolder {
 

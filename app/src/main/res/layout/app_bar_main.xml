@@ -31,6 +31,20 @@
                 android:background="?attr/colorPrimary"
                 app:layout_collapseMode="pin" />
 
+            <ProgressBar
+                android:id="@+id/progressBarTop"
+                style="@android:style/Widget.Material.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:layout_gravity="bottom"
+                android:max="100"
+                android:progress="50"
+                android:paddingTop="1dp"
+                android:minHeight="0dp"
+                android:visibility="gone"/>
+
+
             <LinearLayout
                 android:id="@+id/appbar_extra"
                 android:layout_width="match_parent"

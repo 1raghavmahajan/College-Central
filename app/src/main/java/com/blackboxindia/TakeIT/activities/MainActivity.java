@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -45,6 +46,7 @@ public class MainActivity extends Activity {
 
 
     public LinearLayout linearLayout;
+    public ProgressBar progressBar;
     Context context;
     AppBarLayout appBarLayout;
     FragmentManager fragmentManager;
@@ -52,7 +54,6 @@ public class MainActivity extends Activity {
     CollapsingToolbarLayout cTLayout;
     DrawerLayout drawer;
     FloatingActionButton fab;
-    //View headerView;
 
     public FirebaseAuth mAuth;
     public UserInfo userInfo;
@@ -80,6 +81,7 @@ public class MainActivity extends Activity {
     private void initVariables() {
         linearLayout = (LinearLayout) findViewById(R.id.appbar_extra);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
+        progressBar = (ProgressBar) findViewById(R.id.progressBarTop);
         fragmentManager = getFragmentManager();
         context = getApplicationContext();
     }

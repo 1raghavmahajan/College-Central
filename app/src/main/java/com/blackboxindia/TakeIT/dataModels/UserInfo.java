@@ -76,7 +76,8 @@ public class UserInfo implements Parcelable {
 
     public void newUser(String password, final Context context, final ProgressDialog progressDialog) {
 
-        NetworkMethods net = new NetworkMethods(context, new onLoginResultListener() {
+        NetworkMethods net = new NetworkMethods(context);
+        net.Create_Account(this,password, new onLoginResultListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 if (Auth.getCurrentUser() != null) {
@@ -99,12 +100,12 @@ public class UserInfo implements Parcelable {
                 }
             }
         });
-        net.Create_Account(this,password);
     }
 
     public void login(String email, String password, final Context context, final ProgressDialog progressDialog) {
 
-        NetworkMethods net = new NetworkMethods(context, new onLoginResultListener() {
+        NetworkMethods net = new NetworkMethods(context);
+        net.Login(email, password, new onLoginResultListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 Log.i("YOYO", "Logged in - OnLogin: " + this.toString());
@@ -132,7 +133,6 @@ public class UserInfo implements Parcelable {
                 }
             }
         });
-        net.Login(email, password);
     }
 
     public Bundle validateNewAccountDetails() {

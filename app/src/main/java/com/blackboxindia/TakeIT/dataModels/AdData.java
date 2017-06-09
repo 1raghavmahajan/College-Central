@@ -1,13 +1,12 @@
 package com.blackboxindia.TakeIT.dataModels;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import java.util.ArrayList;
 
 public class AdData extends AdDataMini{
 
-    private ArrayList<Bitmap> minorImages;
+    private ArrayList<String> minorImages;
     private String description;
 
     AdData(AdDataMini adDataMini) {
@@ -23,11 +22,12 @@ public class AdData extends AdDataMini{
      * get all images associated with the specific adID
      * Async
      */
-    public ArrayList<Bitmap> getMinorImages() {
+    public ArrayList<String> getMinorImages() {
         return minorImages;
     }
 
-    public void setMinorImages(ArrayList<Bitmap> minorImages) {
+    //region Getters and Setters
+    public void setMinorImages(ArrayList<String> minorImages) {
         this.minorImages = minorImages;
     }
 
@@ -39,7 +39,6 @@ public class AdData extends AdDataMini{
         return description;
     }
 
-    //region Getters and Setters
     public void setDescription(String description) {
         this.description = description;
     }

@@ -2,7 +2,7 @@ package com.blackboxindia.TakeIT.Network;
 
 import com.blackboxindia.TakeIT.dataModels.AdData;
 
-public interface onCreateNewAdListener {
+public interface AdListener {
 
     void onSuccess(AdData adData);
 
