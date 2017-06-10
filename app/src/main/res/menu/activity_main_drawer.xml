@@ -9,10 +9,12 @@
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_profile"
+            android:visible="false"
             android:title="@string/my_profile" />
         <item
             android:id="@+id/nav_myAds"
             android:icon="@drawable/ic_menu_slideshow"
+            android:visible="false"
             android:title="@string/my_ads" />
 
     </group>
@@ -20,6 +22,7 @@
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
+            android:visible="false"
             android:title="@string/settings" />
         <item
             android:id="@+id/nav_newAccount"

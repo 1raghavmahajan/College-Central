@@ -1,7 +1,6 @@
 package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -10,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -26,6 +26,7 @@ public class frag_loginPage extends Fragment {
     TextInputLayout inputLayoutID, inputLayoutPassword;
     EditText etID, etPassword;
     Button btn_login;
+    CheckBox chkSave;
     TextView tvCreateNew;
     View view;
 
@@ -53,6 +54,8 @@ public class frag_loginPage extends Fragment {
         etID = (EditText) view.findViewById(R.id.login_etID);
         etPassword = (EditText) view.findViewById(R.id.login_etPassword);
         btn_login = (Button) view.findViewById(R.id.login_btnLogin);
+
+        chkSave = (CheckBox) view.findViewById(R.id.login_chkSave);
 
         tvCreateNew = (TextView) view.findViewById(R.id.login_tvCreate);
     }
@@ -96,18 +99,15 @@ public class frag_loginPage extends Fragment {
         UserInfo userInfo = new UserInfo();
         if (userInfo.isIDValid(id) && isPasswordValid(password))
         {
-            ProgressDialog progressDialog = new ProgressDialog(v.getContext(), ProgressDialog.STYLE_SPINNER);
-            progressDialog.setTitle("Logging in...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-            userInfo.login(id, password, v.getContext(), progressDialog);
+            userInfo.login(id, password, v.getContext(),chkSave.isChecked());
         }
     }
 
     private boolean isPasswordValid(String password) {
-        if(password.length()<8)
+        int Min_Password_Size = getResources().getInteger(R.integer.Min_Password_Size);
+        if(password.length()<Min_Password_Size)
         {
-            inputLayoutPassword.setError("Minimum 8 characters required.");
+            inputLayoutPassword.setError("Minimum"+Min_Password_Size+"characters required.");
             return false;
         }
         else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))

@@ -160,9 +160,9 @@ public class ImageUtils {
      * @return
      */
 
-    public static String BitMapToString(Bitmap bitmap) {
+    public static String BitMapToString(Bitmap bitmap, int quality) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.WEBP, 75, baos);
+        bitmap.compress(Bitmap.CompressFormat.WEBP, quality, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }

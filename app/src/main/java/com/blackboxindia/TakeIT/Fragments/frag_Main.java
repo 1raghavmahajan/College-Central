@@ -9,7 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +35,11 @@ public class frag_Main extends Fragment {
     Context context;
     NetworkMethods networkMethods;
     UserInfo userInfo;
-    FirebaseAuth firebaseAuth;
+    FirebaseAuth mAuth;
     SwipeRefreshLayout swipeRefreshLayout;
 
     ArrayList<AdData> allAds;
     //endregion
-
 
 
     @Nullable
@@ -50,26 +48,31 @@ public class frag_Main extends Fragment {
         view = inflater.inflate(R.layout.frag_main, container, false);
         context = view.getContext();
 
-        firebaseAuth = ((MainActivity)context).mAuth;
-        userInfo = ((MainActivity)context).userInfo;
-
-        networkMethods = new NetworkMethods(context,firebaseAuth);
-
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+
+        refresh();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                swipeRefreshLayout.setRefreshing(false);
-                if(userInfo!=null)
-                    getAllAds();
+                refresh();
             }
         });
 
-        if(userInfo!=null)
-            getAllAds();
-
         return view;
+    }
+
+    void refresh() {
+
+        userInfo = ((MainActivity)context).userInfo;
+        mAuth = ((MainActivity)context).mAuth;
+
+        if(swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(false);
+        if(mAuth!=null){
+            networkMethods = new NetworkMethods(context, mAuth);
+            getAllAds();
+        }
     }
 
     private void getAllAds() {
@@ -97,7 +100,7 @@ public class frag_Main extends Fragment {
         StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        mainAdapter adapter = new mainAdapter(context,userInfo,firebaseAuth, new mainAdapter.ImageClickListener() {
+        mainAdapter adapter = new mainAdapter(context,userInfo, mAuth, new mainAdapter.ImageClickListener() {
 
             @Override
             public void onClick(mainAdapter.adItemViewHolder holder, int position, AdData currentAd) {
@@ -126,66 +129,5 @@ public class frag_Main extends Fragment {
         });
         recyclerView.setAdapter(adapter);
     }
-
-
-
-
-
-    //region BS
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(TAG,"onResume");
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.context = context;
-        Log.i(TAG,"onAttach");
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i(TAG,"onCreate");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.i(TAG,"onStart");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.i(TAG,"onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.i(TAG,"onStop");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.i(TAG,"onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG,"onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.i(TAG,"onDetach");
-    }
-    //endregion
 
 }

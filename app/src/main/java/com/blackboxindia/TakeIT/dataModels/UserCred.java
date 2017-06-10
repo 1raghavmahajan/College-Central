@@ -14,17 +14,22 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class User_Cred {
+public class UserCred {
 
-    private String id;
+    private String email;
     private String pwd;
 
-    public String getID() {
-        return id;
+    public UserCred(String e, String p) {
+        email = e;
+        pwd = p;
     }
 
-    public void setID(String id) {
-        this.id = id;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String id) {
+        this.email = id;
     }
 
     public String getpwd() {
@@ -38,15 +43,17 @@ public class User_Cred {
     public boolean load_Cred(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean checkBoxValue = sharedPreferences.getBoolean("CheckBox_Value", false);
-        String tmp_id = sharedPreferences.getString("saved_id", "");
-        String tmp_pwd = sharedPreferences.getString("saved_pwd", "");
-        String seed = sharedPreferences.getString("saved_seed", "");
-        try {
-            id = CryptoHelper.decrypt(seed, tmp_id);
-            pwd = CryptoHelper.decrypt(seed, tmp_pwd);
-        } catch (Exception e) {
-            id = "";
-            pwd = "";
+        if(checkBoxValue) {
+            String tmp_id = sharedPreferences.getString("saved_id", "");
+            String tmp_pwd = sharedPreferences.getString("saved_pwd", "");
+            String seed = sharedPreferences.getString("saved_seed", "");
+            try {
+                email = CryptoHelper.decrypt(seed, tmp_id);
+                pwd = CryptoHelper.decrypt(seed, tmp_pwd);
+            } catch (Exception e) {
+                email = "";
+                pwd = "";
+            }
         }
         return checkBoxValue;
     }
@@ -59,8 +66,8 @@ public class User_Cred {
         String seed = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            seed = Base64.encodeToString(md.digest(id.getBytes()), Base64.DEFAULT).trim();
-            tmp_id = CryptoHelper.encrypt(seed, id);
+            seed = Base64.encodeToString(md.digest(email.getBytes()), Base64.DEFAULT).trim();
+            tmp_id = CryptoHelper.encrypt(seed, email);
             tmp_pwd = CryptoHelper.encrypt(seed, pwd);
         } catch (Exception e) {
             e.printStackTrace();

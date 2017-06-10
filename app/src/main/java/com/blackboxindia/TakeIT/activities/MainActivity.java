@@ -15,9 +15,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,7 +31,11 @@ import com.blackboxindia.TakeIT.Fragments.frag_loginPage;
 import com.blackboxindia.TakeIT.Fragments.frag_myProfile;
 import com.blackboxindia.TakeIT.Fragments.frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.frag_newAd;
+import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
+import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
+import com.blackboxindia.TakeIT.dataModels.UserCred;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -54,9 +60,13 @@ public class MainActivity extends Activity {
     CollapsingToolbarLayout cTLayout;
     DrawerLayout drawer;
     FloatingActionButton fab;
+    NavigationView navigationView;
+    Menu navigationViewMenu;
 
     public FirebaseAuth mAuth;
     public UserInfo userInfo;
+
+    private UserCred userCred;
 
     //endregion
 
@@ -75,7 +85,36 @@ public class MainActivity extends Activity {
 
         setUpFab();
 
+        loadCred();
+
         setUpMainFragment();
+    }
+
+    private void loadCred() {
+        userCred = new UserCred();
+        if(userCred.load_Cred(context)) {
+
+            NetworkMethods methods = new NetworkMethods(context);
+            methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
+                @Override
+                public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
+                    UpdateUI(userInfo,Auth, false);
+                    Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    if (e.getMessage().contains("network")) {
+                        Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(context, "Session Expired. Please login again.", Toast.LENGTH_SHORT).show();
+                        userCred.clear_cred(context);
+                    }
+
+                }
+            });
+        }
     }
 
     private void initVariables() {
@@ -112,7 +151,8 @@ public class MainActivity extends Activity {
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationViewMenu = navigationView.getMenu();
 
         Button btn_nav = (Button) navigationView.getHeaderView(0).findViewById(R.id.nav_btnLogin);
         btn_nav.setOnClickListener(new View.OnClickListener() {
@@ -301,17 +341,38 @@ public class MainActivity extends Activity {
         cTLayout.setLayoutParams(params);
     }
 
-    public void UpdateUIonLogin(UserInfo userInfo, FirebaseAuth auth) {
-        mAuth = auth;
+
+    public void UpdateUI(UserInfo userInfo, FirebaseAuth auth) {
+        UpdateUI(userInfo, auth, true);
+    }
+
+    public void UpdateUI(UserInfo userInfo, Boolean redirect) {
+        UpdateUI(userInfo,null, redirect);
+    }
+
+    public void UpdateUI(UserInfo userInfo, FirebaseAuth auth, Boolean redirect) {
+
+        if(auth!=null)
+            mAuth = auth;
+
         this.userInfo = userInfo;
 
         //Drawer
         ((TextView) findViewById(R.id.nav_Name)).setText(userInfo.getName());
         ((TextView) findViewById(R.id.nav_email)).setText(userInfo.getEmail());
+        ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
+        if(userInfo.getProfileIMG()!= null)
+            if(!userInfo.getProfileIMG().equals("null"))
+                imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
 
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
 
-        goToMainFragment();
+        navigationViewMenu.getItem(R.id.nav_myAds).setVisible(true);
+        navigationViewMenu.getItem(R.id.nav_manage).setVisible(true);
+        navigationViewMenu.getItem(R.id.nav_profile).setVisible(true);
+
+        if(redirect)
+            goToMainFragment();
     }
 
 }

@@ -19,11 +19,8 @@ import android.widget.ImageView;
 
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
-import com.blackboxindia.TakeIT.cameraIntentHelper.BitmapHelper;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
-
-import java.io.ByteArrayOutputStream;
 
 public class frag_myProfile extends Fragment {
 
@@ -84,15 +81,8 @@ public class frag_myProfile extends Fragment {
                     Log.i("YOYO", "h<w");
                     file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
                 }
-                //imageView.setImageBitmap(file);
-                ByteArrayOutputStream v = new ByteArrayOutputStream();
-                file.compress(Bitmap.CompressFormat.WEBP,75,v);
-                Bitmap newB = BitmapHelper.byteArrayToBitmap(v.toByteArray());
-                imageView.setImageBitmap(newB);
-//                /String s = ImageUtils.BitMapToString(file);
-//                Log.i("YOYO", s);
-//                Log.i("YOYO", "size: "+s.length());
-                //userInfo.setProfileIMG(s);
+                userInfo.setProfileIMG(ImageUtils.BitMapToString(file,75));
+                imageView.setImageBitmap(file);
             }
         });
 

@@ -83,7 +83,7 @@ public class UserInfo implements Parcelable {
                     progressDialog.cancel();
                     Log.i("YOYO", "newUser onSuccess: " + this.toString());
                     MainActivity mainActivity = (MainActivity) context;
-                    mainActivity.UpdateUIonLogin(userInfo, Auth);
+                    mainActivity.UpdateUI(userInfo, Auth);
                 }
             }
 
@@ -101,25 +101,30 @@ public class UserInfo implements Parcelable {
         });
     }
 
-    public void login(String email, String password, final Context context, final ProgressDialog progressDialog) {
+    public void login(final String email, final String password, final Context context, final Boolean saveCred) {
 
+        final ProgressDialog dialog = ProgressDialog.show(context, "Logging in..", "", true, false);
         NetworkMethods net = new NetworkMethods(context);
         net.Login(email, password, new onLoginListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 Log.i("YOYO", "Logged in - OnLogin: " + this.toString());
 
-                progressDialog.cancel();
+                dialog.cancel();
 
+                if(saveCred) {
+                    UserCred userCred = new UserCred(email, password);
+                    userCred.save_cred(context);
+                }
                 MainActivity mainActivity = (MainActivity) context;
-                mainActivity.UpdateUIonLogin(userInfo, Auth);
+                mainActivity.UpdateUI(userInfo, Auth);
             }
 
             @Override
             public void onFailure(Exception e) {
                 if (e != null) {
                     Log.w("YOYO", "Login: onFailure", e);
-                    progressDialog.cancel();
+                    dialog.cancel();
                     if (e.getMessage().contains("network")) {
                         Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
                     } else if (e.getMessage().contains("password") && e.getMessage().contains("invalid")) {
