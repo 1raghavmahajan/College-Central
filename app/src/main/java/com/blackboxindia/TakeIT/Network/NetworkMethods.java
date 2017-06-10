@@ -10,10 +10,10 @@ import android.util.Log;
 import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapUploadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrackMain;
+import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onUpdateListener;
 import com.blackboxindia.TakeIT.dataModels.AdData;
-import com.blackboxindia.TakeIT.dataModels.AdDataMini;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 @SuppressWarnings("VisibleForTests")
 public class NetworkMethods {
@@ -81,6 +82,7 @@ public class NetworkMethods {
                 });
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void addDetailsToDB(UserInfo userInfo) {
         Log.i(TAG,"addDetailsToDB: in progress");
 
@@ -136,30 +138,6 @@ public class NetworkMethods {
             }
         });
 
-//        mDatabase.child("users").child(userInfo.getuID()).addValueEventListener(new ValueEventListener() {
-//
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//
-//                Log.i(TAG, "onDataChange");
-//
-//                UserInfo nuserInfo = dataSnapshot.getValue(UserInfo.class);
-//                Log.i(TAG, nuserInfo.toString());
-//
-//                loginListener.onSuccess(mAuth, nuserInfo);
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//
-//                loginListener.onFailure(databaseError.toException());
-//
-//            }
-//        });
-
     }
 
     public void updateUser(final UserInfo userInfo, final onUpdateListener listener) {
@@ -194,25 +172,19 @@ public class NetworkMethods {
                 }
             });
         }
-//            Map<String, Object> postValues = post.toMap();
-//
-//            Map<String, Object> childUpdates = new HashMap<>();
-//            childUpdates.put("/posts/" + key, postValues);
-//            childUpdates.put("/user-posts/" + userId + "/" + key, postValues);
-//
-//            mDatabase.updateChildren(childUpdates);
-
     }
 
     //endregion
 
     //region Ad Related
 
+    private Integer try_update;
     private Boolean once;
     public void createNewAd(final UserInfo userInfo, final AdData adData, final ArrayList<Uri> imgURIs, Bitmap major, final AdListener listener) {
 
         Log.i(TAG,"createNewAd: begin");
         once = true;
+        try_update = 5;
 
         if(mAuth==null)
         {
@@ -236,6 +208,7 @@ public class NetworkMethods {
                 @Override
                 public void onSuccess() {
                     methods.uploadPics(imgURIs, key, new KeepTrackMain() {
+
                         @Override
                         public void onSuccess() {
 
@@ -247,14 +220,30 @@ public class NetworkMethods {
                                             listener.onFailure(e);
                                         }
                                     }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.i(TAG,"createNewAd: onSuccess");
-                                    userInfo.addUserAd(key);
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Log.i(TAG,"createNewAd: onSuccess");
+                                            userInfo.addUserAd(key);
+                                            updateUser(userInfo, new onUpdateListener() {
+                                                @Override
+                                                public void onSuccess(UserInfo userInfo) {
+                                                    listener.onSuccess(adData);
+                                                }
 
-                                    listener.onSuccess(adData);
-                                }
-                            });
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    if(try_update >0) {
+                                                        try_update--;
+                                                        Log.i(TAG,"onUpdate Retry #" + (2- try_update));
+                                                        updateUser(userInfo, this);
+                                                    }
+                                                    else {
+                                                        listener.onFailure(e);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                     });
 
                         }
                         @Override
@@ -276,13 +265,13 @@ public class NetworkMethods {
 
                 @Override
                 public void onFailure(Exception e) {
-
+                    listener.onFailure(e);
                 }
             });
         }
     }
 
-    private void getAd(AdDataMini adDataMini, final AdListener listener) {
+    private void getAd(AdData AdData, final AdListener listener) {
 
         Log.i(TAG, "getAd: onDataChange");
         if(mAuth==null)
@@ -298,7 +287,7 @@ public class NetworkMethods {
             mDatabase = FirebaseDatabase.getInstance().getReference();
             //String uID = mAuth.getCurrentUser().getUid();
 
-            mDatabase.child("ads").child(adDataMini.getAdID()).addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabase.child("ads").child(AdData.getAdID()).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -318,8 +307,36 @@ public class NetworkMethods {
         }
     }
 
-    private void getAllAds(UserInfo userInfo, Integer max_limit) {
+    public void getAllAds(UserInfo userInfo, Integer max_limit, final getAllAdsListener listener) {
 
+        mDatabase.child("ads").limitToLast(max_limit)
+            .addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        listener.onSuccess(collectAds((Map<String, Object>) dataSnapshot.getValue()));
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        listener.onFailure(databaseError.toException());
+                    }
+                });
+    }
+
+    private ArrayList<AdData> collectAds(Map<String,Object> users) {
+
+        ArrayList<AdData> data = new ArrayList<>();
+
+        for (Map.Entry<String, Object> entry : users.entrySet()){
+            //Get user map
+            AdData singleAd = (AdData) entry.getValue();
+            //Get phone field and append to list
+            data.add(singleAd);
+        }
+
+        return data;
     }
 
     //endregion

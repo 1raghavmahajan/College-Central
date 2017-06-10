@@ -1,9 +1,11 @@
 package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
@@ -11,12 +13,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
+import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.adViewTransition;
 import com.blackboxindia.TakeIT.adapters.mainAdapter;
-import com.blackboxindia.TakeIT.dataModels.AdDataMini;
+import com.blackboxindia.TakeIT.dataModels.AdData;
+import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
 
 public class frag_Main extends Fragment {
 
@@ -25,17 +34,61 @@ public class frag_Main extends Fragment {
     //region variables
     View view;
     Context context;
+    NetworkMethods networkMethods;
+    UserInfo userInfo;
+    FirebaseAuth firebaseAuth;
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    ArrayList<AdData> allAds;
     //endregion
 
-    //region Initial Setup
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_main, container, false);
         context = view.getContext();
-        setUpRecyclerView();
+
+        firebaseAuth = ((MainActivity)context).mAuth;
+        userInfo = ((MainActivity)context).userInfo;
+
+        networkMethods = new NetworkMethods(context,firebaseAuth);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefreshLayout.setRefreshing(false);
+                if(userInfo!=null)
+                    getAllAds();
+            }
+        });
+
+        if(userInfo!=null)
+            getAllAds();
+
         return view;
+    }
+
+    private void getAllAds() {
+        final ProgressDialog dialog = ProgressDialog.show(context, "Just a sec", "Getting the good stuff", true, false);
+
+        networkMethods.getAllAds(userInfo, 30 ,new getAllAdsListener() {
+            @Override
+            public void onSuccess(ArrayList<AdData> list) {
+                allAds = list;
+                setUpRecyclerView();
+                dialog.cancel();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                dialog.cancel();
+                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setUpRecyclerView() {
@@ -44,10 +97,10 @@ public class frag_Main extends Fragment {
         StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        mainAdapter adapter = new mainAdapter(context, new mainAdapter.ImageClickListener() {
+        mainAdapter adapter = new mainAdapter(context,userInfo,firebaseAuth, new mainAdapter.ImageClickListener() {
 
             @Override
-            public void onClick(mainAdapter.adItemViewHolder holder, int position, AdDataMini currentAd) {
+            public void onClick(mainAdapter.adItemViewHolder holder, int position, AdData currentAd) {
 
                 frag_ViewAd fragViewAd = new frag_ViewAd();
 
@@ -58,11 +111,7 @@ public class frag_Main extends Fragment {
 
                 Bundle args = new Bundle();
 
-                //Todo: Send AdID so that the specific ad can be viewed
-                //args.putInt("id", currentAd.getAdID());
-                args.putString("Title", currentAd.getTitle());
-                args.putInt("majorImage", currentAd.getMajorImage());
-                args.putInt("Price", currentAd.getPrice());
+                args.putParcelable("adData",allAds.get(position));
 
                 fragViewAd.setArguments(args);
 
@@ -78,8 +127,11 @@ public class frag_Main extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    //endregion
 
+
+
+
+    //region BS
     @Override
     public void onResume() {
         super.onResume();
@@ -134,5 +186,6 @@ public class frag_Main extends Fragment {
         super.onDetach();
         Log.i(TAG,"onDetach");
     }
+    //endregion
 
 }

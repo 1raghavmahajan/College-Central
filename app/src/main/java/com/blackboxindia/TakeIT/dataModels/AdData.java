@@ -1,20 +1,31 @@
 package com.blackboxindia.TakeIT.dataModels;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.util.ArrayList;
+public class AdData implements Parcelable {
 
-public class AdData extends AdDataMini{
-
-    private ArrayList<String> minorImages;
+    private String adID;
+    private String createdBy;
+    private String title;
+    private Integer price;
     private String description;
 
-    AdData(AdDataMini adDataMini) {
-        super(adDataMini);
+    private Integer nImages;
+
+
+    private AdData() {
+        adID = "null";
     }
 
     public AdData(Bundle bundle) {
-        super(bundle);
+        adID = bundle.getString("adID","null");
+        createdBy = bundle.getString("createdBy","null");
+        title = bundle.getString("Title", "title");
+        price = bundle.getInt("Price", -1);
+        description = bundle.getString("Description","null");
+        nImages = bundle.getInt("nImages",0);
     }
 
     /**
@@ -22,18 +33,12 @@ public class AdData extends AdDataMini{
      * get all images associated with the specific adID
      * Async
      */
-    public ArrayList<String> getMinorImages() {
-        return minorImages;
-    }
-
-    //region Getters and Setters
-    public void setMinorImages(ArrayList<String> minorImages) {
-        this.minorImages = minorImages;
-    }
 
     public void getAllData() {
         //Todo:
     }
+
+    //region Getters and Setters
 
     public String getDescription() {
         return description;
@@ -42,5 +47,77 @@ public class AdData extends AdDataMini{
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public String getAdID() {
+        return adID;
+    }
+
+    public void setAdID(String adID) {
+        this.adID = adID;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    //endregion
+
+    //region Parcelable
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[]{this.adID,
+                this.createdBy,
+                this.title,
+                String.valueOf(this.price),
+                this.description,
+                String.valueOf(this.nImages)
+        });
+    }
+
+    private AdData(Parcel in) {
+        adID = in.readString();
+        createdBy = in.readString();
+        title = in.readString();
+        price = Integer.getInteger(in.readString());
+        description = in.readString();
+        nImages = Integer.getInteger(in.readString());
+    }
+
+    public static final Creator<AdData> CREATOR = new Creator<AdData>() {
+        @Override
+        public AdData createFromParcel(Parcel in) {
+            return new AdData(in);
+        }
+
+        @Override
+        public AdData[] newArray(int size) {
+            return new AdData[size];
+        }
+    };
     //endregion
 }

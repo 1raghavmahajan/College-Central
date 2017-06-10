@@ -1,6 +1,8 @@
 package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,21 +12,33 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.R;
-import com.blackboxindia.TakeIT.dataModels.AdDataMini;
+import com.blackboxindia.TakeIT.dataModels.AdData;
+import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.firebase.auth.FirebaseAuth;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 
 public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHolder> {
 
+    private static Integer MAX_AD_LIMIT = 30;
+
     private final ImageClickListener mListener;
-    private List<AdDataMini> adList;
+    private List<AdData> adList;
     private LayoutInflater inflater;
 
-    public mainAdapter(Context context, ImageClickListener listener) {
+    FirebaseAuth mAuth;
+
+    private CloudStorageMethods methods;
+
+    public mainAdapter(Context context, UserInfo userInfo, FirebaseAuth mAuth, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
-        adList = AdDataMini.getList();
+        methods = new CloudStorageMethods(context, FirebaseAuth.getInstance());
+        //this.userInfo = userInfo;
+        this.mAuth = mAuth;
         mListener = listener;
     }
 
@@ -36,14 +50,8 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     @Override
     public void onBindViewHolder(adItemViewHolder holder, int position) {
-        AdDataMini currentAd = adList.get(position);
+        AdData currentAd = adList.get(position);
         holder.setData(currentAd, position, holder);
-        /**
-         * Todo:
-         * to not put strain on the network
-         * Images only start loading onBind
-         * setData to find the image of the currentAd
-         */
     }
 
     @Override
@@ -53,7 +61,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     public interface ImageClickListener {
 
-        void onClick(adItemViewHolder holder, int position, AdDataMini currentAd);
+        void onClick(adItemViewHolder holder, int position, AdData currentAd);
     }
 
     public class adItemViewHolder extends RecyclerView.ViewHolder{
@@ -77,10 +85,12 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             return majorImage;
         }
 
-        void setData(AdDataMini currentAd, int position, adItemViewHolder holder) {
+        void setData(AdData currentAd, int position, adItemViewHolder holder) {
 
             setListeners(currentAd, holder, position);
-            majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
+//            majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
+
+            new waitClass(majorImage).execute();
 
             tv_title.setText(currentAd.getTitle());
 
@@ -90,7 +100,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
                 tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
         }
 
-        private void setListeners(final AdDataMini currentAd, final adItemViewHolder holder, final int position) {
+        private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {
 
             ViewCompat.setTransitionName(holder.getMajorImage(), String.valueOf(position) + "_image");
             cardView.setOnClickListener(new View.OnClickListener() {
@@ -101,5 +111,94 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             });
         }
     }
+
+    class waitClass extends AsyncTask<Void,Void,Void> {
+
+        private final WeakReference<ImageView> imageViewReference;
+
+        waitClass(ImageView imageView) {
+            imageViewReference = new WeakReference<>(imageView);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (imageViewReference != null) {
+
+                        final ImageView imageView = imageViewReference.get();
+                        if (imageView != null) {
+                            imageView.setImageResource(R.drawable.img_back_new);
+                        }
+                    }
+                }
+            }, 1000);
+
+            return null;
+        }
+    }
+
+//    class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+//
+//        private final WeakReference<ImageView> imageViewReference;
+//        String adID;
+//
+//        public BitmapWorkerTask(ImageView imageView) {
+//            // Use a WeakReference to ensure the ImageView can be garbage
+//            // collected
+//            imageViewReference = new WeakReference<>(imageView);
+//        }
+//
+//        // Decode image in background.
+//        @Override
+//        protected Bitmap doInBackground(String... params) {
+//            adID = params[0];
+//            return LoadImage(imageUrl);
+//        }
+//
+//        // Once complete, see if ImageView is still around and set bitmap.
+//        @Override
+//        protected void onPostExecute(Bitmap bitmap) {
+//            if (imageViewReference != null && bitmap != null) {
+//                final ImageView imageView = imageViewReference.get();
+//                if (imageView != null) {
+//                    imageView.setImageBitmap(bitmap);
+//                }
+//            }
+//        }
+//
+//        private Bitmap LoadImage(String URL) {
+//            Bitmap bitmap = null;
+//            InputStream in = null;
+//            try {
+//                in = OpenHttpConnection(URL);
+//                bitmap = BitmapFactory.decodeStream(in);
+//                in.close();
+//            } catch (IOException e1) {
+//            }
+//            return bitmap;
+//        }
+//
+//        private InputStream OpenHttpConnection(String strURL)
+//                throws IOException {
+//            InputStream inputStream = null;
+//            URL url = new URL(strURL);
+//            URLConnection conn = url.openConnection();
+//
+//            try {
+//                HttpURLConnection httpConn = (HttpURLConnection) conn;
+//                httpConn.setRequestMethod("GET");
+//                httpConn.connect();
+//
+//                if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//                    inputStream = httpConn.getInputStream();
+//                }
+//            } catch (Exception ex) {
+//            }
+//            return inputStream;
+//        }
+//    }
 
 }

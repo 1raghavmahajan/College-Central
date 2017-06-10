@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.R;
-import com.blackboxindia.TakeIT.dataModels.AdDataMini;
+import com.blackboxindia.TakeIT.dataModels.AdData;
 
 /**
  * Created by Raghav on 09-Jun-17.
@@ -63,10 +63,10 @@ public class MyAdsAdaper extends RecyclerView.Adapter<MyAdsAdaper.adItemViewHold
             return majorImage;
         }
 
-        void setData(AdDataMini currentAd, int position, mainAdapter.adItemViewHolder holder) {
+        void setData(AdData currentAd, int position, mainAdapter.adItemViewHolder holder) {
 
             setListeners(currentAd, holder, position);
-            majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
+            //majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
 
             tv_title.setText(currentAd.getTitle());
 
@@ -76,7 +76,7 @@ public class MyAdsAdaper extends RecyclerView.Adapter<MyAdsAdaper.adItemViewHold
                 tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
         }
 
-        private void setListeners(final AdDataMini currentAd, final mainAdapter.adItemViewHolder holder, final int position) {
+        private void setListeners(final AdData currentAd, final mainAdapter.adItemViewHolder holder, final int position) {
 
             ViewCompat.setTransitionName(holder.getMajorImage(), String.valueOf(position) + "_image");
             cardView.setOnClickListener(new View.OnClickListener() {

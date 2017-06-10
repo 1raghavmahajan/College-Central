@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
-import com.blackboxindia.TakeIT.dataModels.AdDataMini;
+import com.blackboxindia.TakeIT.dataModels.AdData;
 
 public class frag_ViewAd extends Fragment {
 
@@ -44,7 +44,7 @@ public class frag_ViewAd extends Fragment {
 
     void setUpViews() {
 
-        AdDataMini dataMini = new AdDataMini(getArguments());
+        AdData dataMini = new AdData(getArguments());
 
         if (dataMini.getPrice() == 0)
             tv_Price.setText(getString(R.string.free));
@@ -52,7 +52,7 @@ public class frag_ViewAd extends Fragment {
             tv_Price.setText(String.format(getString(R.string.currency), dataMini.getPrice()));
 
         tv_Title.setText(dataMini.getTitle());
-        setUpImgRecycler(dataMini.getMajorImage());
+        //setUpImgRecycler(dataMini.getMajorImage());
 
     }
 

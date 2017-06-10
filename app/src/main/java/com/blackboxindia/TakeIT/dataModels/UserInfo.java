@@ -253,6 +253,14 @@ public class UserInfo implements Parcelable {
         userAdKeys.add(userAdKey);
     }
 
+    public String getProfileIMG() {
+        return profileIMG;
+    }
+
+    public void setProfileIMG(String profileIMG) {
+        this.profileIMG = profileIMG;
+    }
+
     //endregion
 
 }

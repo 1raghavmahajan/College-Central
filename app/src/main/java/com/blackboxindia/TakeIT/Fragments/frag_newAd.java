@@ -103,7 +103,7 @@ public class frag_newAd extends Fragment {
 
             AdData adData = new AdData(bundle);
 
-            adData.setMajorImage(0);
+            //adData.setMajorImage(0);
             adData.setDescription(etDescription.getText().toString().trim());
 
             NetworkMethods networkMethods = new NetworkMethods(context, ((MainActivity) context).mAuth);

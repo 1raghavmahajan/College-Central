@@ -19,19 +19,16 @@ import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 @SuppressWarnings("VisibleForTests")
-class CloudStorageMethods {
+public class CloudStorageMethods {
 
     private final static String TAG = CloudStorageMethods.class.getSimpleName() + " YOYO";
 
@@ -39,7 +36,7 @@ class CloudStorageMethods {
     private FirebaseStorage storage;
     private FirebaseAuth mAuth;
 
-    CloudStorageMethods(Context context, FirebaseAuth auth) {
+    public CloudStorageMethods(Context context, FirebaseAuth auth) {
         this.context = context;
         mAuth = auth;
         storage = FirebaseStorage.getInstance();
@@ -172,7 +169,7 @@ class CloudStorageMethods {
         });
     }
 
-    void getMajorImage(String AdID, final BitmapDownloadListener listener) {
+    public void getMajorImage(String AdID, final BitmapDownloadListener listener) {
 
         Log.i(TAG,"getMajorImage for AdID: "+ AdID);
 
@@ -194,35 +191,37 @@ class CloudStorageMethods {
 
     }
 
-    void getImages(String AdID) {
 
-        storage = FirebaseStorage.getInstance();
-        StorageReference islandRef = storage.getReference().child("images/"+AdID+"/0s");
+//    void getImages(String AdID ) {
+//
+//        storage = FirebaseStorage.getInstance();
+//        StorageReference islandRef = storage.getReference().child("images/"+AdID+"/0s");
+//
+//        File localFile = null;
+//        try {
+//            localFile = File.createTempFile("img","jpg");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        //context.getExternalFilesDir()
+//
+//        if (localFile != null) {
+//
+//            islandRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                    // Local temp file has been created
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception exception) {
+//                    // Handle any errors
+//                }
+//            });
+//
+//        }
+//
+//    }
 
-        File localFile = null;
-        try {
-            localFile = File.createTempFile("img","jpg");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        //context.getExternalFilesDir()
-
-        if (localFile != null) {
-
-            islandRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    // Local temp file has been created
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
-
-        }
-
-    }
 
 }
