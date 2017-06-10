@@ -18,7 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.blackboxindia.TakeIT.Network.AdListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
@@ -102,7 +102,7 @@ public class frag_newAd extends Fragment {
             bundle.putInt("Price", Integer.valueOf(etPrice.getText().toString()));
 
             AdData adData = new AdData(bundle);
-            //ArrayList<Bitmap> images = adapter.getImages();
+
             adData.setMajorImage(0);
             adData.setDescription(etDescription.getText().toString().trim());
 

@@ -1,10 +1,10 @@
-package com.blackboxindia.TakeIT.Network;
+package com.blackboxindia.TakeIT.Network.Interfaces;
 
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 
 
-public interface onLoginResultListener {
+public interface onLoginListener {
 
     void onSuccess(FirebaseAuth Auth, UserInfo userInfo);
 

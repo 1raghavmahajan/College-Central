@@ -1,4 +1,4 @@
-package com.blackboxindia.TakeIT.Network;
+package com.blackboxindia.TakeIT.Network.Interfaces;
 
 import com.blackboxindia.TakeIT.dataModels.AdData;
 

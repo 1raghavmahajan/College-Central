@@ -2,7 +2,6 @@ package com.blackboxindia.TakeIT.dataModels;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,8 +9,8 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
-import com.blackboxindia.TakeIT.Network.onLoginResultListener;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -21,7 +20,7 @@ public class UserInfo implements Parcelable {
 
     //region Variables
 
-    private Bitmap profile;
+    private String profileIMG;
     private String uID;
     private String name;
     private String email;
@@ -77,7 +76,7 @@ public class UserInfo implements Parcelable {
     public void newUser(String password, final Context context, final ProgressDialog progressDialog) {
 
         NetworkMethods net = new NetworkMethods(context);
-        net.Create_Account(this,password, new onLoginResultListener() {
+        net.Create_Account(this,password, new onLoginListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 if (Auth.getCurrentUser() != null) {
@@ -105,7 +104,7 @@ public class UserInfo implements Parcelable {
     public void login(String email, String password, final Context context, final ProgressDialog progressDialog) {
 
         NetworkMethods net = new NetworkMethods(context);
-        net.Login(email, password, new onLoginResultListener() {
+        net.Login(email, password, new onLoginListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 Log.i("YOYO", "Logged in - OnLogin: " + this.toString());

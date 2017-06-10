@@ -35,12 +35,11 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 
-import static android.content.ContentValues.TAG;
-
 @SuppressWarnings({"WeakerAccess", "JavaDoc", "unused"})
 @SuppressLint("SdCardPath")
 public class ImageUtils {
 
+    private static final String TAG = ImageUtils.class.getSimpleName();
 
     Context context;
     private Activity current_activity;
@@ -143,13 +142,12 @@ public class ImageUtils {
      * @param encodedString
      * @return
      */
-    public Bitmap StringToBitMap(String encodedString) {
+    public static Bitmap StringToBitMap(String encodedString) {
         try {
             byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-            return bitmap;
+            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         } catch (Exception e) {
-            e.getMessage();
+            Log.e(TAG,"StringToBitMap error: ",e);
             return null;
         }
     }
@@ -162,12 +160,11 @@ public class ImageUtils {
      * @return
      */
 
-    public String BitMapToString(Bitmap bitmap) {
+    public static String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 80, baos);
+        bitmap.compress(Bitmap.CompressFormat.WEBP, 75, baos);
         byte[] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
 
