@@ -100,7 +100,7 @@ public class frag_Main extends Fragment {
         StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(gridLayoutManager);
 
-        mainAdapter adapter = new mainAdapter(context,userInfo, mAuth, new mainAdapter.ImageClickListener() {
+        mainAdapter adapter = new mainAdapter(context, mAuth,allAds, new mainAdapter.ImageClickListener() {
 
             @Override
             public void onClick(mainAdapter.adItemViewHolder holder, int position, AdData currentAd) {

@@ -31,7 +31,7 @@ import java.util.ArrayList;
 
 public class frag_newAd extends Fragment {
 
-    private static String TAG = "frag_newAD YOYO";
+    private static String TAG = frag_newAd.class.getSimpleName()+" YOYO";
     private static Integer ADD_PHOTO_CODE = 154;
 
     EditText etTitle,etPrice,etDescription;
@@ -96,26 +96,25 @@ public class frag_newAd extends Fragment {
         userInfo = ((MainActivity)context).userInfo;
         if(userInfo!=null) {
 
-            Bundle bundle = new Bundle();
-            bundle.putString("createdBy", userInfo.getuID());
-            bundle.putString("Title", etTitle.getText().toString().trim());
-            bundle.putInt("Price", Integer.valueOf(etPrice.getText().toString()));
+            AdData adData = new AdData();
 
-            AdData adData = new AdData(bundle);
-
-            //adData.setMajorImage(0);
+            adData.setCreatedBy(userInfo.getuID());
+            adData.setTitle(etTitle.getText().toString().trim());
+            adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
             adData.setDescription(etDescription.getText().toString().trim());
+
+            adData.setNumberOfImages(imgURIs.size());
 
             NetworkMethods networkMethods = new NetworkMethods(context, ((MainActivity) context).mAuth);
             networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
                 @Override
                 public void onSuccess(AdData adData) {
-                    Toast.makeText(context, "onSuccess", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Ad Created Successfully", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(Exception e) {
-                    Toast.makeText(context, "onFailure:", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Error: "+ e.getMessage() , Toast.LENGTH_SHORT).show();
                 }
             });
         }

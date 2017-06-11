@@ -29,7 +29,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 @SuppressWarnings("VisibleForTests")
 public class NetworkMethods {
@@ -271,9 +270,8 @@ public class NetworkMethods {
         }
     }
 
-    private void getAd(AdData AdData, final AdListener listener) {
+    public void getAd(String adID, final AdListener listener) {
 
-        Log.i(TAG, "getAd: onDataChange");
         if(mAuth==null)
         {
             listener.onFailure(new Exception("Not Logged In"));
@@ -284,10 +282,7 @@ public class NetworkMethods {
         }
         else {
 
-            mDatabase = FirebaseDatabase.getInstance().getReference();
-            //String uID = mAuth.getCurrentUser().getUid();
-
-            mDatabase.child("ads").child(AdData.getAdID()).addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabase.child("ads").child(adID).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -310,33 +305,23 @@ public class NetworkMethods {
     public void getAllAds(UserInfo userInfo, Integer max_limit, final getAllAdsListener listener) {
 
         mDatabase.child("ads").limitToLast(max_limit)
-            .addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @SuppressWarnings("unchecked")
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        listener.onSuccess(collectAds((Map<String, Object>) dataSnapshot.getValue()));
-                    }
+        .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<AdData> list = new ArrayList<>();
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    list.add(postSnapshot.getValue(AdData.class));
+                }
+                listener.onSuccess(list);
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        listener.onFailure(databaseError.toException());
-                    }
-                });
-    }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                listener.onFailure(databaseError.toException());
+            }
+        });
 
-    private ArrayList<AdData> collectAds(Map<String,Object> users) {
-
-        ArrayList<AdData> data = new ArrayList<>();
-
-        for (Map.Entry<String, Object> entry : users.entrySet()){
-            //Get user map
-            AdData singleAd = (AdData) entry.getValue();
-            //Get phone field and append to list
-            data.add(singleAd);
-        }
-
-        return data;
     }
 
     //endregion

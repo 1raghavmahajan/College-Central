@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Base64;
+import android.util.Log;
 
 import java.security.MessageDigest;
 import java.security.spec.KeySpec;
@@ -19,6 +20,9 @@ public class UserCred {
     private String email;
     private String pwd;
 
+    public UserCred(){
+
+    }
     public UserCred(String e, String p) {
         email = e;
         pwd = p;
@@ -50,15 +54,18 @@ public class UserCred {
             try {
                 email = CryptoHelper.decrypt(seed, tmp_id);
                 pwd = CryptoHelper.decrypt(seed, tmp_pwd);
+                return true;
             } catch (Exception e) {
                 email = "";
                 pwd = "";
+                return false;
             }
         }
-        return checkBoxValue;
+        return false;
     }
 
-    public void save_cred(Context context) {
+    public boolean save_cred(Context context) {
+        Log.i("YOYO","save_cred: "+ email + " " + pwd);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String tmp_id = "";
@@ -71,13 +78,15 @@ public class UserCred {
             tmp_pwd = CryptoHelper.encrypt(seed, pwd);
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
         editor.putBoolean("CheckBox_Value", true);
         editor.putString("saved_id", tmp_id);
         editor.putString("saved_pwd", tmp_pwd);
         editor.putString("saved_seed", seed);
         editor.apply();
-
+        Log.i("YOYO","save_cred: "+ tmp_id + " " + tmp_pwd );
+        return true;
     }
 
     public void clear_cred(Context context) {
@@ -106,7 +115,7 @@ public class UserCred {
          */
         private static String encrypt(String secretKey, String data) throws Exception {
 
-            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1YOYO");
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             KeySpec spec = new PBEKeySpec(secretKey.toCharArray(), secretKey.getBytes(), 128, 256);
             SecretKey tmp = factory.generateSecret(spec);
             SecretKey key = new SecretKeySpec(tmp.getEncoded(), ALGORITHM);
@@ -127,7 +136,7 @@ public class UserCred {
          */
         private static String decrypt(String secretKey, String data) throws Exception {
 
-            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1YOYO");
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             KeySpec spec = new PBEKeySpec(secretKey.toCharArray(), secretKey.getBytes(), 128, 256);
             SecretKey tmp = factory.generateSecret(spec);
             SecretKey key = new SecretKeySpec(tmp.getEncoded(), ALGORITHM);

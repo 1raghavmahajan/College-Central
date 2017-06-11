@@ -1,6 +1,7 @@
 package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,7 +17,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.Network.Interfaces.onUpdateListener;
+import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
@@ -44,11 +48,9 @@ public class frag_myProfile extends Fragment {
     //region Initial Setup
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_myprofile, container, false);
         context = view.getContext();
-
-        Log.i(TAG,"onCreateView");
 
         initVariables();
 
@@ -64,6 +66,30 @@ public class frag_myProfile extends Fragment {
 
         initCamera();
 
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userInfo.setName(etName.getText().toString().trim());
+                userInfo.setEmail(etEmail.getText().toString().trim());
+                userInfo.setAddress(etAddress.getText().toString().trim());
+                userInfo.setPhone(etPhone.getText().toString().trim());
+                final ProgressDialog show = ProgressDialog.show(context, "Updating..", "", true, false);
+                NetworkMethods methods = new NetworkMethods(context,((MainActivity)context).mAuth);
+                methods.updateUser(userInfo, new onUpdateListener() {
+                    @Override
+                    public void onSuccess(UserInfo userInfo) {
+                        show.cancel();
+                        Toast.makeText(context, "Successfully Updated.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        show.cancel();
+                        Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
 
         return view;
     }
@@ -109,6 +135,7 @@ public class frag_myProfile extends Fragment {
     //endregion
 
     void populateViews() {
+        imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
         etName.setText(userInfo.getName());
         etEmail.setText(userInfo.getEmail());
         etPhone.setText(userInfo.getPhone());

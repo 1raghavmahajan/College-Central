@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -14,6 +15,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,6 +52,7 @@ public class MainActivity extends Activity {
     public final static String NEW_AD_TAG = "NEW_AD";
     public final static String VIEW_AD_TAG = "VIEW_AD";
 
+    public final static String TAG = MainActivity.class.getSimpleName()+" YOYO";
 
     public LinearLayout linearLayout;
     public ProgressBar progressBar;
@@ -87,7 +90,6 @@ public class MainActivity extends Activity {
 
         loadCred();
 
-        setUpMainFragment();
     }
 
     private void loadCred() {
@@ -99,6 +101,7 @@ public class MainActivity extends Activity {
                 @Override
                 public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                     UpdateUI(userInfo,Auth, false);
+                    setUpMainFragment();
                     Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
                 }
 
@@ -111,10 +114,11 @@ public class MainActivity extends Activity {
                         Toast.makeText(context, "Session Expired. Please login again.", Toast.LENGTH_SHORT).show();
                         userCred.clear_cred(context);
                     }
-
+                    setUpMainFragment();
                 }
             });
         }
+        setUpMainFragment();
     }
 
     private void initVariables() {
@@ -122,7 +126,7 @@ public class MainActivity extends Activity {
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
         progressBar = (ProgressBar) findViewById(R.id.progressBarTop);
         fragmentManager = getFragmentManager();
-        context = getApplicationContext();
+        context = this;
     }
 
     private void setUpToolbar() {
@@ -222,12 +226,14 @@ public class MainActivity extends Activity {
 
     //region Movement
 
-    void goToMainFragment() {
+    boolean goToMainFragment() {
 
         showIT();
         if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)!=null) {
 
             if (!fragmentManager.findFragmentByTag(MAIN_FRAG_TAG).isVisible()) {
+
+                Log.i(TAG,"goToMainFragment: main frag not visible");
                 fragmentManager.beginTransaction()
                         .replace(R.id.frame_layout,fragmentManager.findFragmentByTag(MAIN_FRAG_TAG), MAIN_FRAG_TAG)
                         //.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
@@ -236,10 +242,17 @@ public class MainActivity extends Activity {
                         .show(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
+
+                return false;
             }
+            else
+                return true;
         }
-        else
+        else {
+            Log.i(TAG,"setUpMainFragment");
             setUpMainFragment();
+            return false;
+        }
 
     }
 
@@ -307,14 +320,31 @@ public class MainActivity extends Activity {
         }
     }
 
+    boolean twiceToExit = false;
     @Override
     public void onBackPressed() {
         // For closing the Drawer if open onBackPress
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            goToMainFragment();
-            //super.onBackPressed();
+            if(goToMainFragment()) {
+
+                if (twiceToExit) {
+                    finish();
+                }
+
+                this.twiceToExit = true;
+                Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        twiceToExit =false;
+                    }
+                }, 2000);
+
+            }
         }
     }
 
@@ -367,9 +397,9 @@ public class MainActivity extends Activity {
 
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
 
-        navigationViewMenu.getItem(R.id.nav_myAds).setVisible(true);
-        navigationViewMenu.getItem(R.id.nav_manage).setVisible(true);
-        navigationViewMenu.getItem(R.id.nav_profile).setVisible(true);
+        navigationViewMenu.findItem(R.id.nav_myAds).setVisible(true);
+        navigationViewMenu.findItem(R.id.nav_manage).setVisible(true);
+        navigationViewMenu.findItem(R.id.nav_profile).setVisible(true);
 
         if(redirect)
             goToMainFragment();

@@ -39,7 +39,7 @@ import java.util.Date;
 @SuppressLint("SdCardPath")
 public class ImageUtils {
 
-    private static final String TAG = ImageUtils.class.getSimpleName();
+    private static final String TAG = ImageUtils.class.getSimpleName()+" YOYO";
 
     Context context;
     private Activity current_activity;
@@ -361,10 +361,7 @@ public class ImageUtils {
         this.from = from;
 
         if (Build.VERSION.SDK_INT >= 23) {
-            if (isFragment)
-                permission_check_fragment(1);
-            else
-                permission_check(1);
+            permission_check(1);
         } else {
             camera_call();
         }
@@ -381,10 +378,7 @@ public class ImageUtils {
         this.from = from;
 
         if (Build.VERSION.SDK_INT >= 23) {
-            if (isFragment)
-                permission_check_fragment(2);
-            else
-                permission_check(2);
+            permission_check(2);
         } else {
             gallery_call();
         }
@@ -435,56 +429,13 @@ public class ImageUtils {
      */
 
     public void permission_check(final int code) {
+
         int hasWriteContactsPermission = ContextCompat.checkSelfPermission(current_activity,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(current_activity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-
-                showMessageOKCancel("For adding images , You need to provide permission to access your files",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                ActivityCompat.requestPermissions(current_activity,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        code);
-                            }
-                        });
-            } else {
-                ActivityCompat.requestPermissions(current_activity,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        code);
-            }
-            if (code == 1)
-                camera_call();
-            else if (code == 2)
-                gallery_call();
-
-        }
-
-        if (code == 1)
-            camera_call();
-        else if (code == 2)
-            gallery_call();
-    }
-
-
-    /**
-     * Check permission
-     *
-     * @param code
-     */
-
-    public void permission_check_fragment(final int code) {
-        Log.d(TAG, "permission_check_fragment: " + code);
-        int hasWriteContactsPermission = ContextCompat.checkSelfPermission(current_activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(current_activity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(current_activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            {
 
                 showMessageOKCancel("For adding images , You need to provide permission to access your files",
                         new DialogInterface.OnClickListener() {
@@ -500,14 +451,10 @@ public class ImageUtils {
                         new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         code);
             }
-            if (code == 1)
-                camera_call();
-            else if (code == 2)
-                gallery_call();
         }
-        if (code == 1)
+        if(code==1)
             camera_call();
-        else if (code == 2)
+        else if(code==2)
             gallery_call();
     }
 

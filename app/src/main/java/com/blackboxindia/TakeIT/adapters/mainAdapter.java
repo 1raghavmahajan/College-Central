@@ -1,11 +1,14 @@
 package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +16,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
+import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.dataModels.AdData;
-import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHolder> {
+
+    private static String TAG = mainAdapter.class.getSimpleName()+" YOYO";
 
     private static Integer MAX_AD_LIMIT = 30;
 
@@ -34,10 +40,10 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     private CloudStorageMethods methods;
 
-    public mainAdapter(Context context, UserInfo userInfo, FirebaseAuth mAuth, ImageClickListener listener) {
+    public mainAdapter(Context context, FirebaseAuth mAuth, ArrayList<AdData> allAds, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
         methods = new CloudStorageMethods(context, FirebaseAuth.getInstance());
-        //this.userInfo = userInfo;
+        adList = allAds;
         this.mAuth = mAuth;
         mListener = listener;
     }
@@ -85,12 +91,23 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             return majorImage;
         }
 
-        void setData(AdData currentAd, int position, adItemViewHolder holder) {
+        void setData(final AdData currentAd, final int position, adItemViewHolder holder) {
 
             setListeners(currentAd, holder, position);
 //            majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
 
-            new waitClass(majorImage).execute();
+            methods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+                @Override
+                public void onSuccess(Bitmap bitmap) {
+                    if (majorImage != null && currentAd.getNumberOfImages()>0)
+                        majorImage.setImageBitmap(bitmap);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e(TAG,"onFailure #"+position+" ",e);
+                }
+            });
 
             tv_title.setText(currentAd.getTitle());
 
@@ -123,6 +140,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         @Override
         protected Void doInBackground(Void... params) {
 
+            Looper.prepare();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -130,7 +148,8 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
                         final ImageView imageView = imageViewReference.get();
                         if (imageView != null) {
-                            imageView.setImageResource(R.drawable.img_back_new);
+                            Log.i("YOYO","setting");
+                            imageView.setImageResource(R.drawable.ic_add);
                         }
                     }
                 }

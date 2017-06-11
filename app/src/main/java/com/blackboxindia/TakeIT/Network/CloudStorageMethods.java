@@ -25,6 +25,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 @SuppressWarnings("VisibleForTests")
@@ -34,11 +37,9 @@ public class CloudStorageMethods {
 
     private Context context;
     private FirebaseStorage storage;
-    private FirebaseAuth mAuth;
 
     public CloudStorageMethods(Context context, FirebaseAuth auth) {
         this.context = context;
-        mAuth = auth;
         storage = FirebaseStorage.getInstance();
     }
 
@@ -120,9 +121,30 @@ public class CloudStorageMethods {
 
     private void uploadPic(Uri uri, String key, final int i, final KeepTrack listener) {
 
+        InputStream imageStream = null;
+        try {
+            imageStream = context.getContentResolver().openInputStream(
+                    uri);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Bitmap bmp = BitmapFactory.decodeStream(imageStream);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.WEBP, 80, stream);
+        byte[] byteArray = stream.toByteArray();
+        try {
+            stream.close();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
         StorageReference reference = storage.getReference().child("images/" + key + "/" + i);
 
-        reference.putFile(uri)
+        reference.putBytes(byteArray)
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
@@ -190,38 +212,5 @@ public class CloudStorageMethods {
             });
 
     }
-
-
-//    void getImages(String AdID ) {
-//
-//        storage = FirebaseStorage.getInstance();
-//        StorageReference islandRef = storage.getReference().child("images/"+AdID+"/0s");
-//
-//        File localFile = null;
-//        try {
-//            localFile = File.createTempFile("img","jpg");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        //context.getExternalFilesDir()
-//
-//        if (localFile != null) {
-//
-//            islandRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-//                @Override
-//                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-//                    // Local temp file has been created
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception exception) {
-//                    // Handle any errors
-//                }
-//            });
-//
-//        }
-//
-//    }
-
 
 }

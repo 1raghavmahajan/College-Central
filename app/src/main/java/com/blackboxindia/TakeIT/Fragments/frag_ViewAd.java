@@ -20,7 +20,7 @@ public class frag_ViewAd extends Fragment {
 
     //region Variables
     RecyclerView imgRecyclerView;
-    TextView tv_Title, tv_Price;
+    TextView tv_Title, tv_Price, tv_Description;
     View view;
     Context context;
     //endregion
@@ -35,6 +35,7 @@ public class frag_ViewAd extends Fragment {
 
         tv_Title = (TextView) view.findViewById(R.id.Ad_tvTitle);
         tv_Price = (TextView) view.findViewById(R.id.Ad_tvPrice);
+        tv_Description = (TextView) view.findViewById(R.id.Ad_tvDescription);
         imgRecyclerView = (RecyclerView) view.findViewById(R.id.Ad_imgRecycler);
 
         setUpViews();
@@ -44,15 +45,16 @@ public class frag_ViewAd extends Fragment {
 
     void setUpViews() {
 
-        AdData dataMini = new AdData(getArguments());
+        AdData adData = getArguments().getParcelable("adData");
 
-        if (dataMini.getPrice() == 0)
+        if (adData.getPrice() == 0)
             tv_Price.setText(getString(R.string.free));
         else
-            tv_Price.setText(String.format(getString(R.string.currency), dataMini.getPrice()));
+            tv_Price.setText(String.format(getString(R.string.currency), adData.getPrice()));
 
-        tv_Title.setText(dataMini.getTitle());
-        //setUpImgRecycler(dataMini.getMajorImage());
+        tv_Title.setText(adData.getTitle());
+        tv_Description.setText(adData.getDescription());
+        //setUpImgRecycler(adData.getMajorImage());
 
     }
 

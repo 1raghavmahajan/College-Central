@@ -11,11 +11,10 @@ public class AdData implements Parcelable {
     private String title;
     private Integer price;
     private String description;
+    private Integer numberOfImages;
 
-    private Integer nImages;
 
-
-    private AdData() {
+    public AdData() {
         adID = "null";
     }
 
@@ -25,17 +24,7 @@ public class AdData implements Parcelable {
         title = bundle.getString("Title", "title");
         price = bundle.getInt("Price", -1);
         description = bundle.getString("Description","null");
-        nImages = bundle.getInt("nImages",0);
-    }
-
-    /**
-     * Todo:
-     * get all images associated with the specific adID
-     * Async
-     */
-
-    public void getAllData() {
-        //Todo:
+        numberOfImages = bundle.getInt("numberOfImages",0);
     }
 
     //region Getters and Setters
@@ -80,6 +69,14 @@ public class AdData implements Parcelable {
         this.createdBy = createdBy;
     }
 
+    public Integer getNumberOfImages() {
+        return numberOfImages;
+    }
+
+    public void setNumberOfImages(Integer numberOfImages) {
+        this.numberOfImages = numberOfImages;
+    }
+
     //endregion
 
     //region Parcelable
@@ -95,7 +92,7 @@ public class AdData implements Parcelable {
                 this.title,
                 String.valueOf(this.price),
                 this.description,
-                String.valueOf(this.nImages)
+                String.valueOf(this.numberOfImages)
         });
     }
 
@@ -105,7 +102,7 @@ public class AdData implements Parcelable {
         title = in.readString();
         price = Integer.getInteger(in.readString());
         description = in.readString();
-        nImages = Integer.getInteger(in.readString());
+        numberOfImages = Integer.getInteger(in.readString());
     }
 
     public static final Creator<AdData> CREATOR = new Creator<AdData>() {
