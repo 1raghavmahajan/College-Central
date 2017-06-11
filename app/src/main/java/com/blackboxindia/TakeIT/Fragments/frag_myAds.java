@@ -3,7 +3,6 @@ package com.blackboxindia.TakeIT.Fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,17 +45,13 @@ public class frag_myAds extends Fragment {
         view = inflater.inflate(R.layout.frag_myads, container, false);
         context = view.getContext();
 
-        Bundle bundle = getArguments();
-        Parcelable parcelable;
-        if (bundle != null) {
-            parcelable = bundle.getParcelable("UserInfo");
-            if (parcelable != null) {
-                userInfo = (UserInfo) parcelable;
-                userAdKeys = userInfo.getUserAdKeys();
-                mAuth = ((MainActivity)context).mAuth;
-                networkMethods = new NetworkMethods(context,mAuth);
-                setUpRecycler();
-            }
+        if(((MainActivity)context).userInfo!=null) {
+
+            userInfo = ((MainActivity)context).userInfo;
+            userAdKeys = userInfo.getUserAdKeys();
+            mAuth = ((MainActivity)context).mAuth;
+            networkMethods = new NetworkMethods(context,mAuth);
+            setUpRecycler();
         }
 
         return view;

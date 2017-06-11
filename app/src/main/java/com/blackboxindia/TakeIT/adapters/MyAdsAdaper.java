@@ -40,6 +40,7 @@ public class MyAdsAdaper extends RecyclerView.Adapter<MyAdsAdaper.adItemViewHold
     public MyAdsAdaper(Context context, ArrayList<String> keys, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
         cloudStorageMethods = new CloudStorageMethods(context, FirebaseAuth.getInstance());
+        networkMethods = new NetworkMethods(context,FirebaseAuth.getInstance());
         userAds = keys;
         mListener = listener;
     }

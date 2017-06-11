@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -54,14 +53,9 @@ public class frag_myProfile extends Fragment {
 
         initVariables();
 
-        Bundle bundle = getArguments();
-        Parcelable parcelable;
-        if (bundle != null) {
-            parcelable = bundle.getParcelable("UserInfo");
-            if (parcelable != null) {
-                userInfo = (UserInfo) parcelable;
-                populateViews();
-            }
+        if(((MainActivity)context).userInfo!=null) {
+            userInfo = ((MainActivity) context).userInfo;
+            populateViews();
         }
 
         initCamera();

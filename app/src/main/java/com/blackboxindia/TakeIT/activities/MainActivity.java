@@ -30,6 +30,7 @@ import android.widget.Toolbar;
 
 import com.blackboxindia.TakeIT.Fragments.frag_Main;
 import com.blackboxindia.TakeIT.Fragments.frag_loginPage;
+import com.blackboxindia.TakeIT.Fragments.frag_myAds;
 import com.blackboxindia.TakeIT.Fragments.frag_myProfile;
 import com.blackboxindia.TakeIT.Fragments.frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.frag_newAd;
@@ -178,23 +179,19 @@ public class MainActivity extends Activity {
                         goToMainFragment();
                         break;
                     case R.id.nav_manage:
-                        Toast.makeText(context, "Settings Clicked", Toast.LENGTH_SHORT).show();
-                        launchOtherFragment(new frag_loginPage(), LOGIN_PAGE_TAG);
                         break;
                     case R.id.nav_profile:
                         if (userInfo != null) {
-                            frag_myProfile fragMyProfile = new frag_myProfile();
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable("UserInfo", userInfo);
-                            fragMyProfile.setArguments(bundle);
-                            launchOtherFragment(fragMyProfile, MY_PROFILE_TAG);
-                        } else {
                             launchOtherFragment(new frag_myProfile(), MY_PROFILE_TAG);
-                            //Toast.makeText(context, "Please login First", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context, "Please login First", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case R.id.nav_newAccount:
                         launchOtherFragment(new frag_newAccount(), NEW_ACCOUNT_TAG);
+                        break;
+                    case R.id.nav_myAds:
+                        launchOtherFragment(new frag_myAds(),MY_ADS_TAG);
                         break;
                 }
                 return true;
