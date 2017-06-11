@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,6 +35,7 @@ import com.blackboxindia.TakeIT.Fragments.frag_myAds;
 import com.blackboxindia.TakeIT.Fragments.frag_myProfile;
 import com.blackboxindia.TakeIT.Fragments.frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.frag_newAd;
+import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
@@ -72,6 +74,8 @@ public class MainActivity extends Activity {
 
     private UserCred userCred;
 
+    public CloudStorageMethods cloudStorageMethods;
+
     //endregion
 
     //region Initial Setup
@@ -89,29 +93,33 @@ public class MainActivity extends Activity {
 
         setUpFab();
 
-        loadCred();
+        loadData();
 
     }
 
-    private void loadCred() {
+    private void loadData() {
         userCred = new UserCred();
+
         if(userCred.load_Cred(context)) {
 
+            final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
             NetworkMethods methods = new NetworkMethods(context);
             methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
                 @Override
                 public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
-                    UpdateUI(userInfo,Auth, false);
-                    setUpMainFragment();
+                    UpdateUI(userInfo, Auth, false);
+                    dialog.cancel();
                     Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                    setUpMainFragment();
                 }
 
                 @Override
                 public void onFailure(Exception e) {
                     if (e.getMessage().contains("network")) {
+                        dialog.cancel();
                         Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else {
+                        dialog.cancel();
                         Toast.makeText(context, "Session Expired. Please login again.", Toast.LENGTH_SHORT).show();
                         userCred.clear_cred(context);
                     }

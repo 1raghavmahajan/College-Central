@@ -19,7 +19,6 @@ import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.dataModels.AdData;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -36,15 +35,12 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
     private List<AdData> adList;
     private LayoutInflater inflater;
 
-    FirebaseAuth mAuth;
-
     private CloudStorageMethods methods;
 
-    public mainAdapter(Context context, FirebaseAuth mAuth, ArrayList<AdData> allAds, ImageClickListener listener) {
+    public mainAdapter(Context context, ArrayList<AdData> allAds, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
-        methods = new CloudStorageMethods(context, FirebaseAuth.getInstance());
+        methods = new CloudStorageMethods(context);
         adList = allAds;
-        this.mAuth = mAuth;
         mListener = listener;
     }
 
@@ -67,7 +63,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     public interface ImageClickListener {
 
-        void onClick(adItemViewHolder holder, int position, AdData currentAd);
+        void onClick(adItemViewHolder holder, int position, AdData currentAd, Bitmap main);
     }
 
     public class adItemViewHolder extends RecyclerView.ViewHolder{
@@ -77,6 +73,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         TextView tv_Price;
         Context context;
         CardView cardView;
+        Bitmap main;
 
         adItemViewHolder(View itemView) {
             super(itemView);
@@ -94,20 +91,23 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         void setData(final AdData currentAd, final int position, adItemViewHolder holder) {
 
             setListeners(currentAd, holder, position);
-//            majorImage.setImageResource(currentAd.getMajorImage()); //Todo: make the retrieving+setting process aSync
 
-            methods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
-                @Override
-                public void onSuccess(Bitmap bitmap) {
-                    if (majorImage != null && currentAd.getNumberOfImages()>0)
-                        majorImage.setImageBitmap(bitmap);
-                }
+            if(currentAd.getNumberOfImages()>0) {
+                methods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+                    @Override
+                    public void onSuccess(Bitmap bitmap) {
+                        if (majorImage != null){
+                            main = bitmap;
+                            majorImage.setImageBitmap(bitmap);
+                        }
+                    }
 
-                @Override
-                public void onFailure(Exception e) {
-                    Log.e(TAG,"onFailure #"+position+" ",e);
-                }
-            });
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e(TAG, "onFailure #" + position + " ", e);
+                    }
+                });
+            }
 
             tv_title.setText(currentAd.getTitle());
 
@@ -123,7 +123,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onClick(holder, position, currentAd);
+                    mListener.onClick(holder, position, currentAd, main);
                 }
             });
         }
@@ -158,66 +158,5 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             return null;
         }
     }
-
-//    class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
-//
-//        private final WeakReference<ImageView> imageViewReference;
-//        String adID;
-//
-//        public BitmapWorkerTask(ImageView imageView) {
-//            // Use a WeakReference to ensure the ImageView can be garbage
-//            // collected
-//            imageViewReference = new WeakReference<>(imageView);
-//        }
-//
-//        // Decode image in background.
-//        @Override
-//        protected Bitmap doInBackground(String... params) {
-//            adID = params[0];
-//            return LoadImage(imageUrl);
-//        }
-//
-//        // Once complete, see if ImageView is still around and set bitmap.
-//        @Override
-//        protected void onPostExecute(Bitmap bitmap) {
-//            if (imageViewReference != null && bitmap != null) {
-//                final ImageView imageView = imageViewReference.get();
-//                if (imageView != null) {
-//                    imageView.setImageBitmap(bitmap);
-//                }
-//            }
-//        }
-//
-//        private Bitmap LoadImage(String URL) {
-//            Bitmap bitmap = null;
-//            InputStream in = null;
-//            try {
-//                in = OpenHttpConnection(URL);
-//                bitmap = BitmapFactory.decodeStream(in);
-//                in.close();
-//            } catch (IOException e1) {
-//            }
-//            return bitmap;
-//        }
-//
-//        private InputStream OpenHttpConnection(String strURL)
-//                throws IOException {
-//            InputStream inputStream = null;
-//            URL url = new URL(strURL);
-//            URLConnection conn = url.openConnection();
-//
-//            try {
-//                HttpURLConnection httpConn = (HttpURLConnection) conn;
-//                httpConn.setRequestMethod("GET");
-//                httpConn.connect();
-//
-//                if (httpConn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//                    inputStream = httpConn.getInputStream();
-//                }
-//            } catch (Exception ex) {
-//            }
-//            return inputStream;
-//        }
-//    }
 
 }

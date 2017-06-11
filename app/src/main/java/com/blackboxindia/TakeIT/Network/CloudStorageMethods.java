@@ -13,22 +13,26 @@ import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapUploadListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.ImageDownloadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrack;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrackMain;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("VisibleForTests")
 public class CloudStorageMethods {
@@ -38,9 +42,11 @@ public class CloudStorageMethods {
     private Context context;
     private FirebaseStorage storage;
 
-    public CloudStorageMethods(Context context, FirebaseAuth auth) {
+    public CloudStorageMethods(Context context) {
         this.context = context;
         storage = FirebaseStorage.getInstance();
+        cachedBigImages = new HashMap<>();
+        cachedIcons = new HashMap<>();
     }
 
     private ArrayList<Integer> progress;
@@ -191,26 +197,63 @@ public class CloudStorageMethods {
         });
     }
 
+    private Map<String,Bitmap> cachedIcons;
     public void getMajorImage(String AdID, final BitmapDownloadListener listener) {
 
         Log.i(TAG,"getMajorImage for AdID: "+ AdID);
 
-        final long ONE_MEGABYTE = 1024 * 1024;
-        storage.getReference().child("images/"+AdID+"/0s").getBytes(ONE_MEGABYTE)
-            .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    Log.i(TAG,"getMajorImage: onSuccess");
-                    listener.onSuccess(BitmapFactory.decodeByteArray(bytes,0,bytes.length));
-                    }
-            }).addOnFailureListener(new OnFailureListener() {
+        if(cachedIcons.containsKey(AdID)) {
+            listener.onSuccess(cachedIcons.get(AdID));
+        }
+        else {
+            final long ONE_MEGABYTE = 1024 * 1024;
+            storage.getReference().child("images/" + AdID + "/0s").getBytes(ONE_MEGABYTE)
+                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Log.i(TAG, "getMajorImage: onSuccess");
+                            listener.onSuccess(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Log.i(TAG,"getMajorImage: onFailure");
+                    Log.i(TAG, "getMajorImage: onFailure");
                     listener.onFailure(exception);
                 }
             });
-
+        }
     }
 
+    private Map<String,Uri> cachedBigImages;
+    public void getBigImage(final String AdID, final int i, final ImageDownloadListener listener) {
+
+        Log.i(TAG,"getBigImage for AdID: "+ AdID);
+        if(cachedBigImages.containsKey(AdID+i))
+            listener.onSuccess(cachedBigImages.get(AdID+i));
+        else {
+            File localFile;
+            try {
+
+                localFile = File.createTempFile(AdID + i, "webp");
+                final File finalLocalFile = localFile;
+                storage.getReference().child("images/" + AdID + "/" + i).getFile(localFile)
+                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                // Local temp file has been created
+                                cachedBigImages.put(AdID+i,Uri.fromFile(finalLocalFile));
+                                listener.onSuccess(Uri.fromFile(finalLocalFile));
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        listener.onFailure(exception);
+                    }
+                });
+
+            } catch (IOException e) {
+                listener.onFailure(e);
+            }
+        }
+    }
 }

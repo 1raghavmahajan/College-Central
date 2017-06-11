@@ -201,7 +201,7 @@ public class NetworkMethods {
             adData.setAdID(key);
             adData.setCreatedBy(uID);
 
-            final CloudStorageMethods methods = new CloudStorageMethods(context,mAuth);
+            final CloudStorageMethods methods = new CloudStorageMethods(context);
 
             methods.uploadBitmap(key, major, new BitmapUploadListener() {
                 @Override

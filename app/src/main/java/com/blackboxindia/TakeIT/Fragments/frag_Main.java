@@ -3,6 +3,7 @@ package com.blackboxindia.TakeIT.Fragments;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,6 +21,7 @@ import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.adViewTransition;
 import com.blackboxindia.TakeIT.adapters.mainAdapter;
+import com.blackboxindia.TakeIT.cameraIntentHelper.BitmapHelper;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -97,13 +99,12 @@ public class frag_Main extends Fragment {
     private void setUpRecyclerView() {
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.ads_recycler);
-        StaggeredGridLayoutManager gridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
-        mainAdapter adapter = new mainAdapter(context, mAuth,allAds, new mainAdapter.ImageClickListener() {
+        mainAdapter adapter = new mainAdapter(context,allAds, new mainAdapter.ImageClickListener() {
 
             @Override
-            public void onClick(mainAdapter.adItemViewHolder holder, int position, AdData currentAd) {
+            public void onClick(mainAdapter.adItemViewHolder holder, int position, AdData currentAd, Bitmap main) {
 
                 frag_ViewAd fragViewAd = new frag_ViewAd();
 
@@ -115,6 +116,7 @@ public class frag_Main extends Fragment {
                 Bundle args = new Bundle();
 
                 args.putParcelable("adData",allAds.get(position));
+                args.putByteArray("major", BitmapHelper.bitmapToByteArray(main));
 
                 fragViewAd.setArguments(args);
 

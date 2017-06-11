@@ -4,8 +4,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,7 +59,7 @@ public class frag_myAds extends Fragment {
 
     private void setUpRecycler() {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.myads_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         MyAdsAdaper myAdsAdaper = new MyAdsAdaper(context, userAdKeys, new MyAdsAdaper.ImageClickListener() {
             @Override
             public void onClick(MyAdsAdaper.adItemViewHolder holder, int position, AdData currentAd) {
