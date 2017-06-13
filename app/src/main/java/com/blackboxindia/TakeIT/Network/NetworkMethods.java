@@ -14,6 +14,7 @@ import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onUpdateListener;
 import com.blackboxindia.TakeIT.dataModels.AdData;
+import com.blackboxindia.TakeIT.dataModels.UserCred;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -61,7 +62,7 @@ public class NetworkMethods {
 
     //region User Related
 
-    public void Create_Account(final UserInfo userInfo, String password, final onLoginListener loginListener) {
+    public void Create_Account(final UserInfo userInfo, final String password, final onLoginListener loginListener) {
 
         mAuth.createUserWithEmailAndPassword(userInfo.getEmail(), password)
                 .addOnCompleteListener((Activity)context, new OnCompleteListener<AuthResult>() {
@@ -70,6 +71,8 @@ public class NetworkMethods {
                         if (task.isSuccessful()) {
                             Log.i(TAG, "Create Account Successful: " + userInfo.toString());
                             addDetailsToDB(userInfo);
+                            UserCred userCred = new UserCred(userInfo.getEmail(),password);
+                            userCred.save_cred(context);
                             loginListener.onSuccess(mAuth, userInfo);
 
                         } else {

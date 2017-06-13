@@ -56,5 +56,6 @@
     <string name="pass_min_size">Minimum %1$d characters required.</string>
     <string name="add_photo">Add Photo</string>
     <string name="save_cred">Keep me logged in</string>
+    <string name="logout">Logout</string>
 
 </resources>

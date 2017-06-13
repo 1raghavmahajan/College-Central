@@ -63,15 +63,14 @@ public class UserInfo implements Parcelable {
         }
     }
 
-    public UserInfo(String uID, String name, String email, String address, String phone) {
-        this.uID = uID;
+    //endregion
+
+    public void setData(String name, String email, String address, String phone) {
         this.name = name;
         this.email = email;
         this.address = address;
         this.phone = phone;
     }
-
-    //endregion
 
     public void newUser(String password, final Context context, final ProgressDialog progressDialog) {
 
@@ -84,6 +83,7 @@ public class UserInfo implements Parcelable {
                     Log.i("YOYO", "newUser onSuccess: " + this.toString());
                     MainActivity mainActivity = (MainActivity) context;
                     mainActivity.UpdateUI(userInfo, Auth);
+                    Toast.makeText(mainActivity, "Account Creation Successful", Toast.LENGTH_SHORT).show();
                 }
             }
 

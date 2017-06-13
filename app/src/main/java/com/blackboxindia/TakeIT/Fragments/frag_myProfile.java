@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,19 +92,21 @@ public class frag_myProfile extends Fragment {
         imageUtils = new ImageUtils(getActivity(), this, true, new ImageUtils.ImageAttachmentListener() {
             @Override
             public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-                Log.i("YOYO", filename);
-                int h = file.getHeight(), w = file.getWidth();
-                if (h > w) {
-                    Log.i("YOYO", "h>w");
-                    file = Bitmap.createBitmap(file, 0, (h - w) / 2, w, w);
-                } else if (w > h) {
-                    Log.i("YOYO", "h<w");
-                    file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
+
+                if(from == PICK_PHOTO_CODE) {
+                    int h = file.getHeight(), w = file.getWidth();
+                    if (h > w) {
+                        file = Bitmap.createBitmap(file, 0, (h - w) / 2, w, w);
+                    } else if (w > h) {
+                        file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
+                    }
+                    userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
+                    if (imageView.getDrawable() != null)
+                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
+                    imageView.setImageBitmap(file);
                 }
-                userInfo.setProfileIMG(ImageUtils.BitMapToString(file,75));
-                if(imageView.getDrawable() !=null)
-                    ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
-                imageView.setImageBitmap(file);
+                else
+                    Toast.makeText(context, "Some error occurred. Request Code mismatch.", Toast.LENGTH_SHORT).show();
             }
         });
 

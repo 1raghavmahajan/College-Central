@@ -25,6 +25,11 @@
             android:visible="false"
             android:title="@string/settings" />
         <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:visible="false"
+            android:title="@string/logout"/>
+        <item
             android:id="@+id/nav_newAccount"
             android:icon="@drawable/ic_new"
             android:title="@string/new_account" />

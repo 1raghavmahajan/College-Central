@@ -6,7 +6,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -201,6 +200,9 @@ public class MainActivity extends Activity {
                         break;
                     case R.id.nav_myAds:
                         launchOtherFragment(new frag_myAds(),MY_ADS_TAG);
+                        break;
+                    case R.id.nav_logout:
+                        //Todo:
                         break;
                 }
                 return true;
@@ -399,8 +401,8 @@ public class MainActivity extends Activity {
         ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(userInfo.getProfileIMG()!= null)
             if(!userInfo.getProfileIMG().equals("null")) {
-                if(imageView.getDrawable() !=null)
-                    ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
+//                if(imageView.getDrawable() !=null)
+//                    ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
                 imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
             }
 
@@ -409,6 +411,8 @@ public class MainActivity extends Activity {
         navigationViewMenu.findItem(R.id.nav_myAds).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_manage).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_profile).setVisible(true);
+        navigationViewMenu.findItem(R.id.nav_logout).setVisible(true);
+        navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(false);
 
         if(redirect)
             goToMainFragment();
