@@ -2,6 +2,7 @@ package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -98,6 +99,8 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
                     public void onSuccess(Bitmap bitmap) {
                         if (majorImage != null){
                             main = bitmap;
+                            if(majorImage.getDrawable() !=null)
+                                ((BitmapDrawable)majorImage.getDrawable()).getBitmap().recycle();
                             majorImage.setImageBitmap(bitmap);
                         }
                     }

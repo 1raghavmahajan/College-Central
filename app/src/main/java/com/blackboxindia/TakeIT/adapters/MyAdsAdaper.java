@@ -2,6 +2,7 @@ package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -107,8 +108,11 @@ public class MyAdsAdaper extends RecyclerView.Adapter<MyAdsAdaper.adItemViewHold
             cloudStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
                 @Override
                 public void onSuccess(Bitmap bitmap) {
-                    if (majorImage != null && currentAd.getNumberOfImages()>0)
+                    if (majorImage != null && currentAd.getNumberOfImages()>0) {
+                        if(majorImage.getDrawable() !=null)
+                            ((BitmapDrawable)majorImage.getDrawable()).getBitmap().recycle();
                         majorImage.setImageBitmap(bitmap);
+                    }
                 }
 
                 @Override

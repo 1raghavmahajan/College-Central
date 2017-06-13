@@ -3,6 +3,7 @@ package com.blackboxindia.TakeIT.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,23 +20,21 @@ import com.blackboxindia.TakeIT.Network.Interfaces.ImageDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 
-import java.util.ArrayList;
-
 public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.imgViewHolder> {
 
     private static final String TAG = ViewAdImageAdapter.class.getSimpleName()+" YOYO";
     private LayoutInflater inflater;
-    private ArrayList<Uri> images;
     private AdData adData;
     private Bitmap main;
+    private Context context;
     private CloudStorageMethods methods;
 
     public ViewAdImageAdapter(Context context, AdData adData, Bitmap main, CloudStorageMethods methods) {
         inflater = LayoutInflater.from(context);
+        this.context  = context;
         this.adData = adData;
         this.main = main;
         this.methods = methods;
-        images = new ArrayList<>(adData.getNumberOfImages());
     }
 
     @Override
@@ -69,16 +68,19 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
 
         void setData(final Integer position) {
             imageView.setTransitionName("adImage" + position);
-            if(position==0) {
-                progressBar.setVisibility(View.INVISIBLE);
-                imageView.setImageBitmap(main);
-                imageView.setVisibility(View.VISIBLE);
-            }
+//            if(position==0) {
+//                progressBar.setVisibility(View.INVISIBLE);
+//                imageView.setImageBitmap(main);
+//                imageView.setVisibility(View.VISIBLE);
+//            }
             methods.getBigImage(adData.getAdID(), position, new ImageDownloadListener() {
                 @Override
                 public void onSuccess(Uri uri) {
+
                     Bitmap bitmap = BitmapFactory.decodeFile(uri.getPath());
                     progressBar.setVisibility(View.INVISIBLE);
+                    if(imageView.getDrawable() !=null)
+                        ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
                     imageView.setImageBitmap(bitmap);
                     imageView.setVisibility(View.VISIBLE);
                 }

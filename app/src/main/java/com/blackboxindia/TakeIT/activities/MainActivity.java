@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -397,8 +398,11 @@ public class MainActivity extends Activity {
         ((TextView) findViewById(R.id.nav_email)).setText(userInfo.getEmail());
         ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(userInfo.getProfileIMG()!= null)
-            if(!userInfo.getProfileIMG().equals("null"))
+            if(!userInfo.getProfileIMG().equals("null")) {
+                if(imageView.getDrawable() !=null)
+                    ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
                 imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
+            }
 
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
 

@@ -23,7 +23,7 @@
                 android:id="@+id/adItem_Image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/img_back"
+                android:src="@drawable/ad_img_placeholder"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"/>
             <TextView

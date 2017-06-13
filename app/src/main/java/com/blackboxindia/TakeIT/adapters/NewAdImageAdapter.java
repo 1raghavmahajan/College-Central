@@ -2,6 +2,7 @@ package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +59,8 @@ public class NewAdImageAdapter extends RecyclerView.Adapter<NewAdImageAdapter.im
         }
 
         void setData(Integer position) {
+            if(imageView.getDrawable() !=null)
+                ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
             imageView.setImageBitmap(images.get(position));
             //imageView.setTransitionName("adImage" + position);
         }

@@ -108,7 +108,7 @@ public class ImageUtils {
      * @return
      */
 
-    public Uri getImageUri(Context context, Bitmap photo) {
+    public static Uri getImageUri(Context context, Bitmap photo) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         photo.compress(Bitmap.CompressFormat.PNG, 80, bytes);
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), photo, "Title", null);
@@ -193,8 +193,22 @@ public class ImageUtils {
 
 
     public Bitmap compressImage(String imageUri, float height, float width) {
+        return compressImage(imageUri, height, width,this.context);
+    }
 
-        String filePath = getRealPathFromURI(imageUri);
+    /**
+     * Compress Imgae
+     *
+     * @param imageUri
+     * @param height
+     * @param width
+     * @return
+     */
+
+
+    public static Bitmap compressImage(String imageUri, float height, float width, Context context ) {
+
+        String filePath = getRealPathFromURI(imageUri, context);
         Bitmap scaledBitmap = null;
 
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -306,9 +320,10 @@ public class ImageUtils {
      * Get RealPath from Content URI
      *
      * @param contentURI
+     * @param context
      * @return
      */
-    private String getRealPathFromURI(String contentURI) {
+    private static String getRealPathFromURI(String contentURI, Context context) {
         Uri contentUri = Uri.parse(contentURI);
         Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
         if (cursor == null) {
@@ -332,7 +347,7 @@ public class ImageUtils {
      * @return
      */
 
-    public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
@@ -577,7 +592,7 @@ public class ImageUtils {
 
                     try {
                         Log.i("YOYO", "name" + file_name);
-                        bitmap = compressImage(imageUri.toString(), 816, 612);
+                        bitmap = compressImage(imageUri.toString(), 512, 512);
                         imageAttachment_callBack.image_attachment(from, file_name, bitmap, imageUri);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -638,7 +653,7 @@ public class ImageUtils {
 
         try {
 
-            path = getRealPathFromURI(uri.getPath());
+            path = getRealPathFromURI(uri.getPath(), context);
             file_name = path.substring(path.lastIndexOf("/") + 1);
         } catch (Exception e) {
             e.printStackTrace();

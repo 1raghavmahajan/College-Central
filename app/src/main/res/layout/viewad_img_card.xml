@@ -3,17 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
     android:layout_margin="3dp"
     android:minWidth="200dp"
-    android:maxHeight="250dp">
+    android:minHeight="200dp"
+    android:maxHeight="300dp">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:minWidth="200dp"
-        android:maxHeight="250dp"
+        android:minHeight="200dp"
+        android:maxHeight="300dp"
         >
         <ImageView
             android:id="@+id/imgCard_img"

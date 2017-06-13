@@ -17,6 +17,8 @@ import com.blackboxindia.TakeIT.Network.Interfaces.ImageDownloadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrack;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrackMain;
 import com.blackboxindia.TakeIT.activities.MainActivity;
+import com.blackboxindia.TakeIT.cameraIntentHelper.BitmapHelper;
+import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
@@ -27,9 +29,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -127,30 +127,10 @@ public class CloudStorageMethods {
 
     private void uploadPic(Uri uri, String key, final int i, final KeepTrack listener) {
 
-        InputStream imageStream = null;
-        try {
-            imageStream = context.getContentResolver().openInputStream(
-                    uri);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        Bitmap bmp = BitmapFactory.decodeStream(imageStream);
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.WEBP, 80, stream);
-        byte[] byteArray = stream.toByteArray();
-        try {
-            stream.close();
-
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
+        Bitmap bmp = ImageUtils.compressImage(uri.toString(), 800,800, context );
 
         StorageReference reference = storage.getReference().child("images/" + key + "/" + i);
-
-        reference.putBytes(byteArray)
+        reference.putBytes(BitmapHelper.bitmapToByteArray(bmp))
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
@@ -228,19 +208,24 @@ public class CloudStorageMethods {
     public void getBigImage(final String AdID, final int i, final ImageDownloadListener listener) {
 
         Log.i(TAG,"getBigImage for AdID: "+ AdID);
-        if(cachedBigImages.containsKey(AdID+i))
-            listener.onSuccess(cachedBigImages.get(AdID+i));
+        if(cachedBigImages.containsKey(AdID + i)) {
+            Log.i(TAG,"cachedBigImages "+ AdID + i );
+            listener.onSuccess(cachedBigImages.get(AdID + i));
+        }
         else {
+            Log.i(TAG,"Getting image from internet "+ AdID + i );
             File localFile;
             try {
 
-                localFile = File.createTempFile(AdID + i, "webp");
+                localFile = File.createTempFile(AdID + i, ".bmp");
                 final File finalLocalFile = localFile;
                 storage.getReference().child("images/" + AdID + "/" + i).getFile(localFile)
                         .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                 // Local temp file has been created
+                                Log.i(TAG,"Image size: "+(taskSnapshot.getBytesTransferred()/(1024*1024)));
+                                Log.i(TAG,"Uri: "+(Uri.fromFile(finalLocalFile)).toString());
                                 cachedBigImages.put(AdID+i,Uri.fromFile(finalLocalFile));
                                 listener.onSuccess(Uri.fromFile(finalLocalFile));
                             }
