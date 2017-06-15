@@ -16,7 +16,7 @@
 
     <string name="free">Free</string>
     <string name="currency">Rs %1$d</string>
-    <string name="maxTitle">123456789123456789123456789123456789</string>
+    <string name="sampleTitle">Title</string>
 
     <string name="labelDescription">Description:</string>
 

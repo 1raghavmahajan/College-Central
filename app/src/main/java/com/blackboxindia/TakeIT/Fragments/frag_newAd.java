@@ -114,7 +114,7 @@ public class frag_newAd extends Fragment {
             networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
                 @Override
                 public void onSuccess(AdData adData) {
-                    ((MainActivity)context).goToMainFragment(false);
+                    ((MainActivity)context).goToMainFragment(false, true);
                     Toast.makeText(context, "Ad Created Successfully", Toast.LENGTH_SHORT).show();
                 }
 

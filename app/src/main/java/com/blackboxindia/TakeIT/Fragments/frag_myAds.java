@@ -2,11 +2,11 @@ package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,6 @@ import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.MyAdsAdaper;
-import com.blackboxindia.TakeIT.adapters.adViewTransition;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +34,8 @@ public class frag_myAds extends Fragment {
     FirebaseAuth mAuth;
 
     ArrayList<String> userAdKeys;
+
+    public Bitmap current;
 
     //endregion
 
@@ -65,11 +66,6 @@ public class frag_myAds extends Fragment {
             public void onClick(MyAdsAdaper.adItemViewHolder holder, int position, AdData currentAd) {
                 frag_ViewAd fragViewAd = new frag_ViewAd();
 
-                fragViewAd.setSharedElementEnterTransition(new adViewTransition());
-                fragViewAd.setEnterTransition(new Fade());
-                setExitTransition(new Fade());
-                fragViewAd.setSharedElementReturnTransition(new adViewTransition());
-
                 Bundle args = new Bundle();
 
                 args.putParcelable("adData",currentAd);
@@ -78,13 +74,18 @@ public class frag_myAds extends Fragment {
 
                 getActivity().getFragmentManager()
                         .beginTransaction()
-                        .addSharedElement(holder.getMajorImage(), "adImage0")
                         .replace(R.id.frame_layout, fragViewAd, MainActivity.VIEW_AD_TAG)
                         .addToBackStack(null)
                         .commit();
             }
         });
         recyclerView.setAdapter(myAdsAdaper);
+    }
+
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideIT();
+        super.onResume();
     }
 
 }

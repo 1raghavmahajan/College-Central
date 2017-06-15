@@ -268,10 +268,10 @@ public class MainActivity extends Activity {
     //region Movement
 
     boolean goToMainFragment() {
-        return goToMainFragment(false);
+        return goToMainFragment(false, false);
     }
 
-    public boolean goToMainFragment(Boolean clearAll) {
+    public boolean goToMainFragment(Boolean clearAll, Boolean toRefresh) {
 
         showIT();
         if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)!=null) {
@@ -289,14 +289,14 @@ public class MainActivity extends Activity {
                         .commit();
                 if (clearAll)
                     ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
-                else
+                else if (toRefresh)
                     ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
                 return false;
             }
             else {
                 if (clearAll)
                     ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
-                else
+                else if (toRefresh)
                     ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
                 return true;
             }
@@ -488,7 +488,7 @@ public class MainActivity extends Activity {
         navigationViewMenu.findItem(R.id.nav_logout).setVisible(false);
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(true);
 
-        goToMainFragment(true);
+        goToMainFragment(true, false);
         Toast.makeText(context, "Logged out!", Toast.LENGTH_SHORT).show();
     }
 

@@ -28,6 +28,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
+import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_AD_TAG;
+
 public class frag_Main extends Fragment {
 
     private static String TAG = frag_Main.class.getSimpleName() + " YOYO";
@@ -124,12 +126,24 @@ public class frag_Main extends Fragment {
 
                 fragViewAd.setArguments(args);
 
-                getActivity().getFragmentManager()
-                        .beginTransaction()
-                        .addSharedElement(holder.getMajorImage(), "adImage0")
-                        .replace(R.id.frame_layout, fragViewAd, MainActivity.VIEW_AD_TAG)
-                        .addToBackStack(null)
-                        .commit();
+                ((MainActivity)context).launchOtherFragment(fragViewAd,VIEW_AD_TAG);
+
+//                FragmentManager fragmentManager = getActivity().getFragmentManager();
+//                fragmentManager.beginTransaction()
+//                                .hide(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))
+//                                .commit();
+//
+//                fragmentManager.beginTransaction()
+//                        //.addSharedElement(holder.getMajorImage(), "adImage0")
+//                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                        .add(R.id.frame_layout, fragViewAd, MainActivity.VIEW_AD_TAG)
+//                        .commit();
+
+//                fragmentManager.beginTransaction()
+//                        .addSharedElement(holder.getMajorImage(), "adImage0")
+//                        .replace(R.id.frame_layout, fragViewAd, MainActivity.VIEW_AD_TAG)
+//                        .addToBackStack(null)
+//                        .commit();
 
             }
         });

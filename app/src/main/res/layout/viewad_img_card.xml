@@ -3,29 +3,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="250dp"
     app:cardCornerRadius="5dp"
     android:layout_margin="3dp"
-    android:minHeight="200dp"
-    android:maxHeight="300dp">
+    >
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
         <ImageView
             android:id="@+id/imgCard_img"
             android:src="@drawable/ad_img_placeholder"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:minHeight="200dp"
-            android:maxHeight="300dp"
             />
-        </LinearLayout>
         <ImageButton
             android:id="@+id/imgCard_button"
             android:layout_width="wrap_content"

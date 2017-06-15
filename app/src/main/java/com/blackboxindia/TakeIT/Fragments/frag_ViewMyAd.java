@@ -2,9 +2,7 @@ package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,19 +14,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
-import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
-import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdData;
-import com.blackboxindia.TakeIT.dataModels.UserInfo;
-import com.google.firebase.auth.FirebaseAuth;
 
-public class frag_ViewAd extends Fragment {
+public class frag_ViewMyAd extends Fragment {
 
     //region Variables
-    private static String TAG = frag_ViewAd.class.getSimpleName() +" YOYO";
+    private static String TAG = frag_ViewMyAd.class.getSimpleName() +" YOYO";
     RecyclerView imgRecyclerView;
     TextView tv_Title, tv_Price, tv_Description;
     TextView tv_Name, tv_Address, tv_Phone;
@@ -80,29 +74,6 @@ public class frag_ViewAd extends Fragment {
             tv_Title.setText(adData.getTitle());
             tv_Description.setText(adData.getDescription());
 
-            NetworkMethods networkMethods = new NetworkMethods(context, FirebaseAuth.getInstance());
-            networkMethods.getUserDetails(adData.getCreatedBy(), new onLoginListener() {
-                @Override
-                public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
-                    tv_Name.setText(userInfo.getName());
-                    tv_Address.setText(userInfo.getAddress());
-                    tv_Phone.setText(userInfo.getPhone());
-                    tv_Phone.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                            intent.setData(Uri.parse("tel:"+tv_Phone.getText()));
-                            startActivity(intent);
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    Log.e(TAG,"getUserDetails failed",e);
-                }
-            });
-
             setUpImgRecycler();
         }
         else
@@ -110,7 +81,7 @@ public class frag_ViewAd extends Fragment {
     }
 
     void setUpImgRecycler() {
-        main = ((frag_Main)(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).current;
+        main = ((frag_myAds)(getFragmentManager().findFragmentByTag(MainActivity.MY_ADS_TAG))).current;
         ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, cloudStorageMethods);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);
