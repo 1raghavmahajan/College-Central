@@ -37,15 +37,13 @@
         app:layout_constraintBaseline_toBaselineOf="@id/nav_Name"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/nav_profileImg"
-        android:layout_width="70dp"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/label_Profile_image"
-        android:src="@drawable/thumb_human"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/Profile_image"
+        android:src="@drawable/sample_profile_image"
         app:layout_constraintBottom_toTopOf="@id/nav_Name"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

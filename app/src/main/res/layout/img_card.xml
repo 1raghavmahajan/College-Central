@@ -14,6 +14,7 @@
         android:src="@drawable/ad_img_placeholder"
         />
     <ImageButton
+        android:id="@+id/imgCard_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"

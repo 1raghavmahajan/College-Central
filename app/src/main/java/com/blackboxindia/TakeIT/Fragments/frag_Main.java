@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,6 @@ import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.adViewTransition;
 import com.blackboxindia.TakeIT.adapters.mainAdapter;
-import com.blackboxindia.TakeIT.cameraIntentHelper.BitmapHelper;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +40,8 @@ public class frag_Main extends Fragment {
     FirebaseAuth mAuth;
     SwipeRefreshLayout swipeRefreshLayout;
 
+    RecyclerView recyclerView;
+    Bitmap current;
     ArrayList<AdData> allAds;
     //endregion
 
@@ -64,7 +66,9 @@ public class frag_Main extends Fragment {
         return view;
     }
 
-    void refresh() {
+    public void refresh() {
+
+        Log.i(TAG,"refreshed");
 
         userInfo = ((MainActivity)context).userInfo;
         mAuth = ((MainActivity)context).mAuth;
@@ -80,7 +84,7 @@ public class frag_Main extends Fragment {
     private void getAllAds() {
         final ProgressDialog dialog = ProgressDialog.show(context, "Just a sec", "Getting the good stuff", true, false);
 
-        networkMethods.getAllAds(userInfo, 30 ,new getAllAdsListener() {
+        networkMethods.getAllAds( 30 ,new getAllAdsListener() {
             @Override
             public void onSuccess(ArrayList<AdData> list) {
                 allAds = list;
@@ -98,7 +102,7 @@ public class frag_Main extends Fragment {
 
     private void setUpRecyclerView() {
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.ads_recycler);
+        recyclerView = (RecyclerView) view.findViewById(R.id.ads_recycler);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
         mainAdapter adapter = new mainAdapter(context,allAds, new mainAdapter.ImageClickListener() {
@@ -116,7 +120,7 @@ public class frag_Main extends Fragment {
                 Bundle args = new Bundle();
 
                 args.putParcelable("adData",allAds.get(position));
-                args.putByteArray("major", BitmapHelper.bitmapToByteArray(main));
+                current = main;
 
                 fragViewAd.setArguments(args);
 
@@ -130,6 +134,11 @@ public class frag_Main extends Fragment {
             }
         });
         recyclerView.setAdapter(adapter);
+        Log.i(TAG, "getMaxFlingVelocity: "+String.valueOf(recyclerView.getMaxFlingVelocity()));
+    }
+
+    public void clearRecycler() {
+        recyclerView.swapAdapter(null,true);
     }
 
 }

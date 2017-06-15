@@ -6,13 +6,16 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -64,6 +67,7 @@ public class MainActivity extends Activity {
     FragmentManager fragmentManager;
     Toolbar toolbar;
     CollapsingToolbarLayout cTLayout;
+    CoordinatorLayout coordinatorLayout;
     DrawerLayout drawer;
     FloatingActionButton fab;
     NavigationView navigationView;
@@ -71,8 +75,6 @@ public class MainActivity extends Activity {
 
     public FirebaseAuth mAuth;
     public UserInfo userInfo;
-
-    private UserCred userCred;
 
     public CloudStorageMethods cloudStorageMethods;
 
@@ -98,7 +100,7 @@ public class MainActivity extends Activity {
     }
 
     private void loadData() {
-        userCred = new UserCred();
+        UserCred userCred = new UserCred();
 
         if(userCred.load_Cred(context)) {
 
@@ -121,27 +123,48 @@ public class MainActivity extends Activity {
                     } else {
                         dialog.cancel();
                         Toast.makeText(context, "Session Expired. Please login again.", Toast.LENGTH_SHORT).show();
-                        userCred.clear_cred(context);
+                        UserCred.clear_cred(context);
                     }
                     setUpMainFragment();
                 }
             });
         }
-        setUpMainFragment();
+        else {
+            Snackbar.make(coordinatorLayout, "Please Login to continue", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Login", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            launchOtherFragment(new frag_loginPage(), LOGIN_PAGE_TAG);
+                        }
+                    }).show();
+            setUpMainFragment();
+        }
     }
 
     private void initVariables() {
         linearLayout = (LinearLayout) findViewById(R.id.appbar_extra);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
         progressBar = (ProgressBar) findViewById(R.id.progressBarTop);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
         fragmentManager = getFragmentManager();
         context = this;
     }
 
     private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_add);
+        //toolbar.setNavigationIcon(R.drawable.ic_add);
+        toolbar.inflateMenu(R.menu.toolbar_menu);
+        toolbar.setTitle(R.string.app_name);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Log.i(TAG,"onMenuItemClick "+ item.getItemId());
+                return true;
+            }
+        });
         setActionBar(toolbar);
+//        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,7 +225,7 @@ public class MainActivity extends Activity {
                         launchOtherFragment(new frag_myAds(),MY_ADS_TAG);
                         break;
                     case R.id.nav_logout:
-                        //Todo:
+                        NetworkMethods.Logout(context);
                         break;
                 }
                 return true;
@@ -225,7 +248,17 @@ public class MainActivity extends Activity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchOtherFragment(new frag_newAd(), NEW_AD_TAG);
+                if(mAuth==null) {
+                    Snackbar.make(coordinatorLayout, "Please Login to continue", Snackbar.LENGTH_LONG)
+                            .setAction("Login", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    launchOtherFragment(new frag_loginPage(), LOGIN_PAGE_TAG);
+                                }
+                            }).show();
+                }
+                else
+                    launchOtherFragment(new frag_newAd(), NEW_AD_TAG);
             }
         });
     }
@@ -235,6 +268,10 @@ public class MainActivity extends Activity {
     //region Movement
 
     boolean goToMainFragment() {
+        return goToMainFragment(false);
+    }
+
+    public boolean goToMainFragment(Boolean clearAll) {
 
         showIT();
         if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)!=null) {
@@ -250,11 +287,19 @@ public class MainActivity extends Activity {
                         .show(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
-
+                if (clearAll)
+                    ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
+                else
+                    ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
                 return false;
             }
-            else
+            else {
+                if (clearAll)
+                    ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
+                else
+                    ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
                 return true;
+            }
         }
         else {
             Log.i(TAG,"setUpMainFragment");
@@ -379,7 +424,6 @@ public class MainActivity extends Activity {
         cTLayout.setLayoutParams(params);
     }
 
-
     public void UpdateUI(UserInfo userInfo, FirebaseAuth auth) {
         UpdateUI(userInfo, auth, true);
     }
@@ -390,32 +434,62 @@ public class MainActivity extends Activity {
 
     public void UpdateUI(UserInfo userInfo, FirebaseAuth auth, Boolean redirect) {
 
-        if(auth!=null)
+        if(auth!=null) {
             mAuth = auth;
-
+        }
         this.userInfo = userInfo;
 
         //Drawer
         ((TextView) findViewById(R.id.nav_Name)).setText(userInfo.getName());
         ((TextView) findViewById(R.id.nav_email)).setText(userInfo.getEmail());
         ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
-        if(userInfo.getProfileIMG()!= null)
-            if(!userInfo.getProfileIMG().equals("null")) {
-//                if(imageView.getDrawable() !=null)
-//                    ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
+        if(userInfo.getProfileIMG()!= null) {
+            if (!userInfo.getProfileIMG().equals("null")) {
                 imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
+            } else {
+                imageView.setImageResource(R.drawable.sample_profile_image);
             }
+        }
+        else {
+            imageView.setImageResource(R.drawable.sample_profile_image);
+        }
 
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
 
         navigationViewMenu.findItem(R.id.nav_myAds).setVisible(true);
-        navigationViewMenu.findItem(R.id.nav_manage).setVisible(true);
+        //navigationViewMenu.findItem(R.id.nav_manage).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_profile).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_logout).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(false);
 
         if(redirect)
             goToMainFragment();
+
+    }
+
+    public void UpdateUIonLogout() {
+        mAuth = null;
+        this.userInfo = null;
+
+        //Drawer
+        ((TextView) findViewById(R.id.nav_Name)).setText(R.string.sample_ID);
+        ((TextView) findViewById(R.id.nav_email)).setText(R.string.sample_email);
+        ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
+        if(imageView.getDrawable() !=null) {
+            ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
+            imageView.setImageResource(R.drawable.sample_profile_image);
+        }
+
+        (findViewById(R.id.nav_btnLogin)).setVisibility(View.VISIBLE);
+
+        navigationViewMenu.findItem(R.id.nav_myAds).setVisible(false);
+        //navigationViewMenu.findItem(R.id.nav_manage).setVisible(false);
+        navigationViewMenu.findItem(R.id.nav_profile).setVisible(false);
+        navigationViewMenu.findItem(R.id.nav_logout).setVisible(false);
+        navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(true);
+
+        goToMainFragment(true);
+        Toast.makeText(context, "Logged out!", Toast.LENGTH_SHORT).show();
     }
 
 }

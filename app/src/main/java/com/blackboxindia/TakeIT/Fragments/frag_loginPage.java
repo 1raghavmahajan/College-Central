@@ -58,6 +58,8 @@ public class frag_loginPage extends Fragment {
         chkSave = (CheckBox) view.findViewById(R.id.login_chkSave);
 
         tvCreateNew = (TextView) view.findViewById(R.id.login_tvCreate);
+
+        etID.requestFocus();
     }
 
     private void setListeners() {
@@ -107,7 +109,7 @@ public class frag_loginPage extends Fragment {
         int Min_Password_Size = getResources().getInteger(R.integer.Min_Password_Size);
         if(password.length()<Min_Password_Size)
         {
-            inputLayoutPassword.setError("Minimum"+Min_Password_Size+"characters required.");
+            inputLayoutPassword.setError(String.format(getString(R.string.pass_min_size),Min_Password_Size));
             return false;
         }
         else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))

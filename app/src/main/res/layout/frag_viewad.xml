@@ -30,8 +30,8 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/Ad_tvTitle"
             android:background="@android:color/darker_gray"
-            android:maxHeight="250dp"
-            android:minHeight="150dp"
+            android:minHeight="200dp"
+            android:maxHeight="300dp"
             />
 
         <TextView
@@ -59,12 +59,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/Ad_tv1"
-            android:layout_marginBottom="16dp"
             android:layout_marginEnd="6dp"
             android:layout_marginStart="6dp"
             android:text="@string/loremIpsum"
             android:textSize="15sp"
             android:maxLength="@integer/Max_Description_Size"/>
+        <TextView
+            android:id="@+id/Ad_tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Ad_tvDescription"
+            android:text="@string/posted_by"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_margin="12dp"
+            />
+        <TextView
+            android:id="@+id/Ad_tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Ad_tv2"
+            android:text="@string/Sample_Name"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="6dp"
+            android:textSize="15sp"
+            />
+        <TextView
+            android:id="@+id/Ad_tvAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Ad_tvName"
+            android:text="@string/room_number"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="6dp"
+            android:textSize="15sp"
+            />
+        <TextView
+            android:id="@+id/Ad_tvPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Ad_tvAddress"
+            android:text="@string/phone_number"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="6dp"
+            android:textSize="15sp"
+            />
 
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

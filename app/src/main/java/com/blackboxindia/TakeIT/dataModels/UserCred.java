@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Base64;
-import android.util.Log;
 
 import java.security.MessageDigest;
 import java.security.spec.KeySpec;
@@ -65,7 +64,6 @@ public class UserCred {
     }
 
     public boolean save_cred(Context context) {
-        Log.i("YOYO","save_cred: "+ email + " " + pwd);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String tmp_id = "";
@@ -85,11 +83,10 @@ public class UserCred {
         editor.putString("saved_pwd", tmp_pwd);
         editor.putString("saved_seed", seed);
         editor.apply();
-        Log.i("YOYO","save_cred: "+ tmp_id + " " + tmp_pwd );
         return true;
     }
 
-    public void clear_cred(Context context) {
+    public static void clear_cred(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         String tmp_id = "";

@@ -467,10 +467,12 @@ public class ImageUtils {
                         code);
             }
         }
-        if(code==1)
-            camera_call();
-        else if(code==2)
-            gallery_call();
+        else {
+            if (code == 1)
+                camera_call();
+            else if (code == 2)
+                gallery_call();
+        }
     }
 
 
@@ -527,6 +529,7 @@ public class ImageUtils {
      * @param grantResults
      */
     public void request_permission_result(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.i(TAG,"request_permission_result "+ requestCode);
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

@@ -33,13 +33,13 @@
     <string name="email">Email</string>
 
     <!-- Ad -->
-    <string name="set_title">Set Title</string>
+    <string name="setTitle">Set Title</string>
     <string name="setPrice">Price:</string>
-    <string name="strDescription">Describe in max 2000 characters.</string>
+    <string name="hintDescription">Describe in max 2000 characters.</string>
     <string name="create_ad">Create Ad</string>
-    <string name="label_Profile_image">Profile Image</string>
-    <string name="change_btn">Change</string>
-    <string name="label_Name">FirstName LastName</string>
+    <string name="Profile_image">Profile Image</string>
+    <string name="change">Change</string>
+    <string name="Sample_Name">Set Name</string>
     <string name="address">Address</string>
     <string name="phone">Phone</string>
     <string name="label_update_changes">Update Changes</string>
@@ -57,5 +57,10 @@
     <string name="add_photo">Add Photo</string>
     <string name="save_cred">Keep me logged in</string>
     <string name="logout">Logout</string>
+    <string name="refresh">Refresh</string>
+    <string name="delete">Delete</string>
+    <string name="posted_by">Posted by:</string>
+    <string name="room_number">Room Number</string>
+    <string name="phone_number">Phone Number</string>
 
 </resources>

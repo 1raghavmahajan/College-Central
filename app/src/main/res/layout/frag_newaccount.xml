@@ -25,10 +25,10 @@
             >
             <ImageView
                 android:id="@+id/create_img"
-                android:contentDescription="@string/label_Profile_image"
+                android:contentDescription="@string/Profile_image"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/thumb_human"
+                android:src="@drawable/sample_profile_image"
                 android:adjustViewBounds="true"
 
                 />
@@ -40,8 +40,8 @@
                 android:minHeight="0dp"
                 android:padding="10dp"
                 android:layout_gravity="bottom|end"
-                android:background="@color/img_button"
-                android:text="@string/change_btn"
+                android:background="@color/img_text"
+                android:text="@string/change"
                 android:textSize="12sp"
                 android:textColor="@android:color/black"
                 />
@@ -61,7 +61,7 @@
             <EditText
                 android:id="@+id/create_etName"
                 android:inputType="textPersonName"
-                android:hint="@string/label_Name"
+                android:hint="@string/Sample_Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />

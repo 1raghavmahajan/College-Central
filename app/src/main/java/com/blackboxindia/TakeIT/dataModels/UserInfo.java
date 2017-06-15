@@ -59,7 +59,7 @@ public class UserInfo implements Parcelable {
         }
         catch (NullPointerException e)
         {
-            Log.i("YOYO", e.toString());
+            Log.i("UserInfo: YOYO", e.toString());
         }
     }
 
@@ -80,7 +80,6 @@ public class UserInfo implements Parcelable {
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 if (Auth.getCurrentUser() != null) {
                     progressDialog.cancel();
-                    Log.i("YOYO", "newUser onSuccess: " + this.toString());
                     MainActivity mainActivity = (MainActivity) context;
                     mainActivity.UpdateUI(userInfo, Auth);
                     Toast.makeText(mainActivity, "Account Creation Successful", Toast.LENGTH_SHORT).show();
@@ -91,7 +90,6 @@ public class UserInfo implements Parcelable {
             public void onFailure(Exception e) {
                 if (e != null) {
                     progressDialog.cancel();
-                    Log.w("YOYO", "new User: onFailure", e);
                     if (e.getMessage().contains("network"))
                         Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
                     else
@@ -108,8 +106,6 @@ public class UserInfo implements Parcelable {
         net.Login(email, password, new onLoginListener() {
             @Override
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
-                Log.i("YOYO", "Logged in - OnLogin: " + this.toString());
-
                 dialog.cancel();
 
                 if(saveCred) {
@@ -123,7 +119,6 @@ public class UserInfo implements Parcelable {
             @Override
             public void onFailure(Exception e) {
                 if (e != null) {
-                    Log.w("YOYO", "Login: onFailure", e);
                     dialog.cancel();
                     if (e.getMessage().contains("network")) {
                         Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
@@ -137,6 +132,17 @@ public class UserInfo implements Parcelable {
                 }
             }
         });
+    }
+
+    public void addUserAd(String userAdKey) {
+        if(userAdKeys==null)
+            userAdKeys = new ArrayList<>();
+        userAdKeys.add(userAdKey);
+    }
+
+    public void removeUserAd(String userAdKey) {
+        if(userAdKeys.contains(userAdKey))
+            userAdKeys.remove(userAdKey);
     }
 
     public Bundle validateNewAccountDetails() {
@@ -250,12 +256,6 @@ public class UserInfo implements Parcelable {
 
     public ArrayList<String> getUserAdKeys() {
         return userAdKeys;
-    }
-
-    public void addUserAd(String userAdKey) {
-        if(userAdKeys==null)
-            userAdKeys = new ArrayList<>();
-        userAdKeys.add(userAdKey);
     }
 
     public String getProfileIMG() {

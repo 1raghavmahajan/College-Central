@@ -2,10 +2,6 @@ package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +17,6 @@ import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +34,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
     private CloudStorageMethods methods;
 
     public mainAdapter(Context context, ArrayList<AdData> allAds, ImageClickListener listener) {
+        Log.i(TAG,"mainAdapter created");
         inflater = LayoutInflater.from(context);
         methods = new CloudStorageMethods(context);
         adList = allAds;
@@ -47,12 +43,14 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     @Override
     public adItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.i(TAG,"mainAdapter onCreateViewHolder");
         View view = inflater.inflate(R.layout.ad_item, parent, false);
         return new adItemViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(adItemViewHolder holder, int position) {
+        Log.i(TAG,"mainAdapter onBindViewHolder #"+position);
         AdData currentAd = adList.get(position);
         holder.setData(currentAd, position, holder);
     }
@@ -99,9 +97,14 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
                     public void onSuccess(Bitmap bitmap) {
                         if (majorImage != null){
                             main = bitmap;
-                            if(majorImage.getDrawable() !=null)
-                                ((BitmapDrawable)majorImage.getDrawable()).getBitmap().recycle();
-                            majorImage.setImageBitmap(bitmap);
+//                            if(majorImage.getDrawable() !=null) {
+//                                Log.i(TAG,"recycling #"+position);
+//                                ((BitmapDrawable) majorImage.getDrawable()).getBitmap().recycle();
+//                            }
+                            if(bitmap!=null)
+                                majorImage.setImageBitmap(bitmap);
+                            else
+                                Log.i(TAG,"major img null");
                         }
                     }
 
@@ -129,36 +132,6 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
                     mListener.onClick(holder, position, currentAd, main);
                 }
             });
-        }
-    }
-
-    class waitClass extends AsyncTask<Void,Void,Void> {
-
-        private final WeakReference<ImageView> imageViewReference;
-
-        waitClass(ImageView imageView) {
-            imageViewReference = new WeakReference<>(imageView);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            Looper.prepare();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (imageViewReference != null) {
-
-                        final ImageView imageView = imageViewReference.get();
-                        if (imageView != null) {
-                            Log.i("YOYO","setting");
-                            imageView.setImageResource(R.drawable.ic_add);
-                        }
-                    }
-                }
-            }, 1000);
-
-            return null;
         }
     }
 

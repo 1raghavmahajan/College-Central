@@ -3,7 +3,6 @@ package com.blackboxindia.TakeIT.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -68,19 +67,21 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
 
         void setData(final Integer position) {
             imageView.setTransitionName("adImage" + position);
-//            if(position==0) {
-//                progressBar.setVisibility(View.INVISIBLE);
-//                imageView.setImageBitmap(main);
-//                imageView.setVisibility(View.VISIBLE);
-//            }
+            if(position==0) {
+                Log.i(TAG,"Setting temp image "+String.valueOf(main!=null));
+                if(main!=null) {
+                    imageView.setImageBitmap(main);
+                    imageView.setVisibility(View.VISIBLE);
+                }
+            }
             methods.getBigImage(adData.getAdID(), position, new ImageDownloadListener() {
                 @Override
                 public void onSuccess(Uri uri) {
 
                     Bitmap bitmap = BitmapFactory.decodeFile(uri.getPath());
                     progressBar.setVisibility(View.INVISIBLE);
-                    if(imageView.getDrawable() !=null)
-                        ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
+//                    if(imageView.getDrawable() !=null)
+//                        ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
                     imageView.setImageBitmap(bitmap);
                     imageView.setVisibility(View.VISIBLE);
                 }
@@ -92,7 +93,6 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                         Toast.makeText(imageView.getContext(), "Failed to get image#"+position, Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
                         imageView.setImageResource(R.drawable.ic_error);
-                        imageView.setVisibility(View.VISIBLE);
                     }
                 }
             });

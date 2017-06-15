@@ -9,11 +9,11 @@
     android:id="@+id/adItem">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <FrameLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="7dp"
             android:layout_marginStart="7dp"
@@ -21,7 +21,7 @@
             android:layout_marginBottom="2dp">
             <ImageView
                 android:id="@+id/adItem_Image"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ad_img_placeholder"
                 android:adjustViewBounds="true"
@@ -34,7 +34,7 @@
                 android:text="@string/free"
                 android:textSize="15sp"
                 android:textStyle="italic"
-                android:elevation="7dp"
+                android:elevation="4dp"
                 android:textColor="@android:color/black"
                 android:background="@color/img_text"
                 android:fadingEdgeLength="3dp"
@@ -42,10 +42,10 @@
         </FrameLayout>
         <TextView
             android:id="@+id/adItem_Title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="2"
-            android:text="123456789123456789123456789123456789"
+            android:text="@string/maxTitle"
             android:layout_marginStart="8dp"
             android:gravity="center"
             android:layout_marginEnd="8dp"

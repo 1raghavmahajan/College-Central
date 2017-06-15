@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -63,25 +62,7 @@ public class frag_myProfile extends Fragment {
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userInfo.setName(etName.getText().toString().trim());
-                userInfo.setEmail(etEmail.getText().toString().trim());
-                userInfo.setAddress(etAddress.getText().toString().trim());
-                userInfo.setPhone(etPhone.getText().toString().trim());
-                final ProgressDialog show = ProgressDialog.show(context, "Updating..", "", true, false);
-                NetworkMethods methods = new NetworkMethods(context,((MainActivity)context).mAuth);
-                methods.updateUser(userInfo, new onUpdateListener() {
-                    @Override
-                    public void onSuccess(UserInfo userInfo) {
-                        show.cancel();
-                        Toast.makeText(context, "Successfully Updated.", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        show.cancel();
-                        Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                UpdateCredentials();
             }
         });
 
@@ -101,8 +82,8 @@ public class frag_myProfile extends Fragment {
                         file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
                     }
                     userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
-                    if (imageView.getDrawable() != null)
-                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
+//                    if (imageView.getDrawable() != null)
+//                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
                     imageView.setImageBitmap(file);
                 }
                 else
@@ -133,12 +114,37 @@ public class frag_myProfile extends Fragment {
     //endregion
 
     void populateViews() {
-        imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
+        if(userInfo.getProfileIMG()!=null)
+            if(!userInfo.getProfileIMG().equals("null"))
+                imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
         etName.setText(userInfo.getName());
         etEmail.setText(userInfo.getEmail());
         etPhone.setText(userInfo.getPhone());
         etAddress.setText(userInfo.getAddress());
         etPassword.setText("********");
+    }
+
+    private void UpdateCredentials() {
+        userInfo.setName(etName.getText().toString().trim());
+        userInfo.setEmail(etEmail.getText().toString().trim());
+        userInfo.setAddress(etAddress.getText().toString().trim());
+        userInfo.setPhone(etPhone.getText().toString().trim());
+        final ProgressDialog show = ProgressDialog.show(context, "Updating..", "", true, false);
+        NetworkMethods methods = new NetworkMethods(context,((MainActivity)context).mAuth);
+        methods.UpdateUser(userInfo, new onUpdateListener() {
+            @Override
+            public void onSuccess(UserInfo userInfo) {
+                show.cancel();
+                Toast.makeText(context, "Successfully Updated.", Toast.LENGTH_SHORT).show();
+                ((MainActivity)context).UpdateUI(userInfo,false);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                show.cancel();
+                Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

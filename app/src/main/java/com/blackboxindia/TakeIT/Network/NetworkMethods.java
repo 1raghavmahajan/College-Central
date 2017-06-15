@@ -1,6 +1,7 @@
 package com.blackboxindia.TakeIT.Network;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,8 +12,10 @@ import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapUploadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrackMain;
 import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onUpdateListener;
+import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserCred;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
@@ -142,9 +145,9 @@ public class NetworkMethods {
 
     }
 
-    public void updateUser(final UserInfo userInfo, final onUpdateListener listener) {
+    public void UpdateUser(final UserInfo userInfo, final onUpdateListener listener) {
 
-        Log.i(TAG,"updateUser: in progress");
+        Log.i(TAG,"UpdateUser: in progress");
 
         if(mAuth==null) {
             listener.onFailure(new Exception("Not Logged in."));
@@ -163,17 +166,53 @@ public class NetworkMethods {
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.i(TAG,"updateUser: successful");
+                    Log.i(TAG,"UpdateUser: successful");
                     listener.onSuccess(userInfo);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.i(TAG,"updateUser: failed",e);
+                    Log.i(TAG,"UpdateUser: failed",e);
                     listener.onFailure(e);
                 }
             });
         }
+    }
+
+    public void getUserDetails(String uID, final onLoginListener loginListener) {
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDatabase.child("users").child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                UserInfo nUserInfo = dataSnapshot.getValue(UserInfo.class);
+                loginListener.onSuccess(mAuth, nUserInfo);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+                loginListener.onFailure(databaseError.toException());
+            }
+        });
+    }
+
+    public static void Logout(final Context context){
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth.AuthStateListener stateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if(firebaseAuth.getCurrentUser()==null) {
+                    ((MainActivity) context).UpdateUIonLogout();
+                    UserCred.clear_cred(context);
+                    mAuth.removeAuthStateListener(this);
+                }
+            }
+        };
+        mAuth.addAuthStateListener(stateListener);
+        mAuth.signOut();
     }
 
     //endregion
@@ -197,6 +236,7 @@ public class NetworkMethods {
             listener.onFailure(new Exception("Not Logged In"));
         }
         else {
+            final ProgressDialog progressDialog = ProgressDialog.show(context, "Creating Ad...", "", true, false);
 
             final String key = mDatabase.child("ads").push().getKey();
             String uID = mAuth.getCurrentUser().getUid();
@@ -209,6 +249,7 @@ public class NetworkMethods {
             methods.uploadBitmap(key, major, new BitmapUploadListener() {
                 @Override
                 public void onSuccess() {
+                    progressDialog.cancel();
                     methods.uploadPics(imgURIs, key, new KeepTrackMain() {
 
                         @Override
@@ -226,7 +267,7 @@ public class NetworkMethods {
                                         public void onSuccess(Void aVoid) {
                                             Log.i(TAG,"createNewAd: onSuccess");
                                             userInfo.addUserAd(key);
-                                            updateUser(userInfo, new onUpdateListener() {
+                                            UpdateUser(userInfo, new onUpdateListener() {
                                                 @Override
                                                 public void onSuccess(UserInfo userInfo) {
                                                     listener.onSuccess(adData);
@@ -237,7 +278,7 @@ public class NetworkMethods {
                                                     if(try_update >0) {
                                                         try_update--;
                                                         Log.i(TAG,"onUpdate Retry #" + (2- try_update));
-                                                        updateUser(userInfo, this);
+                                                        UpdateUser(userInfo, this);
                                                     }
                                                     else {
                                                         listener.onFailure(e);
@@ -267,6 +308,7 @@ public class NetworkMethods {
 
                 @Override
                 public void onFailure(Exception e) {
+                    progressDialog.cancel();
                     listener.onFailure(e);
                 }
             });
@@ -305,10 +347,10 @@ public class NetworkMethods {
         }
     }
 
-    public void getAllAds(UserInfo userInfo, Integer max_limit, final getAllAdsListener listener) {
+    public void getAllAds(Integer max_limit, final getAllAdsListener listener) {
 
         mDatabase.child("ads").limitToLast(max_limit)
-        .addValueEventListener(new ValueEventListener() {
+        .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 ArrayList<AdData> list = new ArrayList<>();
@@ -320,11 +362,33 @@ public class NetworkMethods {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
                 listener.onFailure(databaseError.toException());
             }
         });
 
+    }
+
+    public void deleteAd(final UserInfo userInfo, final AdData adData, final onDeleteListener listener) {
+
+        if(adData.getNumberOfImages()>0) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            storage.getReference().child("images/" + adData.getAdID() + "/0s").delete();
+            for (int i = 0; i < adData.getNumberOfImages(); i++)
+                storage.getReference().child("images/" + adData.getAdID() + "/" + i).delete();
+        }
+        mDatabase.child("ads").child(adData.getAdID()).removeValue()
+        .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                userInfo.removeUserAd(adData.getAdID());
+                listener.onSuccess();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onFailure(e);
+            }
+        });
     }
 
     //endregion

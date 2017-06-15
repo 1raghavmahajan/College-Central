@@ -78,7 +78,12 @@ public class frag_newAd extends Fragment {
 
     private void setUpRecycler() {
         recyclerView = (RecyclerView) view.findViewById(R.id.newAd_imgRecycler);
-        adapter = new NewAdImageAdapter(context);
+        adapter = new NewAdImageAdapter(context, new NewAdImageAdapter.onDeleteClickListener() {
+            @Override
+            public void onDelete(int position) {
+                imgURIs.remove(position);
+            }
+        });
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false));
     }
@@ -109,6 +114,7 @@ public class frag_newAd extends Fragment {
             networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
                 @Override
                 public void onSuccess(AdData adData) {
+                    ((MainActivity)context).goToMainFragment(false);
                     Toast.makeText(context, "Ad Created Successfully", Toast.LENGTH_SHORT).show();
                 }
 

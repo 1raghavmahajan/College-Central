@@ -27,8 +27,8 @@
                 android:layout_width="140dp"
                 android:layout_height="140dp"
                 android:adjustViewBounds="true"
-                android:contentDescription="@string/label_Profile_image"
-                android:src="@drawable/thumb_human"
+                android:contentDescription="@string/Profile_image"
+                android:src="@drawable/sample_profile_image"
 
                 />
             <Button
@@ -36,11 +36,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:background="@color/img_button"
+                android:background="@color/img_text"
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:padding="10dp"
-                android:text="@string/change_btn"
+                android:text="@string/change"
                 android:textColor="@android:color/black"
                 android:textSize="12sp"
                 />
@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:inputType="textPersonName"
-                android:text="@string/label_Name"
+                android:text="@string/Sample_Name"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"

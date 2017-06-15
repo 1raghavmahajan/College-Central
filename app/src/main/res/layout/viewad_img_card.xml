@@ -6,24 +6,26 @@
     android:layout_height="wrap_content"
     app:cardCornerRadius="5dp"
     android:layout_margin="3dp"
-    android:minWidth="200dp"
     android:minHeight="200dp"
     android:maxHeight="300dp">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minWidth="200dp"
-        android:minHeight="200dp"
-        android:maxHeight="300dp"
         >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <ImageView
             android:id="@+id/imgCard_img"
-            android:layout_width="wrap_content"
+            android:src="@drawable/ad_img_placeholder"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:visibility="invisible"
+            android:minHeight="200dp"
+            android:maxHeight="300dp"
             />
+        </LinearLayout>
         <ImageButton
             android:id="@+id/imgCard_button"
             android:layout_width="wrap_content"

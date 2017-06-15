@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -87,7 +86,10 @@ public class frag_newAccount extends Fragment {
         passFrame = (TextInputLayout) view.findViewById(R.id.create_etPasswordFrame);
         cPassFrame = (TextInputLayout) view.findViewById(R.id.create_etPasswordConfirmFrame);
 
+        imageView = (ImageView) view.findViewById(R.id.create_img);
+
         btnCreate = (Button) view.findViewById(R.id.create_btnCreate);
+        btn_image = (Button) view.findViewById(R.id.create_btnImageChange);
     }
 
     private void initCamera() {
@@ -103,8 +105,8 @@ public class frag_newAccount extends Fragment {
                         file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
                     }
                     userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
-                    if (imageView.getDrawable() != null)
-                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
+//                    if (imageView.getDrawable() != null)
+//                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
                     imageView.setImageBitmap(file);
                 }
                 else

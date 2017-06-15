@@ -2,11 +2,11 @@ package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.blackboxindia.TakeIT.R;
@@ -17,10 +17,12 @@ public class NewAdImageAdapter extends RecyclerView.Adapter<NewAdImageAdapter.im
 
     private LayoutInflater inflater;
     private ArrayList<Bitmap> images;
+    private onDeleteClickListener listener;
 
-    public NewAdImageAdapter(Context context) {
+    public NewAdImageAdapter(Context context, onDeleteClickListener listener) {
         inflater = LayoutInflater.from(context);
         images = new ArrayList<>();
+        this.listener = listener;
     }
 
     @Override
@@ -44,25 +46,42 @@ public class NewAdImageAdapter extends RecyclerView.Adapter<NewAdImageAdapter.im
         notifyItemInserted(images.size()-1);
     }
 
-    public ArrayList<Bitmap> getImages() {
-        return images;
+    void removeImage(int position){
+        images.remove(position);
+        notifyItemRemoved(position);
+        //notifyItemRangeChanged(position,images.size());
     }
+
     public Bitmap getMajor(){return images.get(0);}
+
+    public interface onDeleteClickListener {
+        void onDelete(int position);
+    }
 
     class imgViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
+        ImageButton btn_delete;
 
         imgViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.imgCard_img);
+            btn_delete = (ImageButton) itemView.findViewById(R.id.imgCard_delete);
         }
 
-        void setData(Integer position) {
-            if(imageView.getDrawable() !=null)
-                ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
+        void setData(final Integer position) {
+//            if(imageView.getDrawable() !=null)
+//                ((BitmapDrawable)imageView.getDrawable()).getBitmap().recycle();
             imageView.setImageBitmap(images.get(position));
-            //imageView.setTransitionName("adImage" + position);
+            imageView.setTransitionName("adImage" + position);
+
+            btn_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeImage(position);
+                    listener.onDelete(position);
+                }
+            });
         }
     }
 

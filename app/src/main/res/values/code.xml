@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="Min_Password_Size">8</integer>
+    <integer name="Min_Password_Size">6</integer>
 
     <integer name="Max_Title_Length">60</integer>
     <integer name="Max_Description_Size">2000</integer>
