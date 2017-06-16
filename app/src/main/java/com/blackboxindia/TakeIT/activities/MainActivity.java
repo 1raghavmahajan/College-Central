@@ -26,7 +26,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -162,17 +161,22 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        ic_Toolbar = (ImageButton) toolbar.findViewById(R.id.ic_refresh);
         toolbar.setTitle(R.string.app_name);
-        //toolbar.inflateMenu(R.menu.toolbar_menu);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!drawer.isDrawerOpen(Gravity.START))
-                    drawer.openDrawer(Gravity.START);
-                else
-                    drawer.closeDrawer(Gravity.START);
-            }
-        });
+        toolbar.inflateMenu(R.menu.toolbar_menu);
+        //setSupportActionBar(toolbar);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) toolbar.getMenu().findItem(R.id.action_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (!drawer.isDrawerOpen(Gravity.START))
+//                    drawer.openDrawer(Gravity.START);
+//                else
+//                    drawer.closeDrawer(Gravity.START);
+//            }
+//        });
 //        cTLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
 //        cTLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
 //        cTLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
@@ -534,18 +538,18 @@ public class MainActivity extends AppCompatActivity {
     //endregion
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.toolbar_menu, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        // Assumes current activity is the searchable activity
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.toolbar_menu, menu);
+//
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+//        // Assumes current activity is the searchable activity
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+//
+//        return true;
+//    }
 }

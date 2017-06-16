@@ -22,7 +22,7 @@
         android:icon="@drawable/ic_refresh"
         android:title="@string/refresh"
         android:orderInCategory="1"
-        app:showAsAction="always|collapseActionView"
+        app:showAsAction="ifRoom"
         />
 
     <!--
