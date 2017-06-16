@@ -381,7 +381,17 @@ public class NetworkMethods {
             @Override
             public void onSuccess(Void aVoid) {
                 userInfo.removeUserAd(adData.getAdID());
-                listener.onSuccess();
+                UpdateUser(userInfo, new onUpdateListener() {
+                    @Override
+                    public void onSuccess(UserInfo userInfo) {
+                        listener.onSuccess(userInfo);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        listener.onFailure(e);
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

@@ -23,9 +23,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 
-public class MyAdsAdaper extends RecyclerView.Adapter<MyAdsAdaper.adItemViewHolder> {
+public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHolder> {
 
-    private static String TAG = MyAdsAdaper.class.getSimpleName()+" YOYO";
+    private static String TAG = MyAdsAdapter.class.getSimpleName()+" YOYO";
 
     private final ImageClickListener mListener;
     private ArrayList<String> userAds;
@@ -34,7 +34,7 @@ public class MyAdsAdaper extends RecyclerView.Adapter<MyAdsAdaper.adItemViewHold
     private NetworkMethods networkMethods;
     private CloudStorageMethods cloudStorageMethods;
 
-    public MyAdsAdaper(Context context, ArrayList<String> keys, ImageClickListener listener) {
+    public MyAdsAdapter(Context context, ArrayList<String> keys, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
         cloudStorageMethods = new CloudStorageMethods(context);
         networkMethods = new NetworkMethods(context,FirebaseAuth.getInstance());
@@ -93,36 +93,36 @@ public class MyAdsAdaper extends RecyclerView.Adapter<MyAdsAdaper.adItemViewHold
             context = itemView.getContext();
         }
 
-        public ImageView getMajorImage() {
+        ImageView getMajorImage() {
             return majorImage;
         }
 
         void setData(final AdData currentAd, final int position) {
-
-            setListeners(currentAd,this, position);
-
-            cloudStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
-                @Override
-                public void onSuccess(Bitmap bitmap) {
-                    if (majorImage != null && currentAd.getNumberOfImages()>0) {
+            if(currentAd!=null) {
+                setListeners(currentAd, this, position);
+                cloudStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+                    @Override
+                    public void onSuccess(Bitmap bitmap) {
+                        if (majorImage != null && currentAd.getNumberOfImages() > 0) {
 //                        if(majorImage.getDrawable() !=null)
 //                            ((BitmapDrawable)majorImage.getDrawable()).getBitmap().recycle();
-                        majorImage.setImageBitmap(bitmap);
+                            majorImage.setImageBitmap(bitmap);
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Exception e) {
-                    Log.e(TAG,"onFailure #"+position+" ",e);
-                }
-            });
-
-            tv_title.setText(currentAd.getTitle());
-
-            if(currentAd.getPrice()==0)
-                tv_Price.setText(R.string.free);
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e(TAG, "onFailure #" + position + " ", e);
+                    }
+                });
+                tv_title.setText(currentAd.getTitle());
+                if (currentAd.getPrice() == 0)
+                    tv_Price.setText(R.string.free);
+                else
+                    tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
+            }
             else
-                tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
+                Log.i(TAG,"CurrentAd null");
         }
 
         private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {

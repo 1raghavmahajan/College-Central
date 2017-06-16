@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#5b5858</color>
+    <!--<color name="colorPrimary">#5b5858</color>
     <color name="colorPrimaryDark">#353535</color>
     <color name="colorAccent">#f44336</color>
 
     <color name="colorCardBackground">#2fb8b6b6</color>
-
-    <!--<color name="img_button">#7f879298</color>-->
+-->    <!--<color name="img_button">#7f879298</color>-->
     <color name="img_text">#7fffffff</color>
 
 
-    <!--
+
      <color name="colorPrimary">#37474f</color>
     <color name="colorPrimaryDark">#263238</color>
-    <color name="colorAccent">#cddc39</color>
-f44336
+    <color name="colorAccent">#a4b220</color>
     <color name="colorCardBackground">#d378909c</color>
 
-
-     -->
 </resources>

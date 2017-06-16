@@ -1,11 +1,12 @@
 package com.blackboxindia.TakeIT.activities;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,18 +20,22 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.blackboxindia.TakeIT.Fragments.frag_Main;
 import com.blackboxindia.TakeIT.Fragments.frag_loginPage;
@@ -47,9 +52,9 @@ import com.blackboxindia.TakeIT.dataModels.UserCred;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
-    //region Variables
+    //region Static Variables
     public final static String MAIN_FRAG_TAG = "MAIN_FRAG";
     public final static String LOGIN_PAGE_TAG = "LOGIN_PAGE";
     public final static String MY_PROFILE_TAG = "MY_PROFILE";
@@ -57,21 +62,24 @@ public class MainActivity extends Activity {
     public final static String MY_ADS_TAG = "MY_ADS";
     public final static String NEW_AD_TAG = "NEW_AD";
     public final static String VIEW_AD_TAG = "VIEW_AD";
-
+    public final static String VIEW_MyAD_TAG = "VIEW_MyAD";
     public final static String TAG = MainActivity.class.getSimpleName()+" YOYO";
+    //endregion
 
+    //region Variables
     public LinearLayout linearLayout;
     public ProgressBar progressBar;
     Context context;
     AppBarLayout appBarLayout;
     FragmentManager fragmentManager;
-    Toolbar toolbar;
+    public Toolbar toolbar;
     CollapsingToolbarLayout cTLayout;
-    CoordinatorLayout coordinatorLayout;
+    public CoordinatorLayout coordinatorLayout;
     DrawerLayout drawer;
     FloatingActionButton fab;
     NavigationView navigationView;
     Menu navigationViewMenu;
+    public ImageButton ic_Toolbar;
 
     public FirebaseAuth mAuth;
     public UserInfo userInfo;
@@ -142,7 +150,7 @@ public class MainActivity extends Activity {
     }
 
     private void initVariables() {
-        linearLayout = (LinearLayout) findViewById(R.id.appbar_extra);
+        //linearLayout = (LinearLayout) findViewById(R.id.appbar_extra);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
         progressBar = (ProgressBar) findViewById(R.id.progressBarTop);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
@@ -152,19 +160,10 @@ public class MainActivity extends Activity {
 
     private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //toolbar.setNavigationIcon(R.drawable.ic_add);
-        toolbar.inflateMenu(R.menu.toolbar_menu);
+//        ic_Toolbar = (ImageButton) toolbar.findViewById(R.id.ic_refresh);
         toolbar.setTitle(R.string.app_name);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Log.i(TAG,"onMenuItemClick "+ item.getItemId());
-                return true;
-            }
-        });
-        setActionBar(toolbar);
-//        getActionBar().setHomeButtonEnabled(true);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        //toolbar.inflateMenu(R.menu.toolbar_menu);
+        setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,16 +173,16 @@ public class MainActivity extends Activity {
                     drawer.closeDrawer(Gravity.START);
             }
         });
-        cTLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        cTLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
-        cTLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
-        cTLayout.setTitle(getString(R.string.app_name));
+//        cTLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+//        cTLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+//        cTLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
+//        cTLayout.setTitle(getString(R.string.app_name));
     }
 
     private void setUpDrawer() {
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, R.string.navDrawer_open, R.string.navDrawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navDrawer_open, R.string.navDrawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -238,6 +237,7 @@ public class MainActivity extends Activity {
         showIT();
 
         frag_Main mc = new frag_Main();
+        mc.setRetainInstance(true);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, mc, MAIN_FRAG_TAG);
         fragmentTransaction.commit();
@@ -262,6 +262,20 @@ public class MainActivity extends Activity {
             }
         });
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i(TAG,"onNewIntent");
+        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            search(query);
+        }
+    }
+
+    private void search(String query) {
+        Log.i(TAG,"Search: "+query);
+    }
+
 
     //endregion
 
@@ -310,17 +324,20 @@ public class MainActivity extends Activity {
     }
 
     public void launchOtherFragment(Fragment frag, String tag) {
+
         
-        if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG) != null) {
-            if (fragmentManager.findFragmentByTag(MAIN_FRAG_TAG).isVisible()) {
+        if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG) != null)
+        {
+            if (fragmentManager.findFragmentByTag(MAIN_FRAG_TAG).isVisible())
+            {
                 fragmentManager.beginTransaction()
                         .hide(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                         .commit();
-
 
                 fragmentManager.beginTransaction()
                         .add(R.id.frame_layout, frag, tag)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
 
             } else {
@@ -380,26 +397,43 @@ public class MainActivity extends Activity {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if(goToMainFragment()) {
+            if(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG)!=null) {
+                if (fragmentManager.findFragmentByTag(VIEW_MyAD_TAG).isVisible()) {
 
-                if (twiceToExit) {
-                    finish();
+                    fragmentManager.beginTransaction()
+                            .remove(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG))
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                            .commit();
+                    fragmentManager.beginTransaction()
+                            .add(R.id.frame_layout,new frag_myAds(),MY_ADS_TAG)
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .commit();
+//                    fragmentManager.beginTransaction().add(R.id.frame_layout,new frag_myAds(),MY_ADS_TAG)
+//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 }
-
-                this.twiceToExit = true;
-                Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-                new Handler().postDelayed(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        twiceToExit =false;
-                    }
-                }, 2000);
-
             }
+            else {
+                if (goToMainFragment()) {
+
+                    if (twiceToExit) {
+                        finish();
+                    }
+
+                    this.twiceToExit = true;
+                    Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            twiceToExit = false;
+                        }
+                    }, 2000);
+                }
+            }
+//            super.onBackPressed();
         }
     }
+
 
     //endregion
 
@@ -407,23 +441,26 @@ public class MainActivity extends Activity {
 
     public void hideIT() {
         fab.setVisibility(View.GONE);
+        //ic_Toolbar.setVisibility(View.GONE);
 
-        linearLayout.setVisibility(View.GONE);
-        appBarLayout.setExpanded(false, true);
+        //linearLayout.setVisibility(View.GONE);
+//        appBarLayout.setExpanded(false, true);
 
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
-        params.setScrollFlags(0);
-        cTLayout.setLayoutParams(params);
+//        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
+//        params.setScrollFlags(0);
+//        cTLayout.setLayoutParams(params);
     }
 
     public void showIT() {
         fab.setVisibility(View.VISIBLE);
+//        ic_Toolbar.setVisibility(View.VISIBLE);
+//        ic_Toolbar.setImageResource(R.drawable.ic_refresh);
 
-        linearLayout.setVisibility(View.VISIBLE);
-        AppBarLayout.LayoutParams params =
-                (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
-        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-        cTLayout.setLayoutParams(params);
+        //linearLayout.setVisibility(View.VISIBLE);
+//        AppBarLayout.LayoutParams params =
+//                (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
+//        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+//        cTLayout.setLayoutParams(params);
     }
 
     public void UpdateUI(UserInfo userInfo, FirebaseAuth auth) {
@@ -495,4 +532,20 @@ public class MainActivity extends Activity {
     }
 
     //endregion
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbar_menu, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+
+        return true;
+    }
 }

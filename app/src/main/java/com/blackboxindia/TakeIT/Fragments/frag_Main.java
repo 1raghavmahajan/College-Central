@@ -32,9 +32,8 @@ import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_AD_TAG;
 
 public class frag_Main extends Fragment {
 
-    private static String TAG = frag_Main.class.getSimpleName() + " YOYO";
-
     //region variables
+    private static String TAG = frag_Main.class.getSimpleName() + " YOYO";
     View view;
     Context context;
     NetworkMethods networkMethods;
@@ -47,15 +46,14 @@ public class frag_Main extends Fragment {
     ArrayList<AdData> allAds;
     //endregion
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_main, container, false);
         context = view.getContext();
-
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
 
+        Log.i(TAG,"onCreateView");
         refresh();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -80,6 +78,9 @@ public class frag_Main extends Fragment {
         if(mAuth!=null){
             networkMethods = new NetworkMethods(context, mAuth);
             getAllAds();
+        }
+        else{
+
         }
     }
 
@@ -138,7 +139,6 @@ public class frag_Main extends Fragment {
 //                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
 //                        .add(R.id.frame_layout, fragViewAd, MainActivity.VIEW_AD_TAG)
 //                        .commit();
-
 //                fragmentManager.beginTransaction()
 //                        .addSharedElement(holder.getMajorImage(), "adImage0")
 //                        .replace(R.id.frame_layout, fragViewAd, MainActivity.VIEW_AD_TAG)
@@ -154,5 +154,65 @@ public class frag_Main extends Fragment {
     public void clearRecycler() {
         recyclerView.swapAdapter(null,true);
     }
+
+
+
+    //region BS
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(TAG,"onResume");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+        Log.i(TAG,"onAttach");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.i(TAG,"onCreate");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.i(TAG,"onStart");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(TAG,"onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(TAG,"onStop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.i(TAG,"onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG,"onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.i(TAG,"onDetach");
+    }
+    //endregion
+
 
 }

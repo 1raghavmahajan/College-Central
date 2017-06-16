@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/toolbar_delete"
+        android:title="@string/delete"
+        android:icon="@drawable/ic_delete"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:orderInCategory="2"
+        app:showAsAction="always|collapseActionView" />
     <item
         android:id="@+id/toolbar_refresh"
-        app:showAsAction="always"
         android:icon="@drawable/ic_refresh"
+        android:title="@string/refresh"
         android:orderInCategory="1"
-        android:title="@string/refresh"/>
+        app:showAsAction="always|collapseActionView"
+        />
+
     <!--
     <item
         android:id="@+id/toolbar_logout"
@@ -14,10 +32,4 @@
         android:icon="@drawable/ic_logout"
         app:showAsAction="never"/>
     -->
-    <!--<item-->
-        <!--android:id="@+id/toolbar_delete"-->
-        <!--android:title="@string/delete"-->
-        <!--android:icon="@drawable/ic_delete"-->
-        <!--android:orderInCategory="2"-->
-        <!--app:showAsAction="ifRoom"/>-->
 </menu>

@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">TakeIT</string>
+    <string name="LOGIN_PAGE">Login Page</string>
+    <string name="MY_PROFILE">My Profile</string>
+    <string name="NEW_ACCOUNT">New Account</string>
+    <string name="MY_ADS">My Ads</string>
+    <string name="NEW_AD">New Ad</string>
+    <string name="VIEW_AD">TakeIT</string>
+    <string name="VIEW_MyAD">TakeIT</string>
 
     <string name="btn_search">Search</string>
     <string name="title_activity_main">TakeIT</string>
@@ -15,7 +22,7 @@
     </string>
 
     <string name="free">Free</string>
-    <string name="currency">Rs %1$d</string>
+    <string name="currency">₹ %1$d</string>
     <string name="sampleTitle">Title</string>
 
     <string name="labelDescription">Description:</string>
