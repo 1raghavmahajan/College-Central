@@ -41,6 +41,12 @@ public class frag_ViewAd extends Fragment {
     //endregion
 
     //region Initial Setup
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideIT();
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -50,7 +56,7 @@ public class frag_ViewAd extends Fragment {
 
         initVariables();
 
-        setUpViews();
+        PopulateViews();
         return view;
     }
 
@@ -67,7 +73,9 @@ public class frag_ViewAd extends Fragment {
         cloudStorageMethods = new CloudStorageMethods(context);
     }
 
-    void setUpViews() {
+    //endregion
+
+    void PopulateViews() {
 
         adData = getArguments().getParcelable("adData");
 
@@ -117,12 +125,5 @@ public class frag_ViewAd extends Fragment {
         imgRecyclerView.setAdapter(adapter);
     }
 
-    //endregion
-
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
 }
 

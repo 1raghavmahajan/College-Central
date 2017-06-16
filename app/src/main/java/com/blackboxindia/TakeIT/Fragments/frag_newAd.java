@@ -31,6 +31,8 @@ import java.util.ArrayList;
 
 public class frag_newAd extends Fragment {
 
+    //region Variables
+
     private static String TAG = frag_newAd.class.getSimpleName()+" YOYO";
     private static Integer ADD_PHOTO_CODE = 154;
 
@@ -44,6 +46,15 @@ public class frag_newAd extends Fragment {
     UserInfo userInfo;
     ImageUtils imageUtils;
     ArrayList<Uri> imgURIs;
+    //endregion
+
+    //region Init Setup
+
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideIT();
+        super.onResume();
+    }
 
     @Nullable
     @Override
@@ -96,6 +107,7 @@ public class frag_newAd extends Fragment {
             }
         });
     }
+    //endregion
 
     private void prepareAndCreateAd() {
         userInfo = ((MainActivity)context).userInfo;
@@ -130,6 +142,7 @@ public class frag_newAd extends Fragment {
         }
     }
 
+    //region Camera Setup
     private void initCamera() {
         imageUtils = new ImageUtils(getActivity(), this, true, new ImageUtils.ImageAttachmentListener() {
             @Override
@@ -159,11 +172,6 @@ public class frag_newAd extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         imageUtils.onActivityResult(requestCode, resultCode, data);
     }
-
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
+    //endregion
 
 }

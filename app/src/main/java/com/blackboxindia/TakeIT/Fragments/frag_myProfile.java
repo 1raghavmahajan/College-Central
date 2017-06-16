@@ -26,10 +26,9 @@ import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 public class frag_myProfile extends Fragment {
 
-    private static String TAG = frag_myProfile.class.getSimpleName() + " YOYO";
-
     //region Variables
 
+    private static String TAG = frag_myProfile.class.getSimpleName() + " YOYO";
     private static final int PICK_PHOTO_CODE = 120;
     EditText etName, etEmail, etAddress, etPhone, etPassword;
     Button btn_update, btn_ImageChange;
@@ -42,8 +41,13 @@ public class frag_myProfile extends Fragment {
 
     //endregion
 
-
     //region Initial Setup
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideIT();
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
@@ -67,36 +71,6 @@ public class frag_myProfile extends Fragment {
         });
 
         return view;
-    }
-
-    private void initCamera() {
-        imageUtils = new ImageUtils(getActivity(), this, true, new ImageUtils.ImageAttachmentListener() {
-            @Override
-            public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-
-                if(from == PICK_PHOTO_CODE) {
-                    int h = file.getHeight(), w = file.getWidth();
-                    if (h > w) {
-                        file = Bitmap.createBitmap(file, 0, (h - w) / 2, w, w);
-                    } else if (w > h) {
-                        file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
-                    }
-                    userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
-//                    if (imageView.getDrawable() != null)
-//                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
-                    imageView.setImageBitmap(file);
-                }
-                else
-                    Toast.makeText(context, "Some error occurred. Request Code mismatch.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        btn_ImageChange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageUtils.imagepicker(PICK_PHOTO_CODE);
-            }
-        });
     }
 
     private void initVariables() {
@@ -147,6 +121,38 @@ public class frag_myProfile extends Fragment {
         });
     }
 
+    //region Camera Setup
+
+    private void initCamera() {
+        imageUtils = new ImageUtils(getActivity(), this, true, new ImageUtils.ImageAttachmentListener() {
+            @Override
+            public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
+
+                if(from == PICK_PHOTO_CODE) {
+                    int h = file.getHeight(), w = file.getWidth();
+                    if (h > w) {
+                        file = Bitmap.createBitmap(file, 0, (h - w) / 2, w, w);
+                    } else if (w > h) {
+                        file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
+                    }
+                    userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
+//                    if (imageView.getDrawable() != null)
+//                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
+                    imageView.setImageBitmap(file);
+                }
+                else
+                    Toast.makeText(context, "Some error occurred. Request Code mismatch.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btn_ImageChange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageUtils.imagepicker(PICK_PHOTO_CODE);
+            }
+        });
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -159,10 +165,6 @@ public class frag_myProfile extends Fragment {
         imageUtils.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
+    //endregion
 
 }

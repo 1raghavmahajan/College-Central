@@ -22,9 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
-/**
- * Created by Raghav on 09-Jun-17.
- */
 
 public class MyAdsAdaper extends RecyclerView.Adapter<MyAdsAdaper.adItemViewHolder> {
 

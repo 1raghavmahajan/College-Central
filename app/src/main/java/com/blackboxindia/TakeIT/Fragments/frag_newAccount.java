@@ -40,6 +40,12 @@ public class frag_newAccount extends Fragment {
     //endregion
 
     //region Initial Setup
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideIT();
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -92,36 +98,6 @@ public class frag_newAccount extends Fragment {
         btn_image = (Button) view.findViewById(R.id.create_btnImageChange);
     }
 
-    private void initCamera() {
-        imageUtils = new ImageUtils(getActivity(), this, true, new ImageUtils.ImageAttachmentListener() {
-            @Override
-            public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
-
-                if(from == PICK_PHOTO_CODE) {
-                    int h = file.getHeight(), w = file.getWidth();
-                    if (h > w) {
-                        file = Bitmap.createBitmap(file, 0, (h - w) / 2, w, w);
-                    } else if (w > h) {
-                        file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
-                    }
-                    userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
-//                    if (imageView.getDrawable() != null)
-//                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
-                    imageView.setImageBitmap(file);
-                }
-                else
-                    Toast.makeText(context, "Some error occurred. Request Code mismatch.", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        btn_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageUtils.imagepicker(PICK_PHOTO_CODE);
-            }
-        });
-    }
-
     //endregion
 
     boolean validateDetails(UserInfo userInfo) {
@@ -153,16 +129,44 @@ public class frag_newAccount extends Fragment {
             return true;
     }
 
+    //region Camera Setup
+    private void initCamera() {
+        imageUtils = new ImageUtils(getActivity(), this, true, new ImageUtils.ImageAttachmentListener() {
+            @Override
+            public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
+
+                if(from == PICK_PHOTO_CODE) {
+                    int h = file.getHeight(), w = file.getWidth();
+                    if (h > w) {
+                        file = Bitmap.createBitmap(file, 0, (h - w) / 2, w, w);
+                    } else if (w > h) {
+                        file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
+                    }
+                    userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
+//                    if (imageView.getDrawable() != null)
+//                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
+                    imageView.setImageBitmap(file);
+                }
+                else
+                    Toast.makeText(context, "Some error occurred. Request Code mismatch.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btn_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageUtils.imagepicker(PICK_PHOTO_CODE);
+            }
+        });
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imageUtils.onActivityResult(requestCode, resultCode, data);
     }
+    //endregion
 
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
+
 }
 

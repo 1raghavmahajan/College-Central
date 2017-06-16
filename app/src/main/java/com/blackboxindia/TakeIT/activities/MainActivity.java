@@ -403,6 +403,8 @@ public class MainActivity extends Activity {
 
     //endregion
 
+    //region UI updating
+
     public void hideIT() {
         fab.setVisibility(View.GONE);
 
@@ -492,4 +494,5 @@ public class MainActivity extends Activity {
         Toast.makeText(context, "Logged out!", Toast.LENGTH_SHORT).show();
     }
 
+    //endregion
 }
