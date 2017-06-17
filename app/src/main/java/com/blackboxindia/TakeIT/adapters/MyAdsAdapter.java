@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
@@ -33,11 +32,9 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
     private LayoutInflater inflater;
 
     private NetworkMethods networkMethods;
-    private CloudStorageMethods cloudStorageMethods;
 
     public MyAdsAdapter(Context context, ArrayList<String> keys, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
-        cloudStorageMethods = ((MainActivity)context).cloudStorageMethods;
         networkMethods = new NetworkMethods(context,FirebaseAuth.getInstance());
         userAds = keys;
         mListener = listener;
@@ -101,7 +98,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
         void setData(final AdData currentAd, final int position) {
             if(currentAd!=null) {
                 setListeners(currentAd, this, position);
-                cloudStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+                ((MainActivity)context).cloudStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
                     @Override
                     public void onSuccess(Bitmap bitmap) {
                         if (majorImage != null && currentAd.getNumberOfImages() > 0) {

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
@@ -20,6 +21,7 @@ import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
+import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +33,7 @@ public class frag_ViewAd extends Fragment {
     RecyclerView imgRecyclerView;
     TextView tv_Title, tv_Price, tv_Description;
     TextView tv_Name, tv_Address, tv_Phone;
+    ImageView imageView;
     View view;
     Context context;
 
@@ -67,6 +70,8 @@ public class frag_ViewAd extends Fragment {
         tv_Name = (TextView) view.findViewById(R.id.Ad_tvName);
         tv_Address = (TextView) view.findViewById(R.id.Ad_tvAddress);
         tv_Phone = (TextView) view.findViewById(R.id.Ad_tvPhone);
+        imageView = (ImageView) view.findViewById(R.id.Ad_Profile);
+
     }
 
     //endregion
@@ -99,6 +104,11 @@ public class frag_ViewAd extends Fragment {
                             startActivity(intent);
                         }
                     });
+                    if(userInfo.getProfileIMG()!= null) {
+                        if (!userInfo.getProfileIMG().equals("null")) {
+                            imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
+                        }
+                    }
                 }
 
                 @Override

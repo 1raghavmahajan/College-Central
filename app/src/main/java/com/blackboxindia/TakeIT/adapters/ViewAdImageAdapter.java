@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.ImageDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
@@ -27,14 +26,12 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
     private AdData adData;
     private Bitmap main;
     private Context context;
-    private CloudStorageMethods methods;
 
     public ViewAdImageAdapter(Context context, AdData adData, Bitmap main) {
         inflater = LayoutInflater.from(context);
         this.context  = context;
         this.adData = adData;
         this.main = main;
-        this.methods = ((MainActivity)context).cloudStorageMethods;
     }
 
     @Override
@@ -74,7 +71,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                     imageView.setVisibility(View.VISIBLE);
                 }
             }
-            methods.getBigImage(adData.getAdID(), position, new ImageDownloadListener() {
+            ((MainActivity)context).cloudStorageMethods.getBigImage(adData.getAdID(), position, new ImageDownloadListener() {
                 @Override
                 public void onSuccess(Uri uri) {
 

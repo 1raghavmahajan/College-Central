@@ -13,9 +13,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 
 import java.util.ArrayList;
@@ -30,11 +30,8 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
     private List<AdData> adList;
     private LayoutInflater inflater;
 
-    private CloudStorageMethods methods;
-
     public mainAdapter(Context context, ArrayList<AdData> allAds, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
-        methods = new CloudStorageMethods(context);
         adList = allAds;
         mListener = listener;
     }
@@ -95,7 +92,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             setListeners(currentAd, holder, position);
 
             if(currentAd.getNumberOfImages()>0) {
-                methods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+                ((MainActivity)context).cloudStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
                     @Override
                     public void onSuccess(Bitmap bitmap) {
                         if (majorImage != null){

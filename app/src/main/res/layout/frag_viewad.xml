@@ -26,7 +26,9 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/Ad_imgRecycler"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
+            android:minHeight="240dp"
+            android:maxHeight="300dp"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/Ad_tvTitle"
             android:background="@android:color/darker_gray"
@@ -102,6 +104,15 @@
             android:layout_marginBottom="6dp"
             android:textSize="15sp"
             />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/Ad_Profile"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/sample_profile_image"
+            android:layout_marginEnd="22dp"
+            android:layout_alignBottom="@+id/Ad_tvPhone"
+            android:layout_alignEnd="@+id/Ad_tvDescription" />
 
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -2,6 +2,7 @@ package com.blackboxindia.TakeIT.Network;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -31,9 +32,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-
-import static android.os.Environment.DIRECTORY_PICTURES;
+import java.util.Set;
 
 @SuppressWarnings("VisibleForTests")
 public class CloudStorageMethods {
@@ -188,7 +189,8 @@ public class CloudStorageMethods {
         }
         else {
             final File localFile;
-            localFile = new File(context.getExternalFilesDir(DIRECTORY_PICTURES), AdID + ".webp");
+
+            localFile = new File(context.getCacheDir(), AdID + ".webp");
             //final long ONE_MEGABYTE = 1024 * 1024;
 
             storage.getReference().child("images/" + AdID + "/0s").getFile(localFile)
@@ -198,6 +200,7 @@ public class CloudStorageMethods {
                             Log.i(TAG,"getMajorImage success");
                             Bitmap bitmap = BitmapFactory.decodeFile(localFile.getPath());
                             cachedIcons.put(AdID,Uri.fromFile(localFile));
+                            Log.i(TAG,"icon uri:" + Uri.fromFile(localFile));
                             listener.onSuccess(bitmap);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -220,7 +223,7 @@ public class CloudStorageMethods {
             Log.i(TAG,"Getting image from internet "+ AdID + i );
 
             final File localFile;
-            localFile = new File(context.getExternalFilesDir(DIRECTORY_PICTURES), AdID + i + ".bmp");
+            localFile = new File(context.getCacheDir(), AdID + i + ".bmp");
 
             storage.getReference().child("images/" + AdID + "/" + i).getFile(localFile)
                     .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -241,52 +244,59 @@ public class CloudStorageMethods {
     }
 
     public void saveCache(){
-//        Log.i(TAG,"saveCache");
-//
-//        SharedPreferences cache = context.getSharedPreferences("cache", Context.MODE_PRIVATE);
-//
-//        SharedPreferences.Editor edit = cache.edit();
-//
-//        edit.putBoolean("isSaved",true);
-//
-//        Set<String> allIconKeys = cachedIcons.keySet();
-//        edit.putStringSet("icons",allIconKeys);
-//        for(String key: allIconKeys)
-//            edit.putString(key,cachedIcons.get(key).toString());
-//
-//        Set<String> allBigKeys = cachedBigImages.keySet();
-//        edit.putStringSet("big",allBigKeys);
-//        for(String key: allBigKeys)
-//            edit.putString(key,cachedBigImages.get(key).toString());
-//
-//        edit.apply();
+        Log.i(TAG,"saveCache");
+
+        SharedPreferences cache = context.getSharedPreferences("cache", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor edit = cache.edit();
+
+        edit.putBoolean("isSaved",true);
+
+
+
+        Set<String> allIconKeys = cachedIcons.keySet();
+        edit.putStringSet("icons",allIconKeys);
+        for(String key: allIconKeys) {
+            String uriString = cachedIcons.get(key).toString();
+            if(cachedIcons.get(key).equals(Uri.parse(uriString))) {
+                Log.i(TAG,"same");
+                edit.putString(key, uriString);
+            }
+        }
+
+        Set<String> allBigKeys = cachedBigImages.keySet();
+        edit.putStringSet("big",allBigKeys);
+        for(String key: allBigKeys)
+            edit.putString(key,cachedBigImages.get(key).toString());
+
+        edit.apply();
 
     }
 
     public void getCache(){
-//        Log.i(TAG,"getCache");
-//        SharedPreferences cache = context.getSharedPreferences("cache", Context.MODE_PRIVATE);
-//
-//        if(cache.getBoolean("isSaved",false)) {
-//            Log.i(TAG,"isSaved");
-//
-//            cachedIcons = new HashMap<>();
-//            Set<String> icons = new HashSet<>();
-//            icons = cache.getStringSet("icons", icons);
-//            for (String key : icons) {
-//                String s = "";
-//                cache.getString(key, s);
-//                cachedIcons.put(key, Uri.parse(s));
-//            }
-//
-//            cachedBigImages = new HashMap<>();
-//            Set<String> bigImages = new HashSet<>();
-//            bigImages = cache.getStringSet("big",bigImages);
-//            for (String key : bigImages) {
-//                String s = "";
-//                cache.getString(key, s);
-//                cachedBigImages.put(key, Uri.parse(s));
-//            }
-//        }
+        Log.i(TAG,"getCache");
+        SharedPreferences cache = context.getSharedPreferences("cache", Context.MODE_PRIVATE);
+
+        if(cache.getBoolean("isSaved",false)) {
+            Log.i(TAG,"isSaved");
+
+            cachedIcons = new HashMap<>();
+            Set<String> icons = new HashSet<>();
+            icons = cache.getStringSet("icons", icons);
+            for (String key : icons) {
+                String s = "";
+                s = cache.getString(key, s);
+                cachedIcons.put(key, Uri.parse(s));
+            }
+
+            cachedBigImages = new HashMap<>();
+            Set<String> bigImages = new HashSet<>();
+            bigImages = cache.getStringSet("big",bigImages);
+            for (String key : bigImages) {
+                String s = "";
+                s = cache.getString(key, s);
+                cachedBigImages.put(key, Uri.parse(s));
+            }
+        }
     }
 }
