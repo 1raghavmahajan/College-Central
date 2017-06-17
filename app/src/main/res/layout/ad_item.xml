@@ -41,6 +41,11 @@
                 android:background="@color/img_text"
                 android:fadingEdgeLength="3dp"
                 android:padding="2dp"/>
+            <ProgressBar
+                android:id="@+id/adItem_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
         </FrameLayout>
         <TextView
             android:id="@+id/adItem_Title"

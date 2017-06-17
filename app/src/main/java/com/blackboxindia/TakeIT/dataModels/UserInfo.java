@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.Fragments.frag_Main;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.activities.MainActivity;
@@ -112,8 +113,8 @@ public class UserInfo implements Parcelable {
                     UserCred userCred = new UserCred(email, password);
                     userCred.save_cred(context);
                 }
-                MainActivity mainActivity = (MainActivity) context;
-                mainActivity.UpdateUI(userInfo, Auth);
+                ((MainActivity) context).UpdateUI(userInfo, Auth);
+                ((frag_Main)(((MainActivity) context).getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).refresh(true);
             }
 
             @Override

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
@@ -25,8 +26,6 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     private static String TAG = mainAdapter.class.getSimpleName()+" YOYO";
 
-    private static Integer MAX_AD_LIMIT = 30;
-
     private final ImageClickListener mListener;
     private List<AdData> adList;
     private LayoutInflater inflater;
@@ -34,7 +33,6 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
     private CloudStorageMethods methods;
 
     public mainAdapter(Context context, ArrayList<AdData> allAds, ImageClickListener listener) {
-        Log.i(TAG,"mainAdapter created");
         inflater = LayoutInflater.from(context);
         methods = new CloudStorageMethods(context);
         adList = allAds;
@@ -43,7 +41,6 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     @Override
     public adItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i(TAG,"mainAdapter onCreateViewHolder");
         View view = inflater.inflate(R.layout.ad_item, parent, false);
         return new adItemViewHolder(view);
     }
@@ -77,6 +74,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         Context context;
         CardView cardView;
         Bitmap main;
+        ProgressBar progressBar;
 
         adItemViewHolder(View itemView) {
             super(itemView);
@@ -84,10 +82,11 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             tv_title = (TextView) itemView.findViewById(R.id.adItem_Title);
             tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
             cardView = (CardView) itemView.findViewById(R.id.adItem);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.adItem_progress);
             context = itemView.getContext();
         }
 
-        public ImageView getMajorImage() {
+        ImageView getMajorImage() {
             return majorImage;
         }
 
@@ -100,6 +99,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
                     @Override
                     public void onSuccess(Bitmap bitmap) {
                         if (majorImage != null){
+                            progressBar.setVisibility(View.GONE);
                             main = bitmap;
                             if(bitmap!=null)
                                 majorImage.setImageBitmap(bitmap);

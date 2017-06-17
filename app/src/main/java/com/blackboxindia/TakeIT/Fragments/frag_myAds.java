@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +29,9 @@ import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_MyAD_TAG;
 
 public class frag_myAds extends Fragment {
 
-    private static String TAG = frag_myAds.class.getSimpleName() + " YOYO";
-
     //region variables
+
+    private static String TAG = frag_myAds.class.getSimpleName() + " YOYO";
     View view;
     Context context;
     NetworkMethods networkMethods;
@@ -45,6 +44,11 @@ public class frag_myAds extends Fragment {
 
     //endregion
 
+    @Override
+    public void onResume() {
+        ((MainActivity)context).hideIT();
+        super.onResume();
+    }
 
     @Nullable
     @Override
@@ -72,8 +76,6 @@ public class frag_myAds extends Fragment {
             public void onClick(MyAdsAdapter.adItemViewHolder holder, int position, AdData currentAd) {
                 frag_ViewMyAd fragViewMyAd = new frag_ViewMyAd();
 
-                Log.i(TAG,"onClick");
-
                 Bundle args = new Bundle();
                 args.putParcelable("adData",currentAd);
                 fragViewMyAd.setArguments(args);
@@ -92,9 +94,4 @@ public class frag_myAds extends Fragment {
         recyclerView.setAdapter(myAdsAdapter);
     }
 
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
 }

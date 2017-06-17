@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +18,9 @@ import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 public class frag_loginPage extends Fragment {
 
-    private static String TAG = frag_loginPage.class.getSimpleName() + " YOYO";
-
     //region Variables
 
+    private static String TAG = frag_loginPage.class.getSimpleName() + " YOYO";
     TextInputLayout inputLayoutID, inputLayoutPassword;
     EditText etID, etPassword;
     Button btn_login;
@@ -34,11 +32,16 @@ public class frag_loginPage extends Fragment {
 
     //region Initial setup
 
+    @Override
+    public void onResume() {
+        ((MainActivity)getActivity()).hideIT();
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_login, container, false);
-        Log.i(TAG,"onCreateView");
 
         initVariables();
 
@@ -119,12 +122,6 @@ public class frag_loginPage extends Fragment {
         }
         else
             return true;
-    }
-
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
     }
 
 }

@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
@@ -37,7 +36,6 @@ public class frag_ViewAd extends Fragment {
 
     AdData adData;
     Bitmap main;
-    CloudStorageMethods cloudStorageMethods;
     //endregion
 
     //region Initial Setup
@@ -69,8 +67,6 @@ public class frag_ViewAd extends Fragment {
         tv_Name = (TextView) view.findViewById(R.id.Ad_tvName);
         tv_Address = (TextView) view.findViewById(R.id.Ad_tvAddress);
         tv_Phone = (TextView) view.findViewById(R.id.Ad_tvPhone);
-
-        cloudStorageMethods = ((frag_Main)getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG)).cloudStorageMethods;
     }
 
     //endregion
@@ -119,7 +115,7 @@ public class frag_ViewAd extends Fragment {
 
     void setUpImgRecycler() {
         main = ((frag_Main)(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).current;
-        ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, cloudStorageMethods);
+        ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);
         imgRecyclerView.setAdapter(adapter);

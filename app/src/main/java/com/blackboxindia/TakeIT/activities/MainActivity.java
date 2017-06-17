@@ -27,14 +27,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -80,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fab;
     NavigationView navigationView;
     Menu navigationViewMenu;
-    public ImageButton ic_Toolbar;
 
     public FirebaseAuth mAuth;
     public UserInfo userInfo;
@@ -110,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
         UserCred userCred = new UserCred();
-
         if(userCred.load_Cred(context)) {
 
             final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
@@ -156,32 +152,31 @@ public class MainActivity extends AppCompatActivity {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
         fragmentManager = getFragmentManager();
         context = this;
+        cloudStorageMethods = new CloudStorageMethods(context);
+        cloudStorageMethods.getCache();
     }
 
     private void setUpToolbar() {
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
         toolbar.inflateMenu(R.menu.toolbar_menu);
-        //setSupportActionBar(toolbar);
+
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) toolbar.getMenu().findItem(R.id.action_search).getActionView();
+        SearchView searchView = (SearchView) toolbar.getMenu().findItem(R.id.toolbar_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
-        MenuItem item = toolbar.getMenu().findItem(R.id.action_search);
-
+        MenuItem item = toolbar.getMenu().findItem(R.id.toolbar_search);
         MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
-                Log.i(TAG,"onMenuItemActionExpand");
                 animateSearchToolbar(1, true, true);
-                ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).filter("");
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                Log.i(TAG,"onMenuItemActionCollapse");
-                // Called when SearchView is expanding
+                ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).filter("");
                 if (item.isActionViewExpanded())
                     animateSearchToolbar(1, false, false);
                 return true;
@@ -329,12 +324,12 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean goToMainFragment(Boolean clearAll, Boolean toRefresh) {
 
-        showIT();
         if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)!=null) {
+
+            showIT();
 
             if (!fragmentManager.findFragmentByTag(MAIN_FRAG_TAG).isVisible()) {
 
-                Log.i(TAG,"goToMainFragment: main frag not visible");
                 fragmentManager.beginTransaction()
                         .replace(R.id.frame_layout,fragmentManager.findFragmentByTag(MAIN_FRAG_TAG), MAIN_FRAG_TAG)
                         //.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
@@ -358,7 +353,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         else {
-            Log.i(TAG,"setUpMainFragment");
             setUpMainFragment();
             return false;
         }
@@ -366,7 +360,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchOtherFragment(Fragment frag, String tag) {
-
         
         if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG) != null)
         {
@@ -438,7 +431,12 @@ public class MainActivity extends AppCompatActivity {
         // For closing the Drawer if open onBackPress
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else if(toolbar.getMenu().findItem(R.id.toolbar_search).isActionViewExpanded()) {
+            toolbar.getMenu().findItem(R.id.toolbar_search).collapseActionView();
+//            animateSearchToolbar(1, false, false);
+        }
+        else {
             if(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG)!=null) {
                 if (fragmentManager.findFragmentByTag(VIEW_MyAD_TAG).isVisible()) {
 
@@ -458,6 +456,7 @@ public class MainActivity extends AppCompatActivity {
                 if (goToMainFragment()) {
 
                     if (twiceToExit) {
+                        cloudStorageMethods.saveCache();
                         finish();
                     }
 
@@ -483,10 +482,23 @@ public class MainActivity extends AppCompatActivity {
 
     public void hideIT() {
         fab.setVisibility(View.GONE);
+        toolbar.getMenu().findItem(R.id.toolbar_search).setVisible(false);
+        toolbar.getMenu().findItem(R.id.toolbar_refresh).setVisible(false);
     }
 
     public void showIT() {
         fab.setVisibility(View.VISIBLE);
+        toolbar.getMenu().findItem(R.id.toolbar_search).setVisible(true);
+
+        toolbar.getMenu().findItem(R.id.toolbar_refresh).setVisible(true);
+        toolbar.getMenu().findItem(R.id.toolbar_refresh).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.toolbar_refresh)
+                    ((frag_Main)fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)).refresh();
+                return true;
+            }
+        });
     }
 
     public void UpdateUI(UserInfo userInfo, FirebaseAuth auth) {
@@ -561,7 +573,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        Log.i(TAG,"onNewIntent");
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
             ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).filter(query);

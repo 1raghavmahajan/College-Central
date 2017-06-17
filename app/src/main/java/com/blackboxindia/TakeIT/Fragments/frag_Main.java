@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
@@ -34,14 +33,13 @@ public class frag_Main extends Fragment {
 
     //region variables
     private static String TAG = frag_Main.class.getSimpleName() + " YOYO";
+    private static Integer MAX_Ads = 40;
     View view;
     Context context;
     NetworkMethods networkMethods;
     UserInfo userInfo;
     FirebaseAuth mAuth;
     SwipeRefreshLayout swipeRefreshLayout;
-
-    CloudStorageMethods cloudStorageMethods;
 
     RecyclerView recyclerView;
     Bitmap current;
@@ -54,7 +52,6 @@ public class frag_Main extends Fragment {
         view = inflater.inflate(R.layout.frag_main, container, false);
         context = view.getContext();
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        cloudStorageMethods = new CloudStorageMethods(context);
 
         refresh(true);
 
@@ -125,7 +122,7 @@ public class frag_Main extends Fragment {
     private void getAllAds(final Boolean firstTime) {
         final ProgressDialog dialog = ProgressDialog.show(context, "Just a sec", "Getting the good stuff", true, false);
 
-        networkMethods.getAllAds( 30 ,new getAllAdsListener() {
+        networkMethods.getAllAds( MAX_Ads ,new getAllAdsListener() {
             @Override
             public void onSuccess(ArrayList<AdData> list) {
                 allAds = list;

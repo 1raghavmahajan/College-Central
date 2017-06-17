@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -90,7 +91,7 @@ public class frag_myProfile extends Fragment {
     void populateViews() {
         if(userInfo.getProfileIMG()!=null)
             if(!userInfo.getProfileIMG().equals("null"))
-                imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
+                new loadPic().execute();
         etName.setText(userInfo.getName());
         etEmail.setText(userInfo.getEmail());
         etPhone.setText(userInfo.getPhone());
@@ -166,5 +167,19 @@ public class frag_myProfile extends Fragment {
     }
 
     //endregion
+
+    private class loadPic extends AsyncTask<Void,Void,Bitmap>{
+
+        @Override
+        protected Bitmap doInBackground(Void... params) {
+            return (ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            imageView.setImageBitmap(bitmap);
+        }
+    }
 
 }

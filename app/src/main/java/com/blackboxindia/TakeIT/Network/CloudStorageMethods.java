@@ -29,10 +29,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.os.Environment.DIRECTORY_PICTURES;
 
 @SuppressWarnings("VisibleForTests")
 public class CloudStorageMethods {
@@ -129,10 +130,6 @@ public class CloudStorageMethods {
 
         Bitmap bmp = ImageUtils.compressImage(uri.toString(), 800,800, context );
 
-//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-//        assert bmp != null;
-//        bmp.compress(Bitmap.CompressFormat.WEBP,80,byteArrayOutputStream);
-
         StorageReference reference = storage.getReference().child("images/" + key + "/" + i);
         reference.putBytes(BitmapHelper.bitmapToByteArray(bmp))
                 .addOnFailureListener(new OnFailureListener() {
@@ -181,29 +178,34 @@ public class CloudStorageMethods {
         });
     }
 
-    private Map<String,Bitmap> cachedIcons;
+    private Map<String,Uri> cachedIcons;
     public void getMajorImage(final String AdID, final BitmapDownloadListener listener) {
 
         if(cachedIcons.containsKey(AdID)) {
-            listener.onSuccess(cachedIcons.get(AdID));
+            Log.i(TAG,"getMajorImage cached");
+            Bitmap bitmap = BitmapFactory.decodeFile(cachedIcons.get(AdID).getPath());
+            listener.onSuccess(bitmap);
         }
         else {
-            final long ONE_MEGABYTE = 1024 * 1024;
-            storage.getReference().child("images/" + AdID + "/0s").getBytes(ONE_MEGABYTE)
-                    .addOnSuccessListener(new OnSuccessListener<byte[]>() {
+            final File localFile;
+            localFile = new File(context.getExternalFilesDir(DIRECTORY_PICTURES), AdID + ".webp");
+            //final long ONE_MEGABYTE = 1024 * 1024;
+
+            storage.getReference().child("images/" + AdID + "/0s").getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
-                        public void onSuccess(byte[] bytes) {
-                            Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            cachedIcons.put(AdID,b);
-                            listener.onSuccess(b);
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Log.i(TAG,"getMajorImage success");
+                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getPath());
+                            cachedIcons.put(AdID,Uri.fromFile(localFile));
+                            listener.onSuccess(bitmap);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Log.i(TAG, "getMajorImage: onFailure "+ AdID);
-                    listener.onFailure(exception);
-                }
-            });
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            listener.onFailure(e);
+                        }
+                    });
         }
     }
 
@@ -216,28 +218,75 @@ public class CloudStorageMethods {
         }
         else {
             Log.i(TAG,"Getting image from internet "+ AdID + i );
-            File localFile;
-            try {
 
-                localFile = File.createTempFile(AdID + i, ".bmp");
-                final File finalLocalFile = localFile;
-                storage.getReference().child("images/" + AdID + "/" + i).getFile(localFile)
-                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                cachedBigImages.put(AdID+i,Uri.fromFile(finalLocalFile));
-                                listener.onSuccess(Uri.fromFile(finalLocalFile));
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        listener.onFailure(exception);
-                    }
-                });
+            final File localFile;
+            localFile = new File(context.getExternalFilesDir(DIRECTORY_PICTURES), AdID + i + ".bmp");
 
-            } catch (IOException e) {
-                listener.onFailure(e);
-            }
+            storage.getReference().child("images/" + AdID + "/" + i).getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            Log.i(TAG,"uri:" + Uri.fromFile(localFile));
+                            cachedBigImages.put(AdID+i,Uri.fromFile(localFile));
+                            listener.onSuccess(Uri.fromFile(localFile));
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    listener.onFailure(exception);
+                }
+            });
+
         }
+    }
+
+    public void saveCache(){
+//        Log.i(TAG,"saveCache");
+//
+//        SharedPreferences cache = context.getSharedPreferences("cache", Context.MODE_PRIVATE);
+//
+//        SharedPreferences.Editor edit = cache.edit();
+//
+//        edit.putBoolean("isSaved",true);
+//
+//        Set<String> allIconKeys = cachedIcons.keySet();
+//        edit.putStringSet("icons",allIconKeys);
+//        for(String key: allIconKeys)
+//            edit.putString(key,cachedIcons.get(key).toString());
+//
+//        Set<String> allBigKeys = cachedBigImages.keySet();
+//        edit.putStringSet("big",allBigKeys);
+//        for(String key: allBigKeys)
+//            edit.putString(key,cachedBigImages.get(key).toString());
+//
+//        edit.apply();
+
+    }
+
+    public void getCache(){
+//        Log.i(TAG,"getCache");
+//        SharedPreferences cache = context.getSharedPreferences("cache", Context.MODE_PRIVATE);
+//
+//        if(cache.getBoolean("isSaved",false)) {
+//            Log.i(TAG,"isSaved");
+//
+//            cachedIcons = new HashMap<>();
+//            Set<String> icons = new HashSet<>();
+//            icons = cache.getStringSet("icons", icons);
+//            for (String key : icons) {
+//                String s = "";
+//                cache.getString(key, s);
+//                cachedIcons.put(key, Uri.parse(s));
+//            }
+//
+//            cachedBigImages = new HashMap<>();
+//            Set<String> bigImages = new HashSet<>();
+//            bigImages = cache.getStringSet("big",bigImages);
+//            for (String key : bigImages) {
+//                String s = "";
+//                cache.getString(key, s);
+//                cachedBigImages.put(key, Uri.parse(s));
+//            }
+//        }
     }
 }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.ImageDownloadListener;
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 
 public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.imgViewHolder> {
@@ -28,12 +29,12 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
     private Context context;
     private CloudStorageMethods methods;
 
-    public ViewAdImageAdapter(Context context, AdData adData, Bitmap main, CloudStorageMethods methods) {
+    public ViewAdImageAdapter(Context context, AdData adData, Bitmap main) {
         inflater = LayoutInflater.from(context);
         this.context  = context;
         this.adData = adData;
         this.main = main;
-        this.methods = methods;
+        this.methods = ((MainActivity)context).cloudStorageMethods;
     }
 
     @Override
@@ -68,7 +69,6 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
         void setData(final Integer position) {
             imageView.setTransitionName("adImage" + position);
             if(position==0) {
-                Log.i(TAG,"Setting temp image "+String.valueOf(main!=null));
                 if(main!=null) {
                     imageView.setImageBitmap(main);
                     imageView.setVisibility(View.VISIBLE);

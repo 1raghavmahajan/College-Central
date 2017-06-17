@@ -587,14 +587,11 @@ public class ImageUtils {
 
         switch (requestCode) {
             case 0:
-
                 String selected_path = "";
                 if (resultCode == Activity.RESULT_OK) {
 
-                    Log.i("Camera Selected", "Photo");
-
                     try {
-                        Log.i("YOYO", "name" + file_name);
+
                         bitmap = compressImage(imageUri.toString(), 512, 512);
                         imageAttachment_callBack.image_attachment(from, file_name, bitmap, imageUri);
                     } catch (Exception e) {
@@ -604,7 +601,7 @@ public class ImageUtils {
                 break;
             case 1:
                 if (resultCode == Activity.RESULT_OK) {
-                    Log.i("Gallery", "Photo");
+
                     Uri selectedImage = data.getData();
 
                     try {
@@ -616,7 +613,6 @@ public class ImageUtils {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
 
                 }
                 break;

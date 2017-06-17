@@ -17,6 +17,7 @@ import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -36,7 +37,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
 
     public MyAdsAdapter(Context context, ArrayList<String> keys, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
-        cloudStorageMethods = new CloudStorageMethods(context);
+        cloudStorageMethods = ((MainActivity)context).cloudStorageMethods;
         networkMethods = new NetworkMethods(context,FirebaseAuth.getInstance());
         userAds = keys;
         mListener = listener;
@@ -104,8 +105,6 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                     @Override
                     public void onSuccess(Bitmap bitmap) {
                         if (majorImage != null && currentAd.getNumberOfImages() > 0) {
-//                        if(majorImage.getDrawable() !=null)
-//                            ((BitmapDrawable)majorImage.getDrawable()).getBitmap().recycle();
                             majorImage.setImageBitmap(bitmap);
                         }
                     }
