@@ -17,19 +17,13 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         android:orderInCategory="2"
         app:showAsAction="always|collapseActionView" />
+
     <item
         android:id="@+id/toolbar_refresh"
         android:icon="@drawable/ic_refresh"
         android:title="@string/refresh"
         android:orderInCategory="1"
-        app:showAsAction="ifRoom"
+        app:showAsAction="always"
         />
 
-    <!--
-    <item
-        android:id="@+id/toolbar_logout"
-        android:title="@string/logout"
-        android:icon="@drawable/ic_logout"
-        app:showAsAction="never"/>
-    -->
 </menu>

@@ -80,8 +80,42 @@ public class frag_Main extends Fragment {
             getAllAds();
         }
         else{
-
         }
+    }
+
+    public void filter(String query) {
+        query = query.trim().toLowerCase();
+        if(!query.equals("")) {
+            String[] split = query.split(" ");
+            ArrayList<AdData> newList = new ArrayList<>();
+
+            for (int i = 0; i < allAds.size(); i++) {
+                for (String aSplit : split) {
+                    if (allAds.get(i).getTitle().toLowerCase().contains(aSplit)) {
+                        newList.add(allAds.get(i));
+                        break;
+                    }
+                }
+            }
+            if(newList.isEmpty())
+                Toast.makeText(context, "No matches found.", Toast.LENGTH_SHORT).show();
+            else
+                ((mainAdapter) recyclerView.getAdapter()).change(newList);
+        }
+        else
+            ((mainAdapter) recyclerView.getAdapter()).change(allAds);
+        //        Integer[] arr = new Integer[allAds.size()];
+//        for( int i=0;i<allAds.size();i++){
+//            int p=0;
+//            for (String aSplit : split) {
+//                if(allAds.get(i).getTitle().contains(aSplit))
+//                    p++;
+//            }
+//            arr[i] = p;
+//        }
+//        for(int i=0;i<allAds.size();i++){
+//
+//        }
     }
 
     private void getAllAds() {
@@ -154,65 +188,5 @@ public class frag_Main extends Fragment {
     public void clearRecycler() {
         recyclerView.swapAdapter(null,true);
     }
-
-
-
-    //region BS
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.i(TAG,"onResume");
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.context = context;
-        Log.i(TAG,"onAttach");
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.i(TAG,"onCreate");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.i(TAG,"onStart");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.i(TAG,"onPause");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.i(TAG,"onStop");
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        Log.i(TAG,"onDestroyView");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG,"onDestroy");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        Log.i(TAG,"onDetach");
-    }
-    //endregion
-
 
 }

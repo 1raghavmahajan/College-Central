@@ -55,6 +55,17 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
         holder.setData(currentAd, position, holder);
     }
 
+    public void removeAd(AdData adData){
+        Integer i = adList.indexOf(adData);
+        adList.remove(adData);
+        notifyItemRemoved(i);
+    }
+
+    public void change(ArrayList<AdData> allAds){
+        adList = allAds;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return adList.size();

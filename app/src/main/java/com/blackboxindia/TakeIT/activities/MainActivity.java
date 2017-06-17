@@ -1,5 +1,7 @@
 package com.blackboxindia.TakeIT.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -7,17 +9,19 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -28,10 +32,10 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,13 +70,11 @@ public class MainActivity extends AppCompatActivity {
     //endregion
 
     //region Variables
-    public LinearLayout linearLayout;
     public ProgressBar progressBar;
     Context context;
     AppBarLayout appBarLayout;
     FragmentManager fragmentManager;
     public Toolbar toolbar;
-    CollapsingToolbarLayout cTLayout;
     public CoordinatorLayout coordinatorLayout;
     DrawerLayout drawer;
     FloatingActionButton fab;
@@ -149,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initVariables() {
-        //linearLayout = (LinearLayout) findViewById(R.id.appbar_extra);
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
         progressBar = (ProgressBar) findViewById(R.id.progressBarTop);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
@@ -159,28 +160,79 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        ic_Toolbar = (ImageButton) toolbar.findViewById(R.id.ic_refresh);
         toolbar.setTitle(R.string.app_name);
         toolbar.inflateMenu(R.menu.toolbar_menu);
         //setSupportActionBar(toolbar);
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) toolbar.getMenu().findItem(R.id.action_search).getActionView();
-        // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (!drawer.isDrawerOpen(Gravity.START))
-//                    drawer.openDrawer(Gravity.START);
-//                else
-//                    drawer.closeDrawer(Gravity.START);
-//            }
-//        });
-//        cTLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-//        cTLayout.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
-//        cTLayout.setCollapsedTitleTextAppearance(R.style.CollapsedAppBar);
-//        cTLayout.setTitle(getString(R.string.app_name));
+
+        MenuItem item = toolbar.getMenu().findItem(R.id.action_search);
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                Log.i(TAG,"onMenuItemActionExpand");
+                animateSearchToolbar(1, true, true);
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                Log.i(TAG,"onMenuItemActionCollapse");
+                // Called when SearchView is expanding
+                if (item.isActionViewExpanded())
+                    animateSearchToolbar(1, false, false);
+                return true;
+            }
+        });
+    }
+
+    public void animateSearchToolbar(int numberOfMenuIcon, boolean containsOverflow, boolean show) {
+
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorSearch));
+        //drawer.setStatusBarBackgroundColor(ContextCompat.getColor(this, R.color.quantum_grey_600));
+
+        if (show) {
+            int width = toolbar.getWidth() -
+                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material) : 0) -
+                    ((getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) * numberOfMenuIcon) / 2);
+            Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(toolbar,
+                    isRtl(getResources()) ? toolbar.getWidth() - width : width, toolbar.getHeight() / 2, 0.0f, (float) width);
+            createCircularReveal.setDuration(400);
+            createCircularReveal.start();
+        }
+        else {
+
+            int width = toolbar.getWidth() -
+                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material) : 0) -
+                    ((getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) * numberOfMenuIcon) / 2);
+            Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(toolbar,
+                    isRtl(getResources()) ? toolbar.getWidth() - width : width, toolbar.getHeight() / 2, (float) width, 0.0f);
+            createCircularReveal.setDuration(300);
+            createCircularReveal.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    toolbar.setBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimary));
+                    drawer.setStatusBarBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimaryDark));
+                }
+            });
+            createCircularReveal.start();
+            drawer.setStatusBarBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimaryDark));
+        }
+    }
+
+    private boolean isRtl(Resources resources) {
+        return resources.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+    }
+
+    private static int getThemeColor(Context context, int id) {
+        Resources.Theme theme = context.getTheme();
+        TypedArray a = theme.obtainStyledAttributes(new int[]{id});
+        int result = a.getColor(0, 0);
+        a.recycle();
+        return result;
     }
 
     private void setUpDrawer() {
@@ -266,21 +318,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        Log.i(TAG,"onNewIntent");
-        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            search(query);
-        }
-    }
-
-    private void search(String query) {
-        Log.i(TAG,"Search: "+query);
-    }
-
-
     //endregion
 
     //region Movement
@@ -445,26 +482,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void hideIT() {
         fab.setVisibility(View.GONE);
-        //ic_Toolbar.setVisibility(View.GONE);
-
-        //linearLayout.setVisibility(View.GONE);
-//        appBarLayout.setExpanded(false, true);
-
-//        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
-//        params.setScrollFlags(0);
-//        cTLayout.setLayoutParams(params);
     }
 
     public void showIT() {
         fab.setVisibility(View.VISIBLE);
-//        ic_Toolbar.setVisibility(View.VISIBLE);
-//        ic_Toolbar.setImageResource(R.drawable.ic_refresh);
-
-        //linearLayout.setVisibility(View.VISIBLE);
-//        AppBarLayout.LayoutParams params =
-//                (AppBarLayout.LayoutParams) cTLayout.getLayoutParams();
-//        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-//        cTLayout.setLayoutParams(params);
     }
 
     public void UpdateUI(UserInfo userInfo, FirebaseAuth auth) {
@@ -537,19 +558,13 @@ public class MainActivity extends AppCompatActivity {
 
     //endregion
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Log.i(TAG,"onNewIntent");
+        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).filter(query);
+        }
+    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.toolbar_menu, menu);
-//
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-//        // Assumes current activity is the searchable activity
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//        //searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-//
-//        return true;
-//    }
 }

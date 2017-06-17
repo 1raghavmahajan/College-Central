@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="colorPrimary">#5b5858</color>
-    <color name="colorPrimaryDark">#353535</color>
-    <color name="colorAccent">#f44336</color>
+    <!--<color name="colorPrimary">#4c4949</color>-->
+    <!--<color name="colorPrimaryDark">#353535</color>-->
+
+    <color name="colorAccent">#cb3327</color>
 
     <color name="colorCardBackground">#2fb8b6b6</color>
--->    <!--<color name="img_button">#7f879298</color>-->
+
     <color name="img_text">#7fffffff</color>
 
+    <color name="colorSearch">#b39914</color>
 
 
-     <color name="colorPrimary">#37474f</color>
-    <color name="colorPrimaryDark">#263238</color>
-    <color name="colorAccent">#a4b220</color>
-    <color name="colorCardBackground">#d378909c</color>
+     <!--<color name="colorPrimary">#37474f</color>-->
+    <!--<color name="colorPrimaryDark">#263238</color>-->
+    <!--<color name="colorAccent">#a4b220</color>-->
+    <!--<color name="colorCardBackground">#d378909c</color>-->
+
+    <!--<color name="colorSearch">#7f7b04</color>-->
+
+    <!--<color name="quantum_grey_600">#757575</color>-->
 
 </resources>

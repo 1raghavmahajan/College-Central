@@ -15,92 +15,28 @@
         android:elevation="7dp"
         android:theme="@style/AppTheme.AppBarOverlay"
         >
-        <!--<android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            >
+
+        </android.support.v7.widget.Toolbar>
+
+        <ProgressBar
+            android:id="@+id/progressBarTop"
+            style="@android:style/Widget.Material.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            app:expandedTitleGravity="top"
-            app:expandedTitleMarginStart="52dp"
-            app:expandedTitleMarginTop="15dp"
-            app:layout_scrollFlags="scroll|enterAlways"
-            >-->
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|enterAlways"
-                >
-
-                <!--<android.support.v7.widget.SearchView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    />-->
-
-<!--
-                app:layout_collapseMode="pin"
-                <ImageButton
-                    android:id="@+id/ic_refresh"
-                    android:onClick="refresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:src="@drawable/ic_refresh"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:background="@android:color/transparent"
-                    android:tint="@android:color/white"
-                    />
--->
-
-            </android.support.v7.widget.Toolbar>
-
-            <ProgressBar
-                android:id="@+id/progressBarTop"
-                style="@android:style/Widget.Material.ProgressBar.Horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminate="false"
-                android:layout_gravity="bottom"
-                android:max="100"
-                android:progress="50"
-                android:paddingTop="1dp"
-                android:minHeight="0dp"
-                android:visibility="gone"/>
-
-            <!--<LinearLayout
-                android:id="@+id/appbar_extra"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:gravity="bottom"
-                android:orientation="horizontal"
-                app:layout_collapseMode="parallax"
-                android:visibility="gone"
-                >
-                <EditText
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:hint="@string/search"
-                    />
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:background="@color/colorPrimaryDark"
-                    android:minHeight="32dp"
-                    android:minWidth="70dp"
-                    android:text="@string/go"
-                    android:textColor="@android:color/white"
-                    />
-            </LinearLayout>-->
-
-        <!--</android.support.design.widget.CollapsingToolbarLayout>-->
+            android:indeterminate="false"
+            android:layout_gravity="bottom"
+            android:max="100"
+            android:progress="50"
+            android:paddingTop="1dp"
+            android:minHeight="0dp"
+            android:visibility="gone"/>
 
     </android.support.design.widget.AppBarLayout>
 
