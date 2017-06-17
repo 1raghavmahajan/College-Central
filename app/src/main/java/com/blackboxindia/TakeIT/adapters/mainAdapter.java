@@ -50,15 +50,8 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     @Override
     public void onBindViewHolder(adItemViewHolder holder, int position) {
-        Log.i(TAG,"mainAdapter onBindViewHolder #"+position);
         AdData currentAd = adList.get(position);
         holder.setData(currentAd, position, holder);
-    }
-
-    public void removeAd(AdData adData){
-        Integer i = adList.indexOf(adData);
-        adList.remove(adData);
-        notifyItemRemoved(i);
     }
 
     public void change(ArrayList<AdData> allAds){
@@ -108,10 +101,6 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
                     public void onSuccess(Bitmap bitmap) {
                         if (majorImage != null){
                             main = bitmap;
-//                            if(majorImage.getDrawable() !=null) {
-//                                Log.i(TAG,"recycling #"+position);
-//                                ((BitmapDrawable) majorImage.getDrawable()).getBitmap().recycle();
-//                            }
                             if(bitmap!=null)
                                 majorImage.setImageBitmap(bitmap);
                             else

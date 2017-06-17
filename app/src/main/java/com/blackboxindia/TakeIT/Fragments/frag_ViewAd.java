@@ -70,7 +70,7 @@ public class frag_ViewAd extends Fragment {
         tv_Address = (TextView) view.findViewById(R.id.Ad_tvAddress);
         tv_Phone = (TextView) view.findViewById(R.id.Ad_tvPhone);
 
-        cloudStorageMethods = new CloudStorageMethods(context);
+        cloudStorageMethods = ((frag_Main)getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG)).cloudStorageMethods;
     }
 
     //endregion

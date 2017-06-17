@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemActionExpand(MenuItem item) {
                 Log.i(TAG,"onMenuItemActionExpand");
                 animateSearchToolbar(1, true, true);
+                ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).filter("");
                 return true;
             }
 

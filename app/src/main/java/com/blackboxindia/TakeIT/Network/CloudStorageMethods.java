@@ -184,11 +184,7 @@ public class CloudStorageMethods {
     private Map<String,Bitmap> cachedIcons;
     public void getMajorImage(final String AdID, final BitmapDownloadListener listener) {
 
-        Log.i(TAG,"getMajorImage for AdID: "+ AdID);
-
         if(cachedIcons.containsKey(AdID)) {
-            Log.i(TAG,"getting Cached Image for AdID: "+ AdID);
-            Log.i(TAG, "Nullity: " + String.valueOf(cachedIcons.get(AdID)==null));
             listener.onSuccess(cachedIcons.get(AdID));
         }
         else {
@@ -197,15 +193,14 @@ public class CloudStorageMethods {
                     .addOnSuccessListener(new OnSuccessListener<byte[]>() {
                         @Override
                         public void onSuccess(byte[] bytes) {
-                            Log.i(TAG, "getMajorImage: onSuccess");
                             Bitmap b = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            //cachedIcons.put(AdID,b);
+                            cachedIcons.put(AdID,b);
                             listener.onSuccess(b);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception exception) {
-                    Log.i(TAG, "getMajorImage: onFailure");
+                    Log.i(TAG, "getMajorImage: onFailure "+ AdID);
                     listener.onFailure(exception);
                 }
             });
@@ -216,6 +211,7 @@ public class CloudStorageMethods {
     public void getBigImage(final String AdID, final int i, final ImageDownloadListener listener) {
 
         if(cachedBigImages.containsKey(AdID + i)) {
+            Log.i(TAG,"Getting image from cache "+ AdID + i );
             listener.onSuccess(cachedBigImages.get(AdID + i));
         }
         else {

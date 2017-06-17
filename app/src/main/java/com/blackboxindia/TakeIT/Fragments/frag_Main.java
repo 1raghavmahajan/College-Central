@@ -10,12 +10,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
@@ -41,6 +41,8 @@ public class frag_Main extends Fragment {
     FirebaseAuth mAuth;
     SwipeRefreshLayout swipeRefreshLayout;
 
+    CloudStorageMethods cloudStorageMethods;
+
     RecyclerView recyclerView;
     Bitmap current;
     ArrayList<AdData> allAds;
@@ -52,9 +54,9 @@ public class frag_Main extends Fragment {
         view = inflater.inflate(R.layout.frag_main, container, false);
         context = view.getContext();
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
+        cloudStorageMethods = new CloudStorageMethods(context);
 
-        Log.i(TAG,"onCreateView");
-        refresh();
+        refresh(true);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -67,8 +69,10 @@ public class frag_Main extends Fragment {
     }
 
     public void refresh() {
+        refresh(false);
+    }
 
-        Log.i(TAG,"refreshed");
+    public void refresh(Boolean firstTime) {
 
         userInfo = ((MainActivity)context).userInfo;
         mAuth = ((MainActivity)context).mAuth;
@@ -77,7 +81,7 @@ public class frag_Main extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
         if(mAuth!=null){
             networkMethods = new NetworkMethods(context, mAuth);
-            getAllAds();
+            getAllAds(firstTime);
         }
         else{
         }
@@ -118,14 +122,17 @@ public class frag_Main extends Fragment {
 //        }
     }
 
-    private void getAllAds() {
+    private void getAllAds(final Boolean firstTime) {
         final ProgressDialog dialog = ProgressDialog.show(context, "Just a sec", "Getting the good stuff", true, false);
 
         networkMethods.getAllAds( 30 ,new getAllAdsListener() {
             @Override
             public void onSuccess(ArrayList<AdData> list) {
                 allAds = list;
-                setUpRecyclerView();
+                if(firstTime)
+                    setUpRecyclerView();
+                else
+                    ((mainAdapter) recyclerView.getAdapter()).change(allAds);
                 dialog.cancel();
             }
 
@@ -182,7 +189,6 @@ public class frag_Main extends Fragment {
             }
         });
         recyclerView.setAdapter(adapter);
-        Log.i(TAG, "getMaxFlingVelocity: "+String.valueOf(recyclerView.getMaxFlingVelocity()));
     }
 
     public void clearRecycler() {
