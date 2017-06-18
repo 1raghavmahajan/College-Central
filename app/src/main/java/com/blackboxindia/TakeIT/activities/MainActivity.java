@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
                 if (goToMainFragment()) {
 
                     if (twiceToExit) {
-                        cloudStorageMethods.saveCache();
+                        //cloudStorageMethods.saveCache();
                         finish();
                     }
 
@@ -474,7 +474,6 @@ public class MainActivity extends AppCompatActivity {
 //            super.onBackPressed();
         }
     }
-
 
     //endregion
 
@@ -579,4 +578,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        cloudStorageMethods.saveCache();
+    }
 }

@@ -13,7 +13,6 @@ public class AdData implements Parcelable {
     private String description;
     private Integer numberOfImages;
 
-
     public AdData() {
         adID = "null";
     }

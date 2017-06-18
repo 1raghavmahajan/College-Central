@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -54,9 +55,10 @@ public class CloudStorageMethods {
     private ArrayList<Integer> progress;
     private ArrayList<Boolean> allGood;
     private ArrayList<Integer> retryNo;
-    void uploadPics(final ArrayList<Uri> imgURIs, final String key, final KeepTrackMain mainListener) {
-
-        final ProgressDialog progressDialog = ProgressDialog.show(context, "Uploading Images", "", true, false);
+    void uploadPics(final ArrayList<Uri> imgURIs, final String key, final ProgressDialog progressDialog, final KeepTrackMain mainListener) {
+        Log.i(TAG,"uploadPics");
+        progressDialog.setTitle("Uploading Images..");
+        //final ProgressDialog progressDialog = ProgressDialog.show(context, "Uploading Images", "", true, false);
         final ProgressBar progressBar = ((MainActivity)context).progressBar;
         progressBar.setVisibility(View.VISIBLE);
         progressBar.setProgress(0);
@@ -88,7 +90,7 @@ public class CloudStorageMethods {
                 if(b)
                 {
                     progressBar.setVisibility(View.GONE);
-                    progressDialog.cancel();
+                    //progressDialog.cancel();
                     mainListener.onSuccess();
                 }
             }
@@ -104,7 +106,7 @@ public class CloudStorageMethods {
                 else {
                     //Cancel task
                     progressBar.setVisibility(View.GONE);
-                    progressDialog.cancel();
+                    //progressDialog.cancel();
                     mainListener.onFailure(e);
                 }
             }
@@ -128,55 +130,14 @@ public class CloudStorageMethods {
     }
 
     private void uploadPic(Uri uri, String key, final int i, final KeepTrack listener) {
-
-        Bitmap bmp = ImageUtils.compressImage(uri.toString(), 800,800, context );
-
-        StorageReference reference = storage.getReference().child("images/" + key + "/" + i);
-        reference.putBytes(BitmapHelper.bitmapToByteArray(bmp))
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Log.i(TAG, "uploadPics: onFailure" + i, exception);
-                        listener.failure(exception, i);
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Log.i(TAG, "uploadPics: onSuccess" + i);
-                listener.onSuccess(i);
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                long p = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                Log.i(TAG, "uploadPics: onProgress" + i + ": " + p);
-                listener.onProgressUpdate(i, (int) p);
-            }
-        });
+        uploadPicWorker worker = new uploadPicWorker(key,i,listener);
+        worker.execute(uri);
     }
 
     void uploadBitmap(String AdID, Bitmap bitmap, final BitmapUploadListener listener){
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.WEBP,100,byteArrayOutputStream);
-
-        StorageReference reference = storage.getReference().child("images/"+AdID+"/0s");
-
-        reference.putBytes(byteArrayOutputStream.toByteArray())
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        Log.i(TAG,"uploadBitmap: onFailure",exception);
-                        Toast.makeText(context, exception.getMessage(), Toast.LENGTH_SHORT).show();
-                        listener.onFailure(exception);
-                    }
-                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Log.i(TAG,"uploadBitmap: onSuccess");
-                listener.onSuccess();
-            }
-        });
+        Log.i(TAG,"bitmap up started");
+        uploadBitmapWorker task = new uploadBitmapWorker(AdID, listener);
+        task.execute(bitmap);
     }
 
     private Map<String,Uri> cachedIcons;
@@ -252,17 +213,10 @@ public class CloudStorageMethods {
 
         edit.putBoolean("isSaved",true);
 
-
-
         Set<String> allIconKeys = cachedIcons.keySet();
         edit.putStringSet("icons",allIconKeys);
-        for(String key: allIconKeys) {
-            String uriString = cachedIcons.get(key).toString();
-            if(cachedIcons.get(key).equals(Uri.parse(uriString))) {
-                Log.i(TAG,"same");
-                edit.putString(key, uriString);
-            }
-        }
+        for(String key: allIconKeys)
+            edit.putString(key, cachedIcons.get(key).toString());
 
         Set<String> allBigKeys = cachedBigImages.keySet();
         edit.putStringSet("big",allBigKeys);
@@ -299,4 +253,96 @@ public class CloudStorageMethods {
             }
         }
     }
+
+    private class uploadBitmapWorker extends AsyncTask<Bitmap,Void,byte[]> {
+
+        String AdID;
+        BitmapUploadListener listener;
+
+        uploadBitmapWorker(String AdID, BitmapUploadListener listener){
+            this.AdID = AdID;
+            this.listener = listener;
+        }
+
+        @Override
+        protected byte[] doInBackground(Bitmap... params) {
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            params[0].compress(Bitmap.CompressFormat.WEBP,100,byteArrayOutputStream);
+
+            return byteArrayOutputStream.toByteArray();
+        }
+
+        @Override
+        protected void onPostExecute(byte[] bytes) {
+            super.onPostExecute(bytes);
+
+            StorageReference reference = storage.getReference().child("images/"+AdID+"/0s");
+            reference.putBytes(bytes)
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.i(TAG,"uploadBitmap: onFailure",exception);
+                            Toast.makeText(context, exception.getMessage(), Toast.LENGTH_SHORT).show();
+                            listener.onFailure(exception);
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.i(TAG,"uploadBitmap: onSuccess");
+                    listener.onSuccess();
+                }
+            });
+        }
+    }
+
+    private class uploadPicWorker extends AsyncTask<Uri,Void,byte[]> {
+
+        String key;
+        int i;
+        KeepTrack listener;
+
+        uploadPicWorker( String key, final int i, final KeepTrack listener){
+            this.key = key;
+            this.listener = listener;
+            this.i = i;
+        }
+
+        @Override
+        protected byte[] doInBackground(Uri... params) {
+
+            Bitmap bmp = ImageUtils.compressImage(params[0].toString(), 800,800, context );
+            byte[] bytes = BitmapHelper.bitmapToByteArray(bmp);
+            return bytes;
+        }
+
+        @Override
+        protected void onPostExecute(byte[] bytes) {
+            super.onPostExecute(bytes);
+
+            StorageReference reference = storage.getReference().child("images/" + key + "/" + i);
+            reference.putBytes(bytes)
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.i(TAG, "uploadPics: onFailure" + i, exception);
+                            listener.failure(exception, i);
+                        }
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.i(TAG, "uploadPics: onSuccess" + i);
+                    listener.onSuccess(i);
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    long p = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    Log.i(TAG, "uploadPics: onProgress" + i + ": " + p);
+                    listener.onProgressUpdate(i, (int) p);
+                }
+            });
+        }
+    }
+
 }

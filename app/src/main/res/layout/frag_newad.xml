@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/darker_gray"
             android:maxHeight="270dp"
-            android:minHeight="200dp"
+            android:minHeight="240dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newAd_etTitle" />

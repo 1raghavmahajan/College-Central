@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
@@ -81,6 +82,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
         TextView tv_Price;
         Context context;
         CardView cardView;
+        ProgressBar progressBar;
 
         adItemViewHolder(View itemView) {
             super(itemView);
@@ -88,6 +90,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
             tv_title = (TextView) itemView.findViewById(R.id.adItem_Title);
             tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
             cardView = (CardView) itemView.findViewById(R.id.adItem);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.adItem_progress);
             context = itemView.getContext();
         }
 
@@ -103,6 +106,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                     public void onSuccess(Bitmap bitmap) {
                         if (majorImage != null && currentAd.getNumberOfImages() > 0) {
                             majorImage.setImageBitmap(bitmap);
+                            progressBar.setVisibility(View.GONE);
                         }
                     }
 

@@ -249,8 +249,8 @@ public class NetworkMethods {
             methods.uploadBitmap(key, major, new BitmapUploadListener() {
                 @Override
                 public void onSuccess() {
-                    progressDialog.cancel();
-                    methods.uploadPics(imgURIs, key, new KeepTrackMain() {
+                    //progressDialog.cancel();
+                    methods.uploadPics(imgURIs, key,progressDialog, new KeepTrackMain() {
 
                         @Override
                         public void onSuccess() {
@@ -260,6 +260,7 @@ public class NetworkMethods {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Log.i(TAG,"createNewAd: onFailure",e);
+                                            progressDialog.cancel();
                                             listener.onFailure(e);
                                         }
                                     }).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -270,9 +271,9 @@ public class NetworkMethods {
                                             UpdateUser(userInfo, new onUpdateListener() {
                                                 @Override
                                                 public void onSuccess(UserInfo userInfo) {
+                                                    progressDialog.cancel();
                                                     listener.onSuccess(adData);
                                                 }
-
                                                 @Override
                                                 public void onFailure(Exception e) {
                                                     if(try_update >0) {
@@ -281,6 +282,7 @@ public class NetworkMethods {
                                                         UpdateUser(userInfo, this);
                                                     }
                                                     else {
+                                                        progressDialog.cancel();
                                                         listener.onFailure(e);
                                                     }
                                                 }
@@ -291,7 +293,6 @@ public class NetworkMethods {
                         }
                         @Override
                         public void onFailure(Exception e) {
-
                             FirebaseStorage storage = FirebaseStorage.getInstance();
                             storage.getReference().child("images/" + key + "/0s").delete();
                             for(int i=0;i<imgURIs.size();i++)
@@ -299,6 +300,7 @@ public class NetworkMethods {
                             if(once)
                             {
                                 once=false;
+                                progressDialog.cancel();
                                 listener.onFailure(e);
                             }
 
