@@ -25,13 +25,12 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/Ad_imgRecycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="240dp"
-            android:maxHeight="300dp"
-            android:layout_alignParentStart="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/viewAdImageSize"
             android:layout_below="@+id/Ad_tvTitle"
-            android:background="@android:color/darker_gray"
+            android:fadingEdgeLength="20dp"
+            android:elevation="50dp"
             />
 
         <TextView
@@ -43,7 +42,6 @@
             android:text="@string/labelDescription"
             android:textSize="18sp"
             android:textStyle="bold" />
-
         <TextView
             android:id="@+id/Ad_tvPrice"
             android:layout_width="wrap_content"
@@ -53,7 +51,6 @@
             android:gravity="end"
             android:text="@string/setPrice"
             android:textSize="26sp" />
-
         <TextView
             android:id="@+id/Ad_tvDescription"
             android:layout_width="match_parent"

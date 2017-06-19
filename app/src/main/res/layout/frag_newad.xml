@@ -13,8 +13,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
-            android:inputType="textMultiLine"
-            android:maxLines="2"
+            android:inputType="textAutoCorrect"
             android:maxLength="@integer/Max_Title_Length"
             android:text="@string/setTitle"
             android:textAlignment="center"
@@ -27,10 +26,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/newAd_imgRecycler"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/viewAdImageSize"
             android:background="@android:color/darker_gray"
-            android:maxHeight="270dp"
-            android:minHeight="240dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newAd_etTitle" />

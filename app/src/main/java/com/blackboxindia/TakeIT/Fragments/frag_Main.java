@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
-import com.blackboxindia.TakeIT.adapters.adViewTransition;
 import com.blackboxindia.TakeIT.adapters.mainAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
@@ -153,10 +151,10 @@ public class frag_Main extends Fragment {
 
                 frag_ViewAd fragViewAd = new frag_ViewAd();
 
-                fragViewAd.setSharedElementEnterTransition(new adViewTransition());
-                fragViewAd.setEnterTransition(new Fade());
-                setExitTransition(new Fade());
-                fragViewAd.setSharedElementReturnTransition(new adViewTransition());
+//                fragViewAd.setSharedElementEnterTransition(new adViewTransition());
+//                fragViewAd.setEnterTransition(new Fade());
+//                setExitTransition(new Fade());
+//                fragViewAd.setSharedElementReturnTransition(new adViewTransition());
 
                 Bundle args = new Bundle();
 

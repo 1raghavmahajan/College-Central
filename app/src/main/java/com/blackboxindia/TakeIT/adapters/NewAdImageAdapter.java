@@ -27,7 +27,7 @@ public class NewAdImageAdapter extends RecyclerView.Adapter<NewAdImageAdapter.im
 
     @Override
     public imgViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.img_card, parent, false);
+        View view = inflater.inflate(R.layout.newad_img_card, parent, false);
         return new imgViewHolder(view);
     }
 
