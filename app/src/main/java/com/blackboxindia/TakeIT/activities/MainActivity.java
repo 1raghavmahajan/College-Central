@@ -264,6 +264,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        GlideApp.with(this).load(R.drawable.header_image).into(new SimpleTarget<Drawable>() {
+//            @Override
+//            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+//                navigationView.getHeaderView(0).setBackground(resource);
+//            }
+//        });
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {

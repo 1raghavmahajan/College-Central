@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blackboxindia.TakeIT.Network.GlideApp;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.Utils;
 
@@ -32,10 +33,9 @@ public class OnboardingActivity extends AppCompatActivity {
 
     ImageButton mNextBtn;
     Button mSkipBtn, mFinishBtn;
-    ImageView zero, one, two;
+    ImageView zero, one, two, three;
     ImageView[] indicators;
 
-    int lastLeftValue = 0;
     int page =0;
     //endregion
 
@@ -44,11 +44,11 @@ public class OnboardingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black_trans80));
-
+//        getWindow().getDecorView().setSystemUiVisibility(
+//                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+//        //getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black_trans80));
+//        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.trans30));
         setContentView(R.layout.activity_onboarding);
 
         initVariables();
@@ -59,18 +59,20 @@ public class OnboardingActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(page);
         updateIndicators(page);
 
-        final int color1 = ContextCompat.getColor(this, R.color.cyan);
-        final int color2 = ContextCompat.getColor(this, R.color.orange);
-        final int color3 = ContextCompat.getColor(this, R.color.green);
+        final int color1 = ContextCompat.getColor(this, R.color.orange);
+        final int color2 = ContextCompat.getColor(this, R.color.cyan);
+        final int color3 = ContextCompat.getColor(this, R.color.BlueGrey500);
+        final int color4 = ContextCompat.getColor(this, R.color.green);
 
-        final int[] colorList = new int[]{color1, color2, color3};
+        final int[] colorList = new int[]{color1, color2, color3, color4};
 
         final ArgbEvaluator evaluator = new ArgbEvaluator();
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                int colorUpdate = (Integer) evaluator.evaluate(positionOffset, colorList[position], colorList[position == 2 ? position : position + 1]);
+                int colorUpdate = (Integer) evaluator.evaluate(positionOffset, colorList[position], colorList[position == 3 ? position : position + 1]);
+                mCoordinator.setBackgroundColor(colorUpdate);
                 mViewPager.setBackgroundColor(colorUpdate);
             }
 
@@ -89,10 +91,13 @@ public class OnboardingActivity extends AppCompatActivity {
                     case 2:
                         mViewPager.setBackgroundColor(color3);
                         break;
+                    case 3:
+                        mViewPager.setBackgroundColor(color4);
+                        break;
                 }
 
-                mNextBtn.setVisibility(position == 2 ? View.GONE : View.VISIBLE);
-                mFinishBtn.setVisibility(position == 2 ? View.VISIBLE : View.GONE);
+                mNextBtn.setVisibility(position == 3 ? View.GONE : View.VISIBLE);
+                mFinishBtn.setVisibility(position == 3 ? View.VISIBLE : View.GONE);
 
             }
 
@@ -142,10 +147,11 @@ public class OnboardingActivity extends AppCompatActivity {
         zero = (ImageView) findViewById(R.id.intro_indicator_0);
         one = (ImageView) findViewById(R.id.intro_indicator_1);
         two = (ImageView) findViewById(R.id.intro_indicator_2);
+        three = (ImageView) findViewById(R.id.intro_indicator_3);
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.main_content);
 
-        indicators = new ImageView[]{zero, one, two};
+        indicators = new ImageView[]{zero, one, two, three};
 
     }
 
@@ -163,7 +169,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         ImageView img;
 
-        int[] bgs = new int[]{R.drawable.ic_flight_24dp, R.drawable.ic_mail_24dp, R.drawable.ic_explore_24dp};
+        int[] bgs = new int[]{R.drawable.page1new, R.drawable.teach2, R.drawable.page3, R.drawable.page4withback};
 
         public PlaceholderFragment() {
         }
@@ -181,23 +187,60 @@ public class OnboardingActivity extends AppCompatActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
             View rootView = inflater.inflate(R.layout.fragment_onboarding, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-           // textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+
+            TextView tv_Title = (TextView) rootView.findViewById(R.id.section_Title);
+            String title ="";
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)-1) {
+                case 0:
+                    title = "Sell it";
+                    break;
+                case 1:
+                    title = "Spread it";
+                    break;
+                case 2:
+                    title = "Put it";
+                    break;
+                case 3:
+                    title = "Take it";
+            }
+            tv_Title.setText(title);
+
+
+            TextView tv_Subtitle = (TextView) rootView.findViewById(R.id.section_Subtitle);
+            String subtitle ="";
+            switch (getArguments().getInt(ARG_SECTION_NUMBER) -1){
+                case 0:
+                    subtitle = getString(R.string.page0);
+                    break;
+                case 1:
+                    subtitle = getString(R.string.page1);
+                    break;
+                case 2:
+                    subtitle = getString(R.string.page2);
+                    break;
+                case 3:
+                    subtitle = getString(R.string.page3);
+                    break;
+            }
+            tv_Subtitle.setText(subtitle);
 
             img = (ImageView) rootView.findViewById(R.id.section_img);
+            GlideApp.with(container.getContext()).load(bgs[getArguments().getInt(ARG_SECTION_NUMBER) - 1]).into(img);
             //img.setBackgroundResource(bgs[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
 
             return rootView;
         }
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+
+        SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -211,18 +254,20 @@ public class OnboardingActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 4;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SECTION 1";
+                    return "Sell it";
                 case 1:
-                    return "SECTION 2";
+                    return "Spread it";
                 case 2:
-                    return "SECTION 3";
+                    return "Put it";
+                case 3:
+                    return "Take it";
             }
             return null;
         }

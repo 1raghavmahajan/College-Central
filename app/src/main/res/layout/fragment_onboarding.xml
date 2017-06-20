@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_horizontal_margin"
-    android:background="@color/cyan"
     tools:context=".activities.OnboardingActivity">
 
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <ImageView
             android:id="@+id/section_img"
@@ -17,8 +17,7 @@
             android:layout_height="300dp"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
-            android:alpha="0.7"
-            android:src="@drawable/imgteach"
+            android:alpha="0.9"
             android:scaleType="fitCenter" />
 
 
@@ -34,21 +33,22 @@
         android:padding="@dimen/activity_horizontal_margin">
 
         <TextView
-            android:id="@+id/section_label"
+            android:id="@+id/section_Title"
             style="@style/TextAppearance.AppCompat.Headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:text="Take It"/>
+            android:text="@string/title"/>
 
         <TextView
+            android:id="@+id/section_Subtitle"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:alpha="0.7"
             android:gravity="center"
-            android:text="Want to get rid of the crap in room and help others?"
+            android:text="@string/lbl_subtitle"
             android:textColor="@android:color/white" />
 
 

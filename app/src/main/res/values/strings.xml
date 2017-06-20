@@ -70,7 +70,15 @@
     <string name="room_number">Room Number</string>
     <string name="phone_number">Phone Number</string>
     <string name="title_activity_onboarding">OnboardingActivity</string>
-    <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="lbl_subtitle">Subtitle</string>
+    <string name="title">Title</string>
+
+
+    <string name="page0">Want to get rid of the crap in your room and help others?</string>
+    <string name="page1">Or spread your skills and meet your seniors?</string>
+    <string name="page2">Your ad will we visible to students just from your college.</string>
+    <string name="page3">Contact the person using the phone number and meet up!</string>
+
 
 </resources>
