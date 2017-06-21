@@ -119,6 +119,7 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                Utils.saveSharedSetting(OnboardingActivity.this, MainActivity.PREF_USER_FIRST_TIME, "false");
             }
         });
 
@@ -126,7 +127,6 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                //  update 1st time pref
                 Utils.saveSharedSetting(OnboardingActivity.this, MainActivity.PREF_USER_FIRST_TIME, "false");
             }
         });
@@ -239,7 +239,6 @@ public class OnboardingActivity extends AppCompatActivity {
     private class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 
-
         SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
@@ -271,5 +270,10 @@ public class OnboardingActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
     }
 }

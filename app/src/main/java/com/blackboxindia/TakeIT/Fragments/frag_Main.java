@@ -187,7 +187,8 @@ public class frag_Main extends Fragment {
     }
 
     public void clearRecycler() {
-        recyclerView.swapAdapter(null,true);
+        if(recyclerView.getAdapter()!=null)
+            recyclerView.swapAdapter(null,true);
     }
 
 }
