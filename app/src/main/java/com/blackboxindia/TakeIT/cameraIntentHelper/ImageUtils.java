@@ -222,6 +222,9 @@ public class ImageUtils {
         int actualHeight = options.outHeight;
         int actualWidth = options.outWidth;
 
+        Log.i(TAG, "actualHeight: "+actualHeight);
+        Log.i(TAG, "actualWidth: "+actualWidth);
+
         // max Height and width values of the compressed image is taken as 816x612
 
         float maxHeight = height;
@@ -451,7 +454,6 @@ public class ImageUtils {
         if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(current_activity, Manifest.permission.WRITE_EXTERNAL_STORAGE))
             {
-
                 showMessageOKCancel("For adding images , You need to provide permission to access your files",
                         new DialogInterface.OnClickListener() {
                             @Override
@@ -591,8 +593,11 @@ public class ImageUtils {
                 if (resultCode == Activity.RESULT_OK) {
 
                     try {
-
                         bitmap = compressImage(imageUri.toString(), 512, 512);
+
+                        Log.i(TAG, "now height: "+bitmap.getHeight());
+                        Log.i(TAG, "now Width: "+bitmap.getWidth());
+
                         imageAttachment_callBack.image_attachment(from, file_name, bitmap, imageUri);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -609,6 +614,10 @@ public class ImageUtils {
                         selected_path = getPath(selectedImage);
                         file_name = selected_path.substring(selected_path.lastIndexOf("/") + 1);
                         bitmap = compressImage(selectedImage.toString(), 816, 612);
+
+                        Log.i(TAG, "gallery now height: "+bitmap.getHeight());
+                        Log.i(TAG, "gallery now Width: "+bitmap.getWidth());
+
                         imageAttachment_callBack.image_attachment(from, file_name, bitmap, selectedImage);
                     } catch (Exception e) {
                         e.printStackTrace();

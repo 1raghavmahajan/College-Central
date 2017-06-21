@@ -28,7 +28,7 @@
                 android:layout_height="140dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/Profile_image"
-                android:src="@drawable/sample_profile_image"
+                android:src="@drawable/avatar"
 
                 />
             <Button

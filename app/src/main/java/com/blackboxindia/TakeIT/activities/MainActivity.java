@@ -119,12 +119,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        UserCred userCred = new UserCred();
+        final UserCred userCred = new UserCred();
         if(userCred.load_Cred(context)) {
 
             final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
-            NetworkMethods methods = new NetworkMethods(context);
-            methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
+            final NetworkMethods methods = new NetworkMethods(context);
+            final onLoginListener listener = new onLoginListener() {
                 @Override
                 public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                     UpdateUI(userInfo, Auth, false);
@@ -138,6 +138,34 @@ public class MainActivity extends AppCompatActivity {
                     if (e.getMessage().contains("network")) {
                         dialog.cancel();
                         Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(coordinatorLayout,"Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Retry", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
+                                            @Override
+                                            public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
+                                                UpdateUI(userInfo, Auth, false);
+                                                dialog.cancel();
+                                                Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                                                setUpMainFragment();
+                                            }
+
+                                            @Override
+                                            public void onFailure(Exception e) {
+                                                if (e.getMessage().contains("network")) {
+                                                    dialog.cancel();
+                                                    Toast.makeText(context, "Network Error, Please try again later.", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    dialog.cancel();
+                                                    Toast.makeText(context, "Session Expired. Please login again.", Toast.LENGTH_SHORT).show();
+                                                    UserCred.clear_cred(context);
+                                                }
+                                                setUpMainFragment();
+                                            }
+                                        });
+                                    }
+                                });
                     } else {
                         dialog.cancel();
                         Toast.makeText(context, "Session Expired. Please login again.", Toast.LENGTH_SHORT).show();
@@ -145,7 +173,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     setUpMainFragment();
                 }
-            });
+            };
+            methods.Login(userCred.getEmail(), userCred.getpwd(), listener);
         }
         else {
             Snackbar.make(coordinatorLayout, "Please Login to continue", Snackbar.LENGTH_INDEFINITE)
@@ -543,11 +572,11 @@ public class MainActivity extends AppCompatActivity {
             if (!userInfo.getProfileIMG().equals("null")) {
                 imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
             } else {
-                imageView.setImageResource(R.drawable.sample_profile_image);
+                imageView.setImageResource(R.drawable.avatar);
             }
         }
         else {
-            imageView.setImageResource(R.drawable.sample_profile_image);
+            imageView.setImageResource(R.drawable.avatar);
         }
 
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
@@ -573,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(imageView.getDrawable() !=null) {
             ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
-            imageView.setImageResource(R.drawable.sample_profile_image);
+            imageView.setImageResource(R.drawable.avatar);
         }
 
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.VISIBLE);

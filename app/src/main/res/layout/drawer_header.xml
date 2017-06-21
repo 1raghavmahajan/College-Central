@@ -43,7 +43,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:contentDescription="@string/Profile_image"
-        android:src="@drawable/sample_profile_image"
+        android:src="@drawable/avatar"
         app:layout_constraintBottom_toTopOf="@id/nav_Name"
         app:layout_constraintLeft_toLeftOf="parent"/>
 

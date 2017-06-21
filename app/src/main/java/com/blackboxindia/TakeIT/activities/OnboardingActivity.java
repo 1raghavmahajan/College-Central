@@ -169,7 +169,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         ImageView img;
 
-        int[] bgs = new int[]{R.drawable.page1new, R.drawable.teach2, R.drawable.page3, R.drawable.page4withback};
+        int[] bgs = new int[]{R.drawable.page1, R.drawable.page2, R.drawable.page3, R.drawable.page4};
 
         public PlaceholderFragment() {
         }
