@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
@@ -73,13 +72,13 @@ public class frag_ViewMyAd extends Fragment {
                                         .commit();
                             }
                             ((MainActivity)context).UpdateUI(userInfo,false);
-                            Snackbar.make(((MainActivity)context).coordinatorLayout,"Ad Deleted Successfully",Snackbar.LENGTH_LONG).show();
+                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully",Snackbar.LENGTH_LONG);
                         }
 
                         @Override
                         public void onFailure(Exception e) {
                             dialog.cancel();
-                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_LONG);
                         }
                     });
                 }

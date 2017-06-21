@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String NEW_AD_TAG = "NEW_AD";
     public final static String VIEW_AD_TAG = "VIEW_AD";
     public final static String VIEW_MyAD_TAG = "VIEW_MyAD";
+    public final static String VERIFY_EMAIL_TAG = "VERIFY_EMAIL";
     public final static String TAG = MainActivity.class.getSimpleName()+" YOYO";
     //endregion
 
@@ -129,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                     UpdateUI(userInfo, Auth, false);
                     dialog.cancel();
-                    Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                    createSnackbar("Logged In!");
                     setUpMainFragment();
                 }
 
@@ -137,9 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onFailure(Exception e) {
                     if (e.getMessage().contains("network")) {
                         dialog.cancel();
-                        Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
-                        Snackbar.make(coordinatorLayout,"Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE)
-                                .setAction("Retry", new View.OnClickListener() {
+                        createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, "Retry", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
@@ -147,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                                             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                                                 UpdateUI(userInfo, Auth, false);
                                                 dialog.cancel();
-                                                Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                                                createSnackbar("Logged In!");
                                                 setUpMainFragment();
                                             }
 
@@ -155,10 +154,10 @@ public class MainActivity extends AppCompatActivity {
                                             public void onFailure(Exception e) {
                                                 if (e.getMessage().contains("network")) {
                                                     dialog.cancel();
-                                                    Toast.makeText(context, "Network Error, Please try again later.", Toast.LENGTH_SHORT).show();
+                                                    createSnackbar("Network Error, Please try again later.");
                                                 } else {
                                                     dialog.cancel();
-                                                    Toast.makeText(context, "Session Expired. Please login again.", Toast.LENGTH_SHORT).show();
+                                                    createSnackbar("Session Expired. Please login again.");
                                                     UserCred.clear_cred(context);
                                                 }
                                                 setUpMainFragment();
@@ -168,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                                 });
                     } else {
                         dialog.cancel();
-                        Toast.makeText(context, "Session Expired. Please login again.", Toast.LENGTH_SHORT).show();
+                        createSnackbar("Session Expired. Please login again.");
                         UserCred.clear_cred(context);
                     }
                     setUpMainFragment();
@@ -177,13 +176,12 @@ public class MainActivity extends AppCompatActivity {
             methods.Login(userCred.getEmail(), userCred.getpwd(), listener);
         }
         else {
-            Snackbar.make(coordinatorLayout, "Please Login to continue", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Login", new View.OnClickListener() {
+            createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE,"Login", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             launchOtherFragment(new frag_loginPage(), LOGIN_PAGE_TAG);
                         }
-                    }).show();
+                    });
             setUpMainFragment();
         }
     }
@@ -350,13 +348,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(mAuth==null) {
-                    Snackbar.make(coordinatorLayout, "Please Login to continue", Snackbar.LENGTH_LONG)
-                            .setAction("Login", new View.OnClickListener() {
+                    createSnackbar("Please Login to continue", Snackbar.LENGTH_LONG, "Login", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     launchOtherFragment(new frag_loginPage(), LOGIN_PAGE_TAG);
                                 }
-                            }).show();
+                            });
                 }
                 else
                     launchOtherFragment(new frag_newAd(), NEW_AD_TAG);
@@ -614,7 +611,24 @@ public class MainActivity extends AppCompatActivity {
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(true);
 
         goToMainFragment(true, false);
-        Toast.makeText(context, "Logged out!", Toast.LENGTH_SHORT).show();
+        createSnackbar("Logged out!");
+    }
+
+    public void createSnackbar(String msg) {
+        createSnackbar(msg,Snackbar.LENGTH_SHORT);
+    }
+
+    public void createSnackbar(String msg, int length) {
+        createSnackbar(msg,length,null,null);
+    }
+
+    public void createSnackbar(String msg, int length, String actionTitle, View.OnClickListener listener) {
+        Snackbar snackbar = Snackbar.make(coordinatorLayout, msg, length);
+        if(actionTitle!=null){
+            snackbar.setAction(actionTitle,listener);
+            snackbar.setActionTextColor(getResources().getColor(R.color.colorSearch));
+        }
+        snackbar.show();
     }
 
     //endregion

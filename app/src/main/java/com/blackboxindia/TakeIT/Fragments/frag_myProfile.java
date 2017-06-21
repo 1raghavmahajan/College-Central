@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,14 +111,14 @@ public class frag_myProfile extends Fragment {
             @Override
             public void onSuccess(UserInfo userInfo) {
                 show.cancel();
-                Toast.makeText(context, "Successfully Updated.", Toast.LENGTH_SHORT).show();
+                ((MainActivity)context).createSnackbar("Successfully Updated.", Snackbar.LENGTH_SHORT);
                 ((MainActivity)context).UpdateUI(userInfo,false);
             }
 
             @Override
             public void onFailure(Exception e) {
                 show.cancel();
-                Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                ((MainActivity)context).createSnackbar(e.getMessage(), Snackbar.LENGTH_SHORT);
             }
         });
     }

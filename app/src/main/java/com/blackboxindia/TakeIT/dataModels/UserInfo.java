@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.EditText;
@@ -15,8 +14,6 @@ import com.blackboxindia.TakeIT.Fragments.frag_Main;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.activities.MainActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -85,21 +82,19 @@ public class UserInfo implements Parcelable {
             public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
                 if (Auth.getCurrentUser() != null) {
                     progressDialog.cancel();
-
-                    Auth.getCurrentUser().sendEmailVerification()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-
-                                    }
-                                }
-                            });
-
+//                    Auth.getCurrentUser().sendEmailVerification()
+//                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    if (task.isSuccessful()) {
+//
+//                                    }
+//                                }
+//                            });
                     MainActivity mainActivity = (MainActivity) context;
                     mainActivity.UpdateUI(userInfo, Auth);
-                    ((frag_Main)(((MainActivity) context).getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).refresh(true);
-                    Snackbar.make(mainActivity.coordinatorLayout,"Account Created Successfully",Snackbar.LENGTH_LONG).show();
+                    ((frag_Main)(mainActivity.getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).refresh(true);
+                    mainActivity.createSnackbar("Account Created Successfully",Snackbar.LENGTH_LONG);
                 }
             }
 

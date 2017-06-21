@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.blackboxindia.TakeIT.Fragments.frag_verifyEmail;
 import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapUploadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrackMain;
@@ -33,6 +34,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 @SuppressWarnings("VisibleForTests")
 public class NetworkMethods {
@@ -72,6 +74,20 @@ public class NetworkMethods {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+
+                            mAuth.getCurrentUser().sendEmailVerification()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            ((MainActivity)context).launchOtherFragment(frag_verifyEmail.newInstance(loginListener),MainActivity.VERIFY_EMAIL_TAG);
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.e(TAG,"Failed to send email.",e);
+                                        }
+                                    });
+
                             Log.i(TAG, "Create Account Successful: " + userInfo.toString());
                             addDetailsToDB(userInfo);
                             UserCred userCred = new UserCred(userInfo.getEmail(),password);
@@ -359,6 +375,7 @@ public class NetworkMethods {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     list.add(postSnapshot.getValue(AdData.class));
                 }
+                Collections.reverse(list);
                 listener.onSuccess(list);
             }
 

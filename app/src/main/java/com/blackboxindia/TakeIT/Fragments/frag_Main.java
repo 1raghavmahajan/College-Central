@@ -83,6 +83,9 @@ public class frag_Main extends Fragment {
     }
 
     public void filter(String query) {
+
+        //Todo: implement prioritized search
+
         query = query.trim().toLowerCase();
         if(!query.equals("")) {
             String[] split = query.split(" ");
@@ -90,7 +93,7 @@ public class frag_Main extends Fragment {
 
             for (int i = 0; i < allAds.size(); i++) {
                 for (String aSplit : split) {
-                    if (allAds.get(i).getTitle().toLowerCase().contains(aSplit)) {
+                    if (allAds.get(i).getTitle().toLowerCase().startsWith(aSplit)) {
                         newList.add(allAds.get(i));
                         break;
                     }
@@ -98,23 +101,14 @@ public class frag_Main extends Fragment {
             }
             if(newList.isEmpty())
                 Toast.makeText(context, "No matches found.", Toast.LENGTH_SHORT).show();
-            else
-                ((mainAdapter) recyclerView.getAdapter()).change(newList);
+            else {
+                if(recyclerView.getAdapter() != null)
+                    ((mainAdapter) recyclerView.getAdapter()).change(newList);
+            }
         }
         else
-            ((mainAdapter) recyclerView.getAdapter()).change(allAds);
-        //        Integer[] arr = new Integer[allAds.size()];
-//        for( int i=0;i<allAds.size();i++){
-//            int p=0;
-//            for (String aSplit : split) {
-//                if(allAds.get(i).getTitle().contains(aSplit))
-//                    p++;
-//            }
-//            arr[i] = p;
-//        }
-//        for(int i=0;i<allAds.size();i++){
-//
-//        }
+            if(recyclerView.getAdapter() != null)
+                ((mainAdapter) recyclerView.getAdapter()).change(allAds);
     }
 
     private void getAllAds(final Boolean firstTime) {

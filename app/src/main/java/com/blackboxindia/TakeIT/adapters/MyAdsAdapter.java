@@ -22,6 +22,7 @@ import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHolder> {
@@ -38,6 +39,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
         inflater = LayoutInflater.from(context);
         networkMethods = new NetworkMethods(context,FirebaseAuth.getInstance());
         userAds = keys;
+        Collections.reverse(userAds);
         mListener = listener;
     }
 
