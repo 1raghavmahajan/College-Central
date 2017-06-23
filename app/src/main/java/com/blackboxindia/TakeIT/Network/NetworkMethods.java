@@ -79,23 +79,31 @@ public class NetworkMethods {
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void aVoid) {
-                                            ((MainActivity)context).launchOtherFragment(frag_verifyEmail.newInstance(loginListener),MainActivity.VERIFY_EMAIL_TAG);
+
+                                            Log.i(TAG, "Create Account Successful: " + userInfo.toString());
+                                            addDetailsToDB(userInfo);
+                                            UserCred userCred = new UserCred(userInfo.getEmail(),password);
+                                            userCred.save_cred(context);
+
+                                            ((MainActivity)context).launchOtherFragment(frag_verifyEmail.newInstance(loginListener, userInfo),MainActivity.VERIFY_EMAIL_TAG);
+
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
                                             Log.e(TAG,"Failed to send email.",e);
+
+                                            mAuth.getCurrentUser().delete();
+
+                                            //Log.i(TAG, "Create Account Successful: " + userInfo.toString());
+                                            //addDetailsToDB(userInfo);
+//                                            UserCred userCred = new UserCred(userInfo.getEmail(),password);
+//                                            userCred.save_cred(context);
+
                                         }
                                     });
 
-                            Log.i(TAG, "Create Account Successful: " + userInfo.toString());
-                            addDetailsToDB(userInfo);
-                            UserCred userCred = new UserCred(userInfo.getEmail(),password);
-                            userCred.save_cred(context);
-                            loginListener.onSuccess(mAuth, userInfo);
-
                         } else {
-
                             Log.w(TAG, "Create Account Failure: ", task.getException());
                             loginListener.onFailure(task.getException());
                         }
@@ -148,7 +156,7 @@ public class NetworkMethods {
                 UserInfo nUserInfo = dataSnapshot.getValue(UserInfo.class);
                 Log.i(TAG,"getDetailsFromDB: successful");
 
-                loginListener.onSuccess(mAuth, nUserInfo);
+                loginListener.onSuccess(nUserInfo);
             }
 
             @Override
@@ -204,7 +212,7 @@ public class NetworkMethods {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 UserInfo nUserInfo = dataSnapshot.getValue(UserInfo.class);
-                loginListener.onSuccess(mAuth, nUserInfo);
+                loginListener.onSuccess(nUserInfo);
             }
 
             @Override
@@ -229,6 +237,10 @@ public class NetworkMethods {
         };
         mAuth.addAuthStateListener(stateListener);
         mAuth.signOut();
+    }
+
+    public void deleteUser(){
+        //Todo:
     }
 
     //endregion

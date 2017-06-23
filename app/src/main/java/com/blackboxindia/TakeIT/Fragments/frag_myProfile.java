@@ -25,6 +25,7 @@ import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class frag_myProfile extends Fragment {
 
@@ -106,13 +107,13 @@ public class frag_myProfile extends Fragment {
         userInfo.setAddress(etAddress.getText().toString().trim());
         userInfo.setPhone(etPhone.getText().toString().trim());
         final ProgressDialog show = ProgressDialog.show(context, "Updating..", "", true, false);
-        NetworkMethods methods = new NetworkMethods(context,((MainActivity)context).mAuth);
+        NetworkMethods methods = new NetworkMethods(context, FirebaseAuth.getInstance());
         methods.UpdateUser(userInfo, new onUpdateListener() {
             @Override
             public void onSuccess(UserInfo userInfo) {
                 show.cancel();
+                ((MainActivity)context).UpdateUI(userInfo,false,false);
                 ((MainActivity)context).createSnackbar("Successfully Updated.", Snackbar.LENGTH_SHORT);
-                ((MainActivity)context).UpdateUI(userInfo,false);
             }
 
             @Override

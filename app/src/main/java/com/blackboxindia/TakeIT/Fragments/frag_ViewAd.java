@@ -92,7 +92,7 @@ public class frag_ViewAd extends Fragment {
             NetworkMethods networkMethods = new NetworkMethods(context, FirebaseAuth.getInstance());
             networkMethods.getUserDetails(adData.getCreatedBy(), new onLoginListener() {
                 @Override
-                public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
+                public void onSuccess(UserInfo userInfo) {
                     tv_Name.setText(userInfo.getName());
                     tv_Address.setText(userInfo.getAddress());
                     tv_Phone.setText(userInfo.getPhone());

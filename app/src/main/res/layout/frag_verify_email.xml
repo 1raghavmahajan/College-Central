@@ -39,25 +39,30 @@
         android:text="Please check the spam folder."/>-->
 
     <Button
-        android:id="@+id/verify_btn_Retry"
+        android:id="@+id/verify_btn_Check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/verify_tv1"
-        android:text="Resend"
-        android:visibility="invisible"/>
+        android:layout_marginTop="10dp"
+        android:text="Click here after verification."
+        />
+
     <TextView
         android:id="@+id/verify_tv3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/verify_btn_Retry"
+        app:layout_constraintTop_toBottomOf="@id/verify_btn_Check"
+        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="Checking if account verified..."
         android:textSize="16sp"
+        android:visibility="invisible"
         />
+
     <ProgressBar
         android:id="@+id/verify_progress"
         android:layout_width="wrap_content"
@@ -65,6 +70,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/verify_tv3"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:visibility="invisible"/>
 
 </android.support.constraint.ConstraintLayout>

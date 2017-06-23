@@ -8,10 +8,10 @@ import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -24,9 +24,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,7 +54,10 @@ import com.blackboxindia.TakeIT.Utils;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserCred;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -67,28 +72,29 @@ public class MainActivity extends AppCompatActivity {
     public final static String VIEW_MyAD_TAG = "VIEW_MyAD";
     public final static String VERIFY_EMAIL_TAG = "VERIFY_EMAIL";
     public final static String TAG = MainActivity.class.getSimpleName()+" YOYO";
+    public static final String PREF_USER_FIRST_TIME = "user_first_time";
     //endregion
 
     //region Variables
-    public ProgressBar progressBar;
-    Context context;
-    AppBarLayout appBarLayout;
-    FragmentManager fragmentManager;
     public Toolbar toolbar;
     public CoordinatorLayout coordinatorLayout;
+    public ProgressBar progressBar;
+
+    Context context;
+    boolean isUserFirstTime;
+    public String currentFragTag;
+
+    AppBarLayout appBarLayout;
+    FragmentManager fragmentManager;
     DrawerLayout drawer;
     FloatingActionButton fab;
     NavigationView navigationView;
     Menu navigationViewMenu;
 
-    public FirebaseAuth mAuth;
     public UserInfo userInfo;
-
     public CloudStorageMethods cloudStorageMethods;
 
-    public static final String PREF_USER_FIRST_TIME = "user_first_time";
-    boolean isUserFirstTime;
-
+    boolean recentlySentMail;
     //endregion
 
     //region Initial Setup
@@ -127,11 +133,11 @@ public class MainActivity extends AppCompatActivity {
             final NetworkMethods methods = new NetworkMethods(context);
             final onLoginListener listener = new onLoginListener() {
                 @Override
-                public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
-                    UpdateUI(userInfo, Auth, false);
+                public void onSuccess(UserInfo userInfo) {
                     dialog.cancel();
                     createSnackbar("Logged In!");
                     setUpMainFragment();
+                    UpdateUI(userInfo,false, true);
                 }
 
                 @Override
@@ -143,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(View v) {
                                         methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
                                             @Override
-                                            public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
-                                                UpdateUI(userInfo, Auth, false);
+                                            public void onSuccess(UserInfo userInfo) {
+                                                UpdateUI(userInfo,false,true);
                                                 dialog.cancel();
                                                 createSnackbar("Logged In!");
                                                 setUpMainFragment();
@@ -305,7 +311,7 @@ public class MainActivity extends AppCompatActivity {
                 drawer.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.nav_allAds:
-                        goToMainFragment();
+                        goToMainFragment(false,true);
                         break;
                     case R.id.nav_manage:
                         break;
@@ -335,6 +341,10 @@ public class MainActivity extends AppCompatActivity {
 
         showIT();
 
+        Log.i(TAG,"setUpMainFragment");
+
+        currentFragTag = MAIN_FRAG_TAG;
+
         frag_Main mc = new frag_Main();
         mc.setRetainInstance(true);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -343,11 +353,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpFab() {
+        recentlySentMail = false;
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mAuth==null) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if(currentUser==null) {
                     createSnackbar("Please Login to continue", Snackbar.LENGTH_LONG, "Login", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -355,8 +367,57 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                 }
-                else
-                    launchOtherFragment(new frag_newAd(), NEW_AD_TAG);
+                else {
+                    currentUser.reload();
+                    if(recentlySentMail){
+                        if(currentUser.isEmailVerified()) {
+                            UpdateUI(userInfo,false,false);
+                            launchOtherFragment(new frag_newAd(), NEW_AD_TAG);
+                        }
+                        else
+                            Toast.makeText(context, "Please try again in a second.", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+
+                        if (currentUser.isEmailVerified()) {
+                            UpdateUI(userInfo,false,false);
+                            launchOtherFragment(new frag_newAd(), NEW_AD_TAG);
+                        }
+                        else {
+                            new AlertDialog.Builder(MainActivity.this)
+                                    .setMessage("You need to verify email before posting an Ad.")
+                                    .setPositiveButton("OK", null)
+                                    .setNeutralButton("Resend Email", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification()
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
+                                                            recentlySentMail = true;
+                                                            new Handler().postDelayed(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    recentlySentMail = false;
+                                                                }
+                                                            }, 5 * 60 * 1000);
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .create()
+                                    .show();
+                        }
+                    }
+
+                }
             }
         });
     }
@@ -364,11 +425,7 @@ public class MainActivity extends AppCompatActivity {
 
     //region Movement
 
-    boolean goToMainFragment() {
-        return goToMainFragment(false, false);
-    }
-
-    public boolean goToMainFragment(Boolean clearAll, Boolean toRefresh) {
+    public void goToMainFragment(Boolean clearAll, Boolean toRefresh) {
 
         if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)!=null) {
 
@@ -380,6 +437,7 @@ public class MainActivity extends AppCompatActivity {
                         .replace(R.id.frame_layout,fragmentManager.findFragmentByTag(MAIN_FRAG_TAG), MAIN_FRAG_TAG)
                         //.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                         .commit();
+                currentFragTag = MAIN_FRAG_TAG;
                 fragmentManager.beginTransaction()
                         .show(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -388,19 +446,16 @@ public class MainActivity extends AppCompatActivity {
                     ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
                 else if (toRefresh)
                     ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
-                return false;
             }
             else {
                 if (clearAll)
                     ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
                 else if (toRefresh)
                     ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
-                return true;
             }
         }
         else {
             setUpMainFragment();
-            return false;
         }
 
     }
@@ -416,6 +471,8 @@ public class MainActivity extends AppCompatActivity {
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                         .commit();
 
+                currentFragTag = tag;
+
                 fragmentManager.beginTransaction()
                         .add(R.id.frame_layout, frag, tag)
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -424,43 +481,50 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 if(fragmentManager.findFragmentByTag(tag)!=null) {
+                    //noinspection StatementWithEmptyBody
                     if (!fragmentManager.findFragmentByTag(tag).isVisible()) {
 
                     }
                 }
                 else {
 
-                    if(fragmentManager.findFragmentByTag(NEW_ACCOUNT_TAG)!=null) {
-                        if (fragmentManager.findFragmentByTag(NEW_ACCOUNT_TAG).isVisible())
-                            transaction.remove(fragmentManager.findFragmentByTag(NEW_ACCOUNT_TAG));
-                    }
-
-                    else if(fragmentManager.findFragmentByTag(LOGIN_PAGE_TAG)!=null) {
-                        if (fragmentManager.findFragmentByTag(LOGIN_PAGE_TAG).isVisible())
-                            transaction.remove(fragmentManager.findFragmentByTag(LOGIN_PAGE_TAG));
-                    }
-
-                    else if(fragmentManager.findFragmentByTag(MY_PROFILE_TAG)!=null) {
-                        if (fragmentManager.findFragmentByTag(MY_PROFILE_TAG).isVisible())
-                            transaction.remove(fragmentManager.findFragmentByTag(MY_PROFILE_TAG));
-                    }
-
-                    else if(fragmentManager.findFragmentByTag(MY_ADS_TAG)!=null) {
-                        if (fragmentManager.findFragmentByTag(MY_ADS_TAG).isVisible())
-                            transaction.remove(fragmentManager.findFragmentByTag(MY_ADS_TAG));
-                    }
-
-                    else if(fragmentManager.findFragmentByTag(NEW_AD_TAG)!=null) {
-                        if (fragmentManager.findFragmentByTag(NEW_AD_TAG).isVisible())
-                            transaction.remove(fragmentManager.findFragmentByTag(NEW_AD_TAG));
-                    }
-
-                    else if(fragmentManager.findFragmentByTag(VIEW_AD_TAG)!=null) {
-                        if (fragmentManager.findFragmentByTag(VIEW_AD_TAG).isVisible())
-                            transaction.remove(fragmentManager.findFragmentByTag(VIEW_AD_TAG));
+//
+//                    if(fragmentManager.findFragmentByTag(NEW_ACCOUNT_TAG)!=null) {
+//                        if (fragmentManager.findFragmentByTag(NEW_ACCOUNT_TAG).isVisible())
+//                            transaction.remove(fragmentManager.findFragmentByTag(NEW_ACCOUNT_TAG));
+//                    }
+//
+//                    else if(fragmentManager.findFragmentByTag(LOGIN_PAGE_TAG)!=null) {
+//                        if (fragmentManager.findFragmentByTag(LOGIN_PAGE_TAG).isVisible())
+//                            transaction.remove(fragmentManager.findFragmentByTag(LOGIN_PAGE_TAG));
+//                    }
+//
+//                    else if(fragmentManager.findFragmentByTag(MY_PROFILE_TAG)!=null) {
+//                        if (fragmentManager.findFragmentByTag(MY_PROFILE_TAG).isVisible())
+//                            transaction.remove(fragmentManager.findFragmentByTag(MY_PROFILE_TAG));
+//                    }
+//
+//                    else if(fragmentManager.findFragmentByTag(MY_ADS_TAG)!=null) {
+//                        if (fragmentManager.findFragmentByTag(MY_ADS_TAG).isVisible())
+//                            transaction.remove(fragmentManager.findFragmentByTag(MY_ADS_TAG));
+//                    }
+//
+//                    else if(fragmentManager.findFragmentByTag(NEW_AD_TAG)!=null) {
+//                        if (fragmentManager.findFragmentByTag(NEW_AD_TAG).isVisible())
+//                            transaction.remove(fragmentManager.findFragmentByTag(NEW_AD_TAG));
+//                    }
+//
+//                    else if(fragmentManager.findFragmentByTag(VIEW_AD_TAG)!=null) {
+//                        if (fragmentManager.findFragmentByTag(VIEW_AD_TAG).isVisible())
+//                            transaction.remove(fragmentManager.findFragmentByTag(VIEW_AD_TAG));
+//                    }
+                    if(fragmentManager.findFragmentByTag(currentFragTag)!=null) {
+                        if (fragmentManager.findFragmentByTag(currentFragTag).isVisible())
+                            transaction.remove(fragmentManager.findFragmentByTag(currentFragTag));
                     }
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
                     transaction.commit();
+                    currentFragTag = tag;
                     fragmentManager.beginTransaction()
                             .add(R.id.frame_layout, frag, tag)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -490,6 +554,9 @@ public class MainActivity extends AppCompatActivity {
                             .remove(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG))
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                             .commit();
+
+                    currentFragTag = MY_ADS_TAG;
+
                     fragmentManager.beginTransaction()
                             .add(R.id.frame_layout,new frag_myAds(),MY_ADS_TAG)
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -498,8 +565,12 @@ public class MainActivity extends AppCompatActivity {
 //                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
                 }
             }
+            else //noinspection StatementWithEmptyBody
+                if(currentFragTag.equals(VERIFY_EMAIL_TAG)){
+                //Todo:
+            }
             else {
-                if (goToMainFragment()) {
+                if(currentFragTag.equals(MAIN_FRAG_TAG)) {
 
                     if (twiceToExit) {
                         //cloudStorageMethods.saveCache();
@@ -515,6 +586,9 @@ public class MainActivity extends AppCompatActivity {
                             twiceToExit = false;
                         }
                     }, 2000);
+                }
+                else {
+                    goToMainFragment(false,true);
                 }
             }
 //            super.onBackPressed();
@@ -546,24 +620,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void UpdateUI(UserInfo userInfo, FirebaseAuth auth) {
-        UpdateUI(userInfo, auth, true);
-    }
+    public void UpdateUI(UserInfo userInfo, Boolean redirect, Boolean toRefresh) {
 
-    public void UpdateUI(UserInfo userInfo, Boolean redirect) {
-        UpdateUI(userInfo,null, redirect);
-    }
-
-    public void UpdateUI(UserInfo userInfo, FirebaseAuth auth, Boolean redirect) {
-
-        if(auth!=null) {
-            mAuth = auth;
-        }
         this.userInfo = userInfo;
 
         //Drawer
         ((TextView) findViewById(R.id.nav_Name)).setText(userInfo.getName());
-        ((TextView) findViewById(R.id.nav_email)).setText(userInfo.getEmail());
+        FirebaseAuth.getInstance().getCurrentUser().reload();
+        String notVerified = " (Not Verified)";
+        if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified())
+            notVerified = "";
+        ((TextView) findViewById(R.id.nav_email)).setText(userInfo.getEmail()+notVerified);
         ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(userInfo.getProfileIMG()!= null) {
             if (!userInfo.getProfileIMG().equals("null")) {
@@ -585,12 +652,18 @@ public class MainActivity extends AppCompatActivity {
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(false);
 
         if(redirect)
-            goToMainFragment();
+            goToMainFragment(false,toRefresh);
+        else if (toRefresh){
+            if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)!=null)
+                ((frag_Main) (fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
+            else
+                Log.i(TAG,"Main frag null");
+        }
 
     }
 
     public void UpdateUIonLogout() {
-        mAuth = null;
+
         this.userInfo = null;
 
         //Drawer
@@ -598,7 +671,7 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.nav_email)).setText(R.string.sample_email);
         ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(imageView.getDrawable() !=null) {
-            ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
+//            ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
             imageView.setImageResource(R.drawable.avatar);
         }
 

@@ -26,6 +26,7 @@ import com.blackboxindia.TakeIT.adapters.NewAdImageAdapter;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -120,7 +121,7 @@ public class frag_newAd extends Fragment {
 
             adData.setNumberOfImages(imgURIs.size());
 
-            NetworkMethods networkMethods = new NetworkMethods(context, ((MainActivity) context).mAuth);
+            NetworkMethods networkMethods = new NetworkMethods(context, FirebaseAuth.getInstance());
             networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
                 @Override
                 public void onSuccess(AdData adData) {

@@ -60,7 +60,7 @@ public class frag_myAds extends Fragment {
 
             userInfo = ((MainActivity)context).userInfo;
             userAdKeys = userInfo.getUserAdKeys();
-            mAuth = ((MainActivity)context).mAuth;
+            mAuth = FirebaseAuth.getInstance();
             networkMethods = new NetworkMethods(context,mAuth);
             setUpRecycler();
         }
@@ -80,6 +80,7 @@ public class frag_myAds extends Fragment {
                 args.putParcelable("adData",currentAd);
                 fragViewMyAd.setArguments(args);
 
+                ((MainActivity)context).currentFragTag = VIEW_MyAD_TAG;
                 FragmentManager fragmentManager = getFragmentManager();
                 fragmentManager.beginTransaction()
                         .add(R.id.frame_layout,fragViewMyAd,VIEW_MyAD_TAG)

@@ -1,7 +1,6 @@
 package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -63,11 +62,7 @@ public class frag_newAccount extends Fragment {
                 userInfo.setData(etName.getText().toString().trim(),etEmail.getText().toString().trim(),etAddress.getText().toString().trim(),etPhone.getText().toString().trim());
                 if (validateDetails(userInfo))
                     if (isPasswordValid()) {
-                        ProgressDialog progressDialog = new ProgressDialog(view.getContext(), ProgressDialog.STYLE_SPINNER);
-                        progressDialog.setTitle("Creating New Account...");
-                        progressDialog.setCancelable(false);
-                        progressDialog.show();
-                        userInfo.newUser(etPassword.getText().toString().trim(), v.getContext(), progressDialog);
+                        userInfo.newUser(etPassword.getText().toString().trim(), v.getContext());
                     }
             }
         });

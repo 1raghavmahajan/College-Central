@@ -66,12 +66,15 @@ public class frag_ViewMyAd extends Fragment {
                                         .remove(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG))
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
                                         .commit();
+
+                                ((MainActivity)context).currentFragTag = MY_ADS_TAG;
+
                                 fragmentManager.beginTransaction()
                                         .add(R.id.frame_layout,new frag_myAds(),MY_ADS_TAG)
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                         .commit();
                             }
-                            ((MainActivity)context).UpdateUI(userInfo,false);
+                            ((MainActivity)context).UpdateUI(userInfo,false,false);
                             ((MainActivity)context).createSnackbar("Ad Deleted Successfully",Snackbar.LENGTH_LONG);
                         }
 

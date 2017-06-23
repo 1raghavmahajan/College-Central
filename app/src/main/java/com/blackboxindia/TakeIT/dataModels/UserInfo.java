@@ -10,7 +10,6 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.blackboxindia.TakeIT.Fragments.frag_Main;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.activities.MainActivity;
@@ -74,34 +73,20 @@ public class UserInfo implements Parcelable {
         this.phone = phone;
     }
 
-    public void newUser(String password, final Context context, final ProgressDialog progressDialog) {
-
+    public void newUser(String password, final Context context) {
         NetworkMethods net = new NetworkMethods(context);
         net.Create_Account(this,password, new onLoginListener() {
             @Override
-            public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
-                if (Auth.getCurrentUser() != null) {
-                    progressDialog.cancel();
-//                    Auth.getCurrentUser().sendEmailVerification()
-//                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<Void> task) {
-//                                    if (task.isSuccessful()) {
-//
-//                                    }
-//                                }
-//                            });
-                    MainActivity mainActivity = (MainActivity) context;
-                    mainActivity.UpdateUI(userInfo, Auth);
-                    ((frag_Main)(mainActivity.getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).refresh(true);
-                    mainActivity.createSnackbar("Account Created Successfully",Snackbar.LENGTH_LONG);
+            public void onSuccess(UserInfo userInfo) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    ((MainActivity) context).UpdateUI(userInfo,true,true);
+                    ((MainActivity) context).createSnackbar("Account Created Successfully",Snackbar.LENGTH_LONG);
                 }
             }
 
             @Override
             public void onFailure(Exception e) {
                 if (e != null) {
-                    progressDialog.cancel();
                     if (e.getMessage().contains("network"))
                         Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
                     else
@@ -119,15 +104,14 @@ public class UserInfo implements Parcelable {
         NetworkMethods net = new NetworkMethods(context);
         net.Login(email, password, new onLoginListener() {
             @Override
-            public void onSuccess(FirebaseAuth Auth, UserInfo userInfo) {
+            public void onSuccess(UserInfo userInfo) {
                 dialog.cancel();
 
                 if(saveCred) {
                     UserCred userCred = new UserCred(email, password);
                     userCred.save_cred(context);
                 }
-                ((MainActivity) context).UpdateUI(userInfo, Auth);
-                ((frag_Main)(((MainActivity) context).getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).refresh(true);
+                ((MainActivity) context).UpdateUI(userInfo, true, true);
             }
 
             @Override

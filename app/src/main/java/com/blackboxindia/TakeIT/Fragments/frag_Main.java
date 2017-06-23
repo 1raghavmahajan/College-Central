@@ -51,7 +51,7 @@ public class frag_Main extends Fragment {
         context = view.getContext();
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
 
-        refresh(true);
+        refresh();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -64,19 +64,15 @@ public class frag_Main extends Fragment {
     }
 
     public void refresh() {
-        refresh(false);
-    }
-
-    public void refresh(Boolean firstTime) {
 
         userInfo = ((MainActivity)context).userInfo;
-        mAuth = ((MainActivity)context).mAuth;
+        mAuth = FirebaseAuth.getInstance();
 
         if(swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);
         if(mAuth!=null){
             networkMethods = new NetworkMethods(context, mAuth);
-            getAllAds(firstTime);
+            getAllAds();
         }
         else{
         }
@@ -111,17 +107,21 @@ public class frag_Main extends Fragment {
                 ((mainAdapter) recyclerView.getAdapter()).change(allAds);
     }
 
-    private void getAllAds(final Boolean firstTime) {
+    private void getAllAds() {
         final ProgressDialog dialog = ProgressDialog.show(context, "Just a sec", "Getting the good stuff", true, false);
 
         networkMethods.getAllAds( MAX_Ads ,new getAllAdsListener() {
             @Override
             public void onSuccess(ArrayList<AdData> list) {
                 allAds = list;
-                if(firstTime)
-                    setUpRecyclerView();
+                if(recyclerView!=null) {
+                    if (recyclerView.getAdapter() == null)
+                        setUpRecyclerView();
+                    else
+                        ((mainAdapter) recyclerView.getAdapter()).change(allAds);
+                }
                 else
-                    ((mainAdapter) recyclerView.getAdapter()).change(allAds);
+                    setUpRecyclerView();
                 dialog.cancel();
             }
 
