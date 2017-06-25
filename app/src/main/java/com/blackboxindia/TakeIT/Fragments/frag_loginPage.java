@@ -3,13 +3,13 @@ package com.blackboxindia.TakeIT.Fragments;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
+import android.support.design.widget.TextInputEditText;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.R;
@@ -21,8 +21,7 @@ public class frag_loginPage extends Fragment {
     //region Variables
 
     private static String TAG = frag_loginPage.class.getSimpleName() + " YOYO";
-    TextInputLayout inputLayoutID, inputLayoutPassword;
-    EditText etID, etPassword;
+    TextInputEditText etID, etPassword;
     Button btn_login;
     CheckBox chkSave;
     TextView tvCreateNew;
@@ -51,11 +50,9 @@ public class frag_loginPage extends Fragment {
     }
 
     private void initVariables() {
-        inputLayoutID = (TextInputLayout) view.findViewById(R.id.login_IDFrame);
-        inputLayoutPassword = (TextInputLayout) view.findViewById(R.id.login_PasswordFrame);
 
-        etID = (EditText) view.findViewById(R.id.login_etID);
-        etPassword = (EditText) view.findViewById(R.id.login_etPassword);
+        etID = (TextInputEditText) view.findViewById(R.id.login_etID);
+        etPassword = (TextInputEditText) view.findViewById(R.id.login_etPassword);
         btn_login = (Button) view.findViewById(R.id.login_btnLogin);
 
         chkSave = (CheckBox) view.findViewById(R.id.login_chkSave);
@@ -80,20 +77,6 @@ public class frag_loginPage extends Fragment {
                 mainActivity.launchOtherFragment(new frag_newAccount(), MainActivity.NEW_ACCOUNT_TAG);
             }
         });
-
-        etID.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                inputLayoutID.setErrorEnabled(false);
-            }
-        });
-
-        etPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                inputLayoutPassword.setErrorEnabled(false);
-            }
-        });
     }
 
     //endregion
@@ -102,9 +85,18 @@ public class frag_loginPage extends Fragment {
         String id = etID.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         UserInfo userInfo = new UserInfo();
-        if (userInfo.isIDValid(id) && isPasswordValid(password))
-        {
-            userInfo.login(id, password, v.getContext(),chkSave.isChecked());
+        if (isIDValid(id))
+            if(isPasswordValid(password))
+                userInfo.login(id, password, v.getContext(),chkSave.isChecked());
+    }
+
+    private boolean isIDValid(String id) {
+        Boolean valid = Patterns.EMAIL_ADDRESS.matcher(id).matches();
+        if(valid)
+            return true;
+        else {
+            etID.setError("Invalid ID");
+            return false;
         }
     }
 
@@ -112,12 +104,12 @@ public class frag_loginPage extends Fragment {
         int Min_Password_Size = getResources().getInteger(R.integer.Min_Password_Size);
         if(password.length()<Min_Password_Size)
         {
-            inputLayoutPassword.setError(String.format(getString(R.string.pass_min_size),Min_Password_Size));
+            etPassword.setError(String.format(getString(R.string.pass_min_size),Min_Password_Size));
             return false;
         }
         else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))
         {
-            inputLayoutPassword.setError("Password can\'t contain \", \\, \', or ;");
+            etPassword.setError("Password can\'t contain \", \\, \', or ;");
             return false;
         }
         else

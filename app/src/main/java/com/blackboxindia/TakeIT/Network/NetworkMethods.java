@@ -75,6 +75,7 @@ public class NetworkMethods {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
+                            //noinspection ConstantConditions
                             mAuth.getCurrentUser().sendEmailVerification()
                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
@@ -133,6 +134,7 @@ public class NetworkMethods {
                         if (task.isSuccessful()) {
                             UserInfo userInfo = new UserInfo();
                             userInfo.setEmail(email);
+                            //noinspection ConstantConditions
                             userInfo.setuID(mAuth.getCurrentUser().getUid());
                             getDetailsFromDB(userInfo, loginListener);
                         } else {
@@ -180,8 +182,7 @@ public class NetworkMethods {
             listener.onFailure(new Exception("Not Logged in."));
         }
         else if (!mAuth.getCurrentUser().getUid().equals(userInfo.getuID())) {
-
-            mAuth.signOut();
+            Logout(context);
             listener.onFailure(new Exception("Invalid Login Session."));
         }
         else {

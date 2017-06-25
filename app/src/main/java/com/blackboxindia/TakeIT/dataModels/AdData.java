@@ -1,6 +1,5 @@
 package com.blackboxindia.TakeIT.dataModels;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,18 +11,12 @@ public class AdData implements Parcelable {
     private Integer price;
     private String description;
     private Integer numberOfImages;
+    private String collegeName;
+    private String category;
 
     public AdData() {
         adID = "null";
-    }
-
-    public AdData(Bundle bundle) {
-        adID = bundle.getString("adID","null");
-        createdBy = bundle.getString("createdBy","null");
-        title = bundle.getString("Title", "title");
-        price = bundle.getInt("Price", -1);
-        description = bundle.getString("Description","null");
-        numberOfImages = bundle.getInt("numberOfImages",0);
+        category = "null";
     }
 
     //region Getters and Setters
@@ -76,6 +69,22 @@ public class AdData implements Parcelable {
         this.numberOfImages = numberOfImages;
     }
 
+    public String getCollegeName() {
+        return collegeName;
+    }
+
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     //endregion
 
     //region Parcelable
@@ -91,7 +100,9 @@ public class AdData implements Parcelable {
                 this.title,
                 String.valueOf(this.price),
                 this.description,
-                String.valueOf(this.numberOfImages)
+                String.valueOf(this.numberOfImages),
+                this.collegeName,
+                this.category
         });
     }
 
@@ -102,6 +113,8 @@ public class AdData implements Parcelable {
         price = Integer.getInteger(in.readString());
         description = in.readString();
         numberOfImages = Integer.getInteger(in.readString());
+        collegeName = in.readString();
+        category = in.readString();
     }
 
     public static final Creator<AdData> CREATOR = new Creator<AdData>() {

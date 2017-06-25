@@ -11,11 +11,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -33,7 +34,7 @@ public class frag_myProfile extends Fragment {
 
     private static String TAG = frag_myProfile.class.getSimpleName() + " YOYO";
     private static final int PICK_PHOTO_CODE = 120;
-    EditText etName, etEmail, etAddress, etPhone, etPassword;
+    TextInputEditText etName, etEmail, etAddress, etPhone, etCollege;
     Button btn_update, btn_ImageChange;
     View view;
     Context context;
@@ -41,6 +42,7 @@ public class frag_myProfile extends Fragment {
     ImageUtils imageUtils;
 
     UserInfo userInfo;
+    UserInfo userInfo1;
 
     //endregion
 
@@ -61,6 +63,8 @@ public class frag_myProfile extends Fragment {
 
         if(((MainActivity)context).userInfo!=null) {
             userInfo = ((MainActivity) context).userInfo;
+            userInfo1 = userInfo.createCopy();
+            userInfo1.setuID(userInfo.getuID());
             populateViews();
         }
 
@@ -77,11 +81,11 @@ public class frag_myProfile extends Fragment {
     }
 
     private void initVariables() {
-        etName = (EditText) view.findViewById(R.id.profile_etName);
-        etEmail = (EditText) view.findViewById(R.id.profile_etEmail);
-        etAddress = (EditText) view.findViewById(R.id.profile_etAddress);
-        etPhone = (EditText) view.findViewById(R.id.profile_etPhone);
-        etPassword = (EditText) view.findViewById(R.id.profile_etPassword);
+        etName = (TextInputEditText) view.findViewById(R.id.profile_etName);
+        etEmail = (TextInputEditText) view.findViewById(R.id.profile_etEmail);
+        etAddress = (TextInputEditText) view.findViewById(R.id.profile_etAddress);
+        etPhone = (TextInputEditText) view.findViewById(R.id.profile_etPhone);
+        etCollege = (TextInputEditText) view.findViewById(R.id.profile_etCollege);
 
         btn_update = (Button) view.findViewById(R.id.profile_btnUpdate);
         btn_ImageChange = (Button) view.findViewById(R.id.profile_btnImageChange);
@@ -98,31 +102,65 @@ public class frag_myProfile extends Fragment {
         etEmail.setText(userInfo.getEmail());
         etPhone.setText(userInfo.getPhone());
         etAddress.setText(userInfo.getAddress());
-        etPassword.setText("********");
+        etCollege.setText(userInfo.getCollegeName());
     }
 
     private void UpdateCredentials() {
-        userInfo.setName(etName.getText().toString().trim());
-        userInfo.setEmail(etEmail.getText().toString().trim());
-        userInfo.setAddress(etAddress.getText().toString().trim());
-        userInfo.setPhone(etPhone.getText().toString().trim());
-        final ProgressDialog show = ProgressDialog.show(context, "Updating..", "", true, false);
-        NetworkMethods methods = new NetworkMethods(context, FirebaseAuth.getInstance());
-        methods.UpdateUser(userInfo, new onUpdateListener() {
-            @Override
-            public void onSuccess(UserInfo userInfo) {
-                show.cancel();
-                ((MainActivity)context).UpdateUI(userInfo,false,false);
-                ((MainActivity)context).createSnackbar("Successfully Updated.", Snackbar.LENGTH_SHORT);
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                show.cancel();
-                ((MainActivity)context).createSnackbar(e.getMessage(), Snackbar.LENGTH_SHORT);
-            }
-        });
+        userInfo1.setData(
+                etName.getText().toString().trim(),
+                etEmail.getText().toString().trim(),
+                etAddress.getText().toString().trim(),
+                etPhone.getText().toString().trim());
+
+        userInfo1.setCollegeName(etCollege.getText().toString().trim());
+
+        if(validateDetails(userInfo1)) {
+
+            userInfo = userInfo1;
+
+            final ProgressDialog show = ProgressDialog.show(context, "Updating...", "", true, false);
+            NetworkMethods methods = new NetworkMethods(context, FirebaseAuth.getInstance());
+            methods.UpdateUser(userInfo, new onUpdateListener() {
+                @Override
+                public void onSuccess(UserInfo userInfo) {
+                    show.cancel();
+                    ((MainActivity) context).UpdateUI(userInfo, false, false);
+                    ((MainActivity) context).createSnackbar("Successfully Updated.", Snackbar.LENGTH_SHORT);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    show.cancel();
+                    ((MainActivity) context).createSnackbar(e.getMessage(), Snackbar.LENGTH_SHORT);
+                }
+            });
+
+        }
     }
+
+    boolean validateDetails(UserInfo userInfo) {
+
+        Boolean f = true;
+        if(userInfo.getName().equals("")) {
+            etName.setError("Field Required");
+            f = false;
+        }
+        if(userInfo.getAddress().equals("")){
+            etAddress.setError("Field Required");
+            f = false;
+        }
+        if(!Patterns.PHONE.matcher(userInfo.getPhone()).matches()) {
+            etPhone.setError("Invalid phone number");
+            f = false;
+        }
+        if(!Patterns.EMAIL_ADDRESS.matcher(userInfo.getEmail()).matches()) {
+            etEmail.setError("Invalid EmailID");
+            f = false;
+        }
+        return f;
+    }
+
 
     //region Camera Setup
 
@@ -138,7 +176,7 @@ public class frag_myProfile extends Fragment {
                     } else if (w > h) {
                         file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
                     }
-                    userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
+                    userInfo1.setProfileIMG(ImageUtils.BitMapToString(file, 75));
 //                    if (imageView.getDrawable() != null)
 //                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
                     imageView.setImageBitmap(file);
@@ -169,6 +207,7 @@ public class frag_myProfile extends Fragment {
     }
 
     //endregion
+
 
     private class loadPic extends AsyncTask<Void,Void,Bitmap>{
 

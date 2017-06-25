@@ -2,12 +2,7 @@ package com.blackboxindia.TakeIT.dataModels;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
@@ -17,7 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
-public class UserInfo implements Parcelable {
+public class UserInfo {
 
     //region Variables
 
@@ -27,41 +22,30 @@ public class UserInfo implements Parcelable {
     private String email;
     private String address;
     private String phone;
+
     private ArrayList<String> userAdKeys;
+    private String collegeName;
 
     //endregion
 
     //region Constructors
 
     public UserInfo(){
+        uID = null;
         userAdKeys = new ArrayList<>();
     }
 
-    public UserInfo(Parcel in) {
-        String[] data = new String[5];
-        in.readStringArray(data);
-
-        byte[] bytes = new byte[200];
-        in.readByteArray(bytes);
-        // the order needs to be the same as in writeToParcel() method
-        this.uID = data[0];
-        this.name = data[1];
-        this.email = data[2];
-        this.address = data[3];
-        this.phone = data[4];
-    }
-
-    public UserInfo(EditText nm, EditText em, EditText add, EditText ph) {
-        try {
-            name = nm.getText().toString().trim();
-            email = em.getText().toString().trim();
-            address = add.getText().toString().trim();
-            phone = ph.getText().toString().trim();
+    public UserInfo createCopy() {
+        UserInfo userInfo = new UserInfo();
+        userInfo.setData(name,email,address,phone);
+        userInfo.setuID(uID);
+        userInfo.setProfileIMG(profileIMG);
+        for(String s:userAdKeys){
+            userInfo.addUserAd(s);
         }
-        catch (NullPointerException e)
-        {
-            Log.i("UserInfo: YOYO", e.toString());
-        }
+        if(collegeName!=null)
+            userInfo.setCollegeName(collegeName);
+        return userInfo;
     }
 
     //endregion
@@ -71,6 +55,7 @@ public class UserInfo implements Parcelable {
         this.email = email;
         this.address = address;
         this.phone = phone;
+        collegeName = "IIT Indore";
     }
 
     public void newUser(String password, final Context context) {
@@ -94,7 +79,6 @@ public class UserInfo implements Parcelable {
                 }
             }
         });
-
 
     }
 
@@ -142,73 +126,6 @@ public class UserInfo implements Parcelable {
         if(userAdKeys.contains(userAdKey))
             userAdKeys.remove(userAdKey);
     }
-
-    public Bundle validateNewAccountDetails() {
-        Bundle result = new Bundle();
-        result.putBoolean("ID", isIDValid(email));
-
-        if(name != null && address!=null && phone!=null && result.getBoolean("ID"))
-            result.putBoolean("allGood",true);
-        else
-            result.putBoolean("allGood",false);
-
-        return result;
-    }
-
-    public boolean isIDValid(String id) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(id).matches();
-    }
-
-    //region Parcelable
-
-    @Override
-    public String toString() {
-        String allDet = "";
-
-        if (name != null)
-            allDet = allDet.concat(" Name: " + name);
-        if (email != null)
-            allDet = allDet.concat(" Email: " + email);
-        if (address != null)
-            allDet = allDet.concat(" Address: " + address);
-        if (phone != null)
-            allDet = allDet.concat(" phone: " + phone);
-        if (uID != null)
-            allDet = allDet.concat(" uID: " + uID);
-
-        if (allDet.equals(""))
-            return "null";
-        else
-            return allDet;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-        dest.writeStringArray(new String[]{this.uID,
-                this.name,
-                this.email,
-                this.address,
-                this.phone});
-
-    }
-
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public UserInfo createFromParcel(Parcel in) {
-            return new UserInfo(in);
-        }
-
-        public UserInfo[] newArray(int size) {
-            return new UserInfo[size];
-        }
-    };
-
-    //endregion
 
     //region Getters and Setters
 
@@ -262,6 +179,14 @@ public class UserInfo implements Parcelable {
 
     public void setProfileIMG(String profileIMG) {
         this.profileIMG = profileIMG;
+    }
+
+    public String getCollegeName() {
+        return collegeName;
+    }
+
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
     }
 
     //endregion

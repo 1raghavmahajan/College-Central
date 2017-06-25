@@ -25,4 +25,9 @@
     <dimen name="activity_margin_content">24dp</dimen>
     <dimen name="viewAdImageSize">270dp</dimen>
 
+
+
+    <dimen name="action_button_min_width_overflow_material">36dp</dimen>
+    <dimen name="action_button_min_width_material">48dp</dimen>
+
 </resources>

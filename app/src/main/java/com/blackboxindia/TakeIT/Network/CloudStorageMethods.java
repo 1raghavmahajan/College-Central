@@ -40,7 +40,8 @@ import java.util.Set;
 @SuppressWarnings("VisibleForTests")
 public class CloudStorageMethods {
 
-    private final static String TAG = CloudStorageMethods.class.getSimpleName() + " YOYO";
+    private static String TAG = CloudStorageMethods.class.getSimpleName() + " YOYO";
+    private static Integer MAX_UPLOAD_RES[] = {900,900};
 
     private Context context;
     private FirebaseStorage storage;
@@ -310,10 +311,8 @@ public class CloudStorageMethods {
 
         @Override
         protected byte[] doInBackground(Uri... params) {
-
-            Bitmap bmp = ImageUtils.compressImage(params[0].toString(), 800,800, context );
-            byte[] bytes = BitmapHelper.bitmapToByteArray(bmp);
-            return bytes;
+            Bitmap bmp = ImageUtils.compressImage(params[0].toString(), MAX_UPLOAD_RES[0],MAX_UPLOAD_RES[1], context );
+            return BitmapHelper.bitmapToByteArray(bmp);
         }
 
         @Override

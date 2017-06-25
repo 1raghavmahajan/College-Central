@@ -2,6 +2,7 @@ package com.blackboxindia.TakeIT.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -188,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
                             launchOtherFragment(new frag_loginPage(), LOGIN_PAGE_TAG);
                         }
                     });
+            //Snackbar.make(coordinatorLayout,"Please Login to continue", Snackbar.LENGTH_INDEFINITE)
             setUpMainFragment();
         }
     }
@@ -232,13 +234,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void animateSearchToolbar(int numberOfMenuIcon, boolean containsOverflow, boolean show) {
 
+        //noinspection deprecation
         toolbar.setBackgroundColor(getResources().getColor(R.color.colorSearch));
-        //drawer.setStatusBarBackgroundColor(ContextCompat.getColor(this, R.color.quantum_grey_600));
 
         if (show) {
             int width = toolbar.getWidth() -
-                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material) : 0) -
-                    ((getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) * numberOfMenuIcon) / 2);
+                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.action_button_min_width_overflow_material) : 0) -
+                    ((getResources().getDimensionPixelSize(R.dimen.action_button_min_width_material) * numberOfMenuIcon) / 2);
             Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(toolbar,
                     isRtl(getResources()) ? toolbar.getWidth() - width : width, toolbar.getHeight() / 2, 0.0f, (float) width);
             createCircularReveal.setDuration(400);
@@ -247,8 +249,8 @@ public class MainActivity extends AppCompatActivity {
         else {
 
             int width = toolbar.getWidth() -
-                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_overflow_material) : 0) -
-                    ((getResources().getDimensionPixelSize(R.dimen.abc_action_button_min_width_material) * numberOfMenuIcon) / 2);
+                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.action_button_min_width_overflow_material) : 0) -
+                    ((getResources().getDimensionPixelSize(R.dimen.action_button_min_width_material) * numberOfMenuIcon) / 2);
             Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(toolbar,
                     isRtl(getResources()) ? toolbar.getWidth() - width : width, toolbar.getHeight() / 2, (float) width, 0.0f);
             createCircularReveal.setDuration(300);
@@ -346,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
         currentFragTag = MAIN_FRAG_TAG;
 
         frag_Main mc = new frag_Main();
-        mc.setRetainInstance(true);
+        //mc.setRetainInstance(true);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, mc, MAIN_FRAG_TAG);
         fragmentTransaction.commit();
@@ -390,6 +392,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setNeutralButton("Resend Email", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
+                                            //noinspection ConstantConditions
                                             FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification()
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                         @Override
@@ -620,6 +623,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SetTextI18n")
+    @SuppressWarnings("ConstantConditions")
     public void UpdateUI(UserInfo userInfo, Boolean redirect, Boolean toRefresh) {
 
         this.userInfo = userInfo;
@@ -695,6 +700,7 @@ public class MainActivity extends AppCompatActivity {
         createSnackbar(msg,length,null,null);
     }
 
+    @SuppressWarnings("deprecation")
     public void createSnackbar(String msg, int length, String actionTitle, View.OnClickListener listener) {
         Snackbar snackbar = Snackbar.make(coordinatorLayout, msg, length);
         if(actionTitle!=null){

@@ -70,11 +70,9 @@ public class frag_Main extends Fragment {
 
         if(swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);
-        if(mAuth!=null){
+        if(mAuth.getCurrentUser()!=null){
             networkMethods = new NetworkMethods(context, mAuth);
             getAllAds();
-        }
-        else{
         }
     }
 

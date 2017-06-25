@@ -7,12 +7,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
+import android.support.design.widget.TextInputEditText;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,8 +26,7 @@ public class frag_newAccount extends Fragment {
 
     //region Variables
     private static final int PICK_PHOTO_CODE = 169;
-    EditText etName, etPhone, etAddress, etEmail, etPassword, etConfirmPass;
-    TextInputLayout nameFrame, phoneFrame, mailFrame, passFrame, cPassFrame;
+    TextInputEditText etName, etPhone, etAddress, etEmail, etPassword, etConfirmPass;
     Button btnCreate, btn_image;
     View view;
 
@@ -59,7 +58,11 @@ public class frag_newAccount extends Fragment {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                userInfo.setData(etName.getText().toString().trim(),etEmail.getText().toString().trim(),etAddress.getText().toString().trim(),etPhone.getText().toString().trim());
+                userInfo.setData(
+                        etName.getText().toString().trim(),
+                        etEmail.getText().toString().trim(),
+                        etAddress.getText().toString().trim(),
+                        etPhone.getText().toString().trim() );
                 if (validateDetails(userInfo))
                     if (isPasswordValid()) {
                         userInfo.newUser(etPassword.getText().toString().trim(), v.getContext());
@@ -74,18 +77,12 @@ public class frag_newAccount extends Fragment {
 
         userInfo = new UserInfo();
 
-        etName = (EditText) view.findViewById(R.id.create_etName);
-        etPhone = (EditText) view.findViewById(R.id.create_etPhone);
-        etAddress = (EditText) view.findViewById(R.id.create_etAddress);
-        etEmail = (EditText) view.findViewById(R.id.create_etEmail);
-        etPassword = (EditText) view.findViewById(R.id.create_etPassword);
-        etConfirmPass= (EditText) view.findViewById(R.id.create_etPasswordConfirm);
-
-        nameFrame = (TextInputLayout) view.findViewById(R.id.create_etNameFrame);
-        phoneFrame = (TextInputLayout) view.findViewById(R.id.create_etPhoneFrame);
-        mailFrame = (TextInputLayout) view.findViewById(R.id.create_etEmailFrame);
-        passFrame = (TextInputLayout) view.findViewById(R.id.create_etPasswordFrame);
-        cPassFrame = (TextInputLayout) view.findViewById(R.id.create_etPasswordConfirmFrame);
+        etName = (TextInputEditText) view.findViewById(R.id.create_etName);
+        etPhone = (TextInputEditText) view.findViewById(R.id.create_etPhone);
+        etAddress = (TextInputEditText) view.findViewById(R.id.create_etAddress);
+        etEmail = (TextInputEditText) view.findViewById(R.id.create_etEmail);
+        etPassword = (TextInputEditText) view.findViewById(R.id.create_etPassword);
+        etConfirmPass= (TextInputEditText) view.findViewById(R.id.create_etPasswordConfirm);
 
         imageView = (ImageView) view.findViewById(R.id.create_img);
 
@@ -96,8 +93,25 @@ public class frag_newAccount extends Fragment {
     //endregion
 
     boolean validateDetails(UserInfo userInfo) {
-        Bundle bundle = userInfo.validateNewAccountDetails();
-        return bundle.getBoolean("allGood");
+
+        Boolean f = true;
+        if(userInfo.getName().equals("")) {
+            etName.setError("Field Required");
+            f = false;
+        }
+        if(userInfo.getAddress().equals("")){
+            etAddress.setError("Field Required");
+            f = false;
+        }
+        if(!Patterns.PHONE.matcher(userInfo.getPhone()).matches()) {
+            etPhone.setError("Invalid phone number");
+            f = false;
+        }
+        if(!Patterns.EMAIL_ADDRESS.matcher(userInfo.getEmail()).matches()) {
+            etEmail.setError("Invalid EmailID");
+            f = false;
+        }
+        return f;
     }
 
     boolean isPasswordValid() {
@@ -107,17 +121,17 @@ public class frag_newAccount extends Fragment {
 
         if(!password.equals(cPassword))
         {
-            cPassFrame.setError(getString(R.string.pass_dont_match));
+            etConfirmPass.setError(getString(R.string.pass_dont_match));
             return false;
         }
         else if(password.length()<getResources().getInteger(R.integer.Min_Password_Size))
         {
-            passFrame.setError(String.format(getString(R.string.pass_min_size),getResources().getInteger(R.integer.Min_Password_Size)));
+            etPassword.setError(String.format(getString(R.string.pass_min_size),getResources().getInteger(R.integer.Min_Password_Size)));
             return false;
         }
         else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))
         {
-            passFrame.setError(getString(R.string.pass_illegal_char));
+            etPassword.setError(getString(R.string.pass_illegal_char));
             return false;
         }
         else
@@ -138,12 +152,10 @@ public class frag_newAccount extends Fragment {
                         file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
                     }
                     userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
-//                    if (imageView.getDrawable() != null)
-//                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
                     imageView.setImageBitmap(file);
                 }
                 else
-                    Toast.makeText(context, "Some error occurred. Request Code mismatch.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Some error occurred. Please try again.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -161,7 +173,6 @@ public class frag_newAccount extends Fragment {
         imageUtils.onActivityResult(requestCode, resultCode, data);
     }
     //endregion
-
 
 }
 

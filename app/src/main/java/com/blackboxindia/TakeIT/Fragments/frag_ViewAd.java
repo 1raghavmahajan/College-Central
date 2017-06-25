@@ -32,7 +32,7 @@ public class frag_ViewAd extends Fragment {
     private static String TAG = frag_ViewAd.class.getSimpleName() +" YOYO";
     RecyclerView imgRecyclerView;
     TextView tv_Title, tv_Price, tv_Description;
-    TextView tv_Name, tv_Address, tv_Phone;
+    TextView tv_Name, tv_Address, tv_Phone, tv_College;
     ImageView imageView;
     View view;
     Context context;
@@ -70,6 +70,7 @@ public class frag_ViewAd extends Fragment {
         tv_Name = (TextView) view.findViewById(R.id.Ad_tvName);
         tv_Address = (TextView) view.findViewById(R.id.Ad_tvAddress);
         tv_Phone = (TextView) view.findViewById(R.id.Ad_tvPhone);
+        tv_College = (TextView) view.findViewById(R.id.Ad_tvCollege);
         imageView = (ImageView) view.findViewById(R.id.Ad_Profile);
 
     }
@@ -81,6 +82,7 @@ public class frag_ViewAd extends Fragment {
         adData = getArguments().getParcelable("adData");
 
         if(adData!=null) {
+
             if (adData.getPrice() == 0)
                 tv_Price.setText(getString(R.string.free));
             else
@@ -96,6 +98,7 @@ public class frag_ViewAd extends Fragment {
                     tv_Name.setText(userInfo.getName());
                     tv_Address.setText(userInfo.getAddress());
                     tv_Phone.setText(userInfo.getPhone());
+                    tv_College.setText(userInfo.getCollegeName());
                     tv_Phone.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

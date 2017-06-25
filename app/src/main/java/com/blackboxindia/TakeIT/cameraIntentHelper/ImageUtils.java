@@ -39,7 +39,9 @@ import java.util.Date;
 @SuppressLint("SdCardPath")
 public class ImageUtils {
 
-    private static final String TAG = ImageUtils.class.getSimpleName()+" YOYO";
+    private static String TAG = ImageUtils.class.getSimpleName()+" YOYO";
+    private static int[] MAX_ICON_RES = {420,420};
+    private static int[] MAX_GALLERY_RES = {816, 612};
 
     Context context;
     private Activity current_activity;
@@ -125,7 +127,7 @@ public class ImageUtils {
     public String getPath(Uri uri) {
         String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = this.context.getContentResolver().query(uri, projection, null, null, null);
-        int column_index = 0;
+        int column_index;
         if (cursor != null) {
             column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             cursor.moveToFirst();
@@ -200,13 +202,13 @@ public class ImageUtils {
      * Compress Imgae
      *
      * @param imageUri
-     * @param height
-     * @param width
+     * @param maxHeight
+     * @param maxWidth
      * @return
      */
 
-
-    public static Bitmap compressImage(String imageUri, float height, float width, Context context ) {
+    @SuppressWarnings("deprecation")
+    public static Bitmap compressImage(String imageUri, float maxHeight, float maxWidth, Context context ) {
 
         String filePath = getRealPathFromURI(imageUri, context);
         Bitmap scaledBitmap = null;
@@ -227,8 +229,6 @@ public class ImageUtils {
 
         // max Height and width values of the compressed image is taken as 816x612
 
-        float maxHeight = height;
-        float maxWidth = width;
         float imgRatio = actualWidth / actualHeight;
         float maxRatio = maxWidth / maxHeight;
 
@@ -284,6 +284,7 @@ public class ImageUtils {
         Matrix scaleMatrix = new Matrix();
         scaleMatrix.setScale(ratioX, ratioY, middleX, middleY);
 
+        assert scaledBitmap != null;
         Canvas canvas = new Canvas(scaledBitmap);
         canvas.setMatrix(scaleMatrix);
         canvas.drawBitmap(bmp, middleX - bmp.getWidth() / 2, middleY - bmp.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
@@ -589,11 +590,11 @@ public class ImageUtils {
 
         switch (requestCode) {
             case 0:
-                String selected_path = "";
+                String selected_path;
                 if (resultCode == Activity.RESULT_OK) {
 
                     try {
-                        bitmap = compressImage(imageUri.toString(), 512, 512);
+                        bitmap = compressImage(imageUri.toString(), MAX_ICON_RES[0], MAX_ICON_RES[1]);
 
                         Log.i(TAG, "now height: "+bitmap.getHeight());
                         Log.i(TAG, "now Width: "+bitmap.getWidth());
@@ -610,10 +611,9 @@ public class ImageUtils {
                     Uri selectedImage = data.getData();
 
                     try {
-                        selected_path = null;
                         selected_path = getPath(selectedImage);
                         file_name = selected_path.substring(selected_path.lastIndexOf("/") + 1);
-                        bitmap = compressImage(selectedImage.toString(), 816, 612);
+                        bitmap = compressImage(selectedImage.toString(), MAX_GALLERY_RES[0], MAX_GALLERY_RES[1]);
 
                         Log.i(TAG, "gallery now height: "+bitmap.getHeight());
                         Log.i(TAG, "gallery now Width: "+bitmap.getWidth());
@@ -657,7 +657,7 @@ public class ImageUtils {
      * @return
      */
     public String getFileName_from_Uri(Uri uri) {
-        String path = null, file_name = null;
+        String path, file_name;
 
         try {
 
@@ -749,10 +749,14 @@ public class ImageUtils {
 
         if (file.exists()) {
             if (file_replace) {
-                file.delete();
-                file = new File(path, file_name);
-                store_image(file, bitmap);
-                Log.i("file", "replaced");
+                boolean isDeleted = file.delete();
+                if(isDeleted) {
+                    file = new File(path, file_name);
+                    store_image(file, bitmap);
+                    Log.i(TAG, "file replaced");
+                }
+                else
+                    Log.i(TAG, "could not delete file");
             }
         } else {
             store_image(file, bitmap);

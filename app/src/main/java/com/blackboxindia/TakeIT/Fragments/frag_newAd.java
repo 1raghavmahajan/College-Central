@@ -118,6 +118,7 @@ public class frag_newAd extends Fragment {
             adData.setTitle(etTitle.getText().toString().trim());
             adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
             adData.setDescription(etDescription.getText().toString().trim());
+            adData.setCollegeName(userInfo.getCollegeName());
 
             adData.setNumberOfImages(imgURIs.size());
 
@@ -146,6 +147,8 @@ public class frag_newAd extends Fragment {
         imageUtils = new ImageUtils(getActivity(), this, true, new ImageUtils.ImageAttachmentListener() {
             @Override
             public void image_attachment(int from, String filename, Bitmap file, Uri uri) {
+                if(imgURIs.isEmpty())
+                    view.findViewById(R.id.newAd_recyclerHint).setVisibility(View.GONE);
                 imgURIs.add(uri);
                 adapter.addImage(file);
             }
