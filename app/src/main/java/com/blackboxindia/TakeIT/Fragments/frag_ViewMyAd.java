@@ -96,7 +96,6 @@ public class frag_ViewMyAd extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.frag_viewmyad, container, false);
-
         context = view.getContext();
 
         initVariables();
@@ -136,7 +135,7 @@ public class frag_ViewMyAd extends Fragment {
 
     void setUpImgRecycler() {
         main = ((frag_myAds)(getFragmentManager().findFragmentByTag(MY_ADS_TAG))).current;
-        ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main);
+        ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);
         imgRecyclerView.setAdapter(adapter);
@@ -146,6 +145,7 @@ public class frag_ViewMyAd extends Fragment {
     public void onStop() {
         super.onStop();
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete).setVisible(false);
+        ((MainActivity) getActivity()).closeImageListener = null;
     }
 
     //endregion

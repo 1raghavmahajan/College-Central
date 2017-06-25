@@ -11,6 +11,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
@@ -51,7 +52,6 @@ import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
-import com.blackboxindia.TakeIT.Utils;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserCred;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
@@ -59,6 +59,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import static com.blackboxindia.TakeIT.activities.OnboardingActivity.PREFERENCES_FILE;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -96,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
     public CloudStorageMethods cloudStorageMethods;
 
     boolean recentlySentMail;
+
+    public closeImageListener closeImageListener;
+
     //endregion
 
     //region Initial Setup
@@ -104,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        isUserFirstTime = Boolean.valueOf(Utils.readSharedSetting(MainActivity.this, PREF_USER_FIRST_TIME, "true"));
+        isUserFirstTime = Boolean.valueOf(readSharedSetting(MainActivity.this, PREF_USER_FIRST_TIME, "true"));
 
         Intent introIntent = new Intent(MainActivity.this, OnboardingActivity.class);
         introIntent.putExtra(PREF_USER_FIRST_TIME, isUserFirstTime);
@@ -189,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
                             launchOtherFragment(new frag_loginPage(), LOGIN_PAGE_TAG);
                         }
                     });
-            //Snackbar.make(coordinatorLayout,"Please Login to continue", Snackbar.LENGTH_INDEFINITE)
             setUpMainFragment();
         }
     }
@@ -313,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                 drawer.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.nav_allAds:
-                        goToMainFragment(false,true);
+                        goToMainFragment(false,false);
                         break;
                     case R.id.nav_manage:
                         break;
@@ -550,30 +554,31 @@ public class MainActivity extends AppCompatActivity {
 //            animateSearchToolbar(1, false, false);
         }
         else {
-            if(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG)!=null) {
-                if (fragmentManager.findFragmentByTag(VIEW_MyAD_TAG).isVisible()) {
+            switch (currentFragTag) {
+                case VIEW_MyAD_TAG:
+                    if(closeImageListener!=null) {
+                        if (closeImageListener.closeImage()) {
 
-                    fragmentManager.beginTransaction()
-                            .remove(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG))
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                            .commit();
+                            fragmentManager.beginTransaction()
+                                    .remove(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG))
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+                                    .commit();
 
-                    currentFragTag = MY_ADS_TAG;
+                            currentFragTag = MY_ADS_TAG;
 
-                    fragmentManager.beginTransaction()
-                            .add(R.id.frame_layout,new frag_myAds(),MY_ADS_TAG)
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                            .commit();
-//                    fragmentManager.beginTransaction().add(R.id.frame_layout,new frag_myAds(),MY_ADS_TAG)
-//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-                }
-            }
-            else //noinspection StatementWithEmptyBody
-                if(currentFragTag.equals(VERIFY_EMAIL_TAG)){
-                //Todo:
-            }
-            else {
-                if(currentFragTag.equals(MAIN_FRAG_TAG)) {
+                            fragmentManager.beginTransaction()
+                                    .add(R.id.frame_layout, new frag_myAds(), MY_ADS_TAG)
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                                    .commit();
+                        }
+                    }
+                    break;
+
+                case VERIFY_EMAIL_TAG:
+                    //Todo:
+                    break;
+
+                case MAIN_FRAG_TAG:
 
                     if (twiceToExit) {
                         //cloudStorageMethods.saveCache();
@@ -589,12 +594,20 @@ public class MainActivity extends AppCompatActivity {
                             twiceToExit = false;
                         }
                     }, 2000);
-                }
-                else {
-                    goToMainFragment(false,true);
-                }
+                    break;
+
+                case VIEW_AD_TAG:
+                    if(closeImageListener!=null) {
+                        if (closeImageListener.closeImage()) {
+                            goToMainFragment(false,false);
+                        }
+                    }
+                    break;
+
+                default:
+                    goToMainFragment(false, false);
+                    break;
             }
-//            super.onBackPressed();
         }
     }
 
@@ -724,5 +737,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         cloudStorageMethods.saveCache();
+    }
+
+    public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+        return sharedPref.getString(settingName, defaultValue);
+    }
+
+    public interface closeImageListener {
+        boolean closeImage();
     }
 }

@@ -14,29 +14,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:gravity="center"
-        android:text="A verification email has been sent to your registered email ID."
+        android:text="@string/verify_text"
         android:textSize="20sp"/>
-
-    <!--<TextView
-        android:id="@+id/verify_tv2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/verify_tv1"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="13dp"
-        android:gravity="center"
-        android:text="Did not receive the email?"
-        android:textSize="18sp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/verify_tv2"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:gravity="center"
-        android:text="Please check the spam folder."/>-->
 
     <Button
         android:id="@+id/verify_btn_Check"
@@ -46,7 +25,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/verify_tv1"
         android:layout_marginTop="10dp"
-        android:text="Click here after verification."
+        android:text="@string/verify_btn"
         />
 
     <TextView
@@ -58,7 +37,7 @@
         app:layout_constraintTop_toBottomOf="@id/verify_btn_Check"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Checking if account verified..."
+        android:text="@string/verify_check"
         android:textSize="16sp"
         android:visibility="invisible"
         />

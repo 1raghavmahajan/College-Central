@@ -1,4 +1,4 @@
-<android.support.v4.widget.NestedScrollView
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -9,8 +9,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:id="@+id/create_frame"
@@ -179,4 +178,4 @@
             android:text="@string/create_account"/>
 
     </android.support.constraint.ConstraintLayout>
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>

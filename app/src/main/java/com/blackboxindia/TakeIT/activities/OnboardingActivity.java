@@ -1,6 +1,8 @@
 package com.blackboxindia.TakeIT.activities;
 
 import android.animation.ArgbEvaluator;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -20,12 +22,13 @@ import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.Network.GlideApp;
 import com.blackboxindia.TakeIT.R;
-import com.blackboxindia.TakeIT.Utils;
+import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 
 public class OnboardingActivity extends AppCompatActivity {
 
     //region Variables
     static final String TAG = OnboardingActivity.class.getSimpleName()+" YOYO";
+    public static final String PREFERENCES_FILE = "TakeIT_Settings";
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -119,7 +122,7 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                Utils.saveSharedSetting(OnboardingActivity.this, MainActivity.PREF_USER_FIRST_TIME, "false");
+                saveSharedSetting(OnboardingActivity.this, MainActivity.PREF_USER_FIRST_TIME, "false");
             }
         });
 
@@ -127,10 +130,9 @@ public class OnboardingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
-                Utils.saveSharedSetting(OnboardingActivity.this, MainActivity.PREF_USER_FIRST_TIME, "false");
+                saveSharedSetting(OnboardingActivity.this, MainActivity.PREF_USER_FIRST_TIME, "false");
             }
         });
-
 
     }
 
@@ -139,7 +141,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         mNextBtn = (ImageButton) findViewById(R.id.intro_btn_next);
         mNextBtn.setImageDrawable(
-                Utils.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_chevron_right_24dp), Color.WHITE));
+                ImageUtils.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_chevron_right_24dp), Color.WHITE));
 
         mSkipBtn = (Button) findViewById(R.id.intro_btn_skip);
         mFinishBtn = (Button) findViewById(R.id.intro_btn_finish);
@@ -276,4 +278,12 @@ public class OnboardingActivity extends AppCompatActivity {
     public void onBackPressed() {
         //super.onBackPressed();
     }
+
+    public static void saveSharedSetting(Context ctx, String settingName, String settingValue) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(settingName, settingValue);
+        editor.apply();
+    }
+
 }

@@ -84,5 +84,10 @@
     <string name="add_image_hint">Add pictures to make your ad more visible.</string>
     <string name="sample_college">College Name</string>
 
+    <string name="description_zoom_touch_close">Expanded image (touch to close)</string>
+    <string name="verify_text">A verification email has been sent to your registered email ID.</string>
+    <string name="verify_btn">Click here after verification.</string>
+    <string name="verify_check">Checking if account verified...</string>
+
 
 </resources>

@@ -39,6 +39,7 @@ public class frag_ViewAd extends Fragment {
 
     AdData adData;
     Bitmap main;
+
     //endregion
 
     //region Initial Setup
@@ -128,11 +129,16 @@ public class frag_ViewAd extends Fragment {
 
     void setUpImgRecycler() {
         main = ((frag_Main)(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).current;
-        ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main);
+        ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);
         imgRecyclerView.setAdapter(adapter);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((MainActivity) getActivity()).closeImageListener = null;
+    }
 }
 
