@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.LockableScrollView;
 import com.blackboxindia.TakeIT.Network.Interfaces.ImageDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
@@ -43,6 +44,8 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
     private View imgView;
     private boolean opened;
 
+    private LockableScrollView scrollView;
+
     public ViewAdImageAdapter(Context context, AdData adData, Bitmap main, View view) {
         inflater = LayoutInflater.from(context);
         this.context  = context;
@@ -56,6 +59,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
             public boolean closeImage() {
                 if(opened){
                     opened = false;
+                    scrollView.setScrollingEnabled(true);
                     closeAnim();
                     return false;
                 } else {
@@ -64,6 +68,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
             }
         };
         expandedImageView = (ImageView) view.findViewById(R.id.expanded_image);
+        scrollView = (LockableScrollView) view.findViewById(R.id.lockableScrollView);
     }
 
     @Override
@@ -254,6 +259,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            scrollView.setScrollingEnabled(false);
                             zoomImageFromThumb(imageView,finalUri);
                         }
                     });

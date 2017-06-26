@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -146,24 +145,20 @@ public class CloudStorageMethods {
 
         if(cachedIcons.containsKey(AdID)) {
             Log.i(TAG,"getMajorImage cached");
-            Bitmap bitmap = BitmapFactory.decodeFile(cachedIcons.get(AdID).getPath());
-            listener.onSuccess(bitmap);
+            listener.onSuccess(cachedIcons.get(AdID));
         }
         else {
             final File localFile;
 
             localFile = new File(context.getCacheDir(), AdID + ".webp");
-            //final long ONE_MEGABYTE = 1024 * 1024;
 
             storage.getReference().child("images/" + AdID + "/0s").getFile(localFile)
                     .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            Log.i(TAG,"getMajorImage success");
-                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getPath());
+//                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getPath());
                             cachedIcons.put(AdID,Uri.fromFile(localFile));
-                            Log.i(TAG,"icon uri:" + Uri.fromFile(localFile));
-                            listener.onSuccess(bitmap);
+                            listener.onSuccess(Uri.fromFile(localFile));
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="5dp"
+        android:background="@color/black_trans80"
+        android:layout_marginBottom="6dp">
+
+        <Button
+            android:id="@+id/btn_OpenChangePass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Change Password"
+            android:textSize="18sp"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:background="@color/black_trans80"
+            />
+
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/other_stuff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:padding="8dp">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/currentPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Current Password"/>
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/newPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="New Password"/>
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/conf_newPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm New Password"/>
+
+        <Button
+            android:id="@+id/btn_ChangePass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Submit"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="5dp"
+        android:background="@color/black_trans80">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Account"
+            android:textSize="18sp"
+            android:textColor="@color/colorAccent"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:background="@color/black_trans80"
+            />
+
+    </android.support.v7.widget.CardView>
+
+
+</LinearLayout>

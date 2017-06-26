@@ -2,6 +2,9 @@ package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -94,14 +97,10 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             if(currentAd.getNumberOfImages()>0) {
                 ((MainActivity)context).cloudStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
                     @Override
-                    public void onSuccess(Bitmap bitmap) {
+                    public void onSuccess(Uri uri) {
                         if (majorImage != null){
                             progressBar.setVisibility(View.GONE);
-                            main = bitmap;
-                            if(bitmap!=null)
-                                majorImage.setImageBitmap(bitmap);
-                            else
-                                Log.i(TAG,"major img null");
+                            new loadBitmap().execute(uri);
                         }
                     }
 
@@ -130,6 +129,22 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
                 }
             });
         }
+
+        class loadBitmap extends AsyncTask<Uri, Void, Void>{
+
+            @Override
+            protected Void doInBackground(Uri... params) {
+                main = BitmapFactory.decodeFile(params[0].getPath());
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                majorImage.setImageBitmap(main);
+            }
+        }
+
     }
 
 }

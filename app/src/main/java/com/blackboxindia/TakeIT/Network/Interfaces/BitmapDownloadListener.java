@@ -1,10 +1,10 @@
 package com.blackboxindia.TakeIT.Network.Interfaces;
 
-import android.graphics.Bitmap;
+import android.net.Uri;
 
 public interface BitmapDownloadListener {
 
-    void onSuccess(Bitmap bitmap);
+    void onSuccess(Uri uri);
 
     void onFailure(Exception e);
 }

@@ -161,7 +161,6 @@ public class frag_myProfile extends Fragment {
         return f;
     }
 
-
     //region Camera Setup
 
     private void initCamera() {
@@ -207,7 +206,6 @@ public class frag_myProfile extends Fragment {
     }
 
     //endregion
-
 
     private class loadPic extends AsyncTask<Void,Void,Bitmap>{
 

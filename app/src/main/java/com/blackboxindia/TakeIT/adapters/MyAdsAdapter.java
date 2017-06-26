@@ -1,7 +1,7 @@
 package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.blackboxindia.TakeIT.Network.GlideApp;
 import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
@@ -105,9 +106,9 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                 setListeners(currentAd, this, position);
                 ((MainActivity)context).cloudStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
                     @Override
-                    public void onSuccess(Bitmap bitmap) {
+                    public void onSuccess(Uri uri) {
                         if (majorImage != null && currentAd.getNumberOfImages() > 0) {
-                            majorImage.setImageBitmap(bitmap);
+                            GlideApp.with(context).load(uri).into(majorImage);
                             progressBar.setVisibility(View.GONE);
                         }
                     }

@@ -43,6 +43,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Fragments.frag_Main;
+import com.blackboxindia.TakeIT.Fragments.frag_Manage;
 import com.blackboxindia.TakeIT.Fragments.frag_loginPage;
 import com.blackboxindia.TakeIT.Fragments.frag_myAds;
 import com.blackboxindia.TakeIT.Fragments.frag_myProfile;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String MAIN_FRAG_TAG = "MAIN_FRAG";
     public final static String LOGIN_PAGE_TAG = "LOGIN_PAGE";
     public final static String MY_PROFILE_TAG = "MY_PROFILE";
+    public final static String MANAGE_FRAG_TAG = "MANAGE_ACCOUNT";
     public final static String NEW_ACCOUNT_TAG = "NEW_ACCOUNT";
     public final static String MY_ADS_TAG = "MY_ADS";
     public final static String NEW_AD_TAG = "NEW_AD";
@@ -303,13 +305,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        GlideApp.with(this).load(R.drawable.header_image).into(new SimpleTarget<Drawable>() {
-//            @Override
-//            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-//                navigationView.getHeaderView(0).setBackground(resource);
-//            }
-//        });
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -320,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
                         goToMainFragment(false,false);
                         break;
                     case R.id.nav_manage:
+                        launchOtherFragment(new frag_Manage(), MANAGE_FRAG_TAG);
                         break;
                     case R.id.nav_profile:
                         if (userInfo != null) {
@@ -664,7 +660,7 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
 
         navigationViewMenu.findItem(R.id.nav_myAds).setVisible(true);
-        //navigationViewMenu.findItem(R.id.nav_manage).setVisible(true);
+        navigationViewMenu.findItem(R.id.nav_manage).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_profile).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_logout).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(false);
@@ -696,7 +692,7 @@ public class MainActivity extends AppCompatActivity {
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.VISIBLE);
 
         navigationViewMenu.findItem(R.id.nav_myAds).setVisible(false);
-        //navigationViewMenu.findItem(R.id.nav_manage).setVisible(false);
+        navigationViewMenu.findItem(R.id.nav_manage).setVisible(false);
         navigationViewMenu.findItem(R.id.nav_profile).setVisible(false);
         navigationViewMenu.findItem(R.id.nav_logout).setVisible(false);
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(true);
