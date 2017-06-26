@@ -75,7 +75,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email"
-                android:inputType="textEmailAddress"
+                android:inputType="none"
+                android:editable="false"
+                android:enabled="false"
                 />
 
         </android.support.design.widget.TextInputLayout>

@@ -136,7 +136,11 @@ public class NetworkMethods {
                             userInfo.setEmail(email);
                             //noinspection ConstantConditions
                             userInfo.setuID(mAuth.getCurrentUser().getUid());
-                            getDetailsFromDB(userInfo, loginListener);
+//                            UserInfo cachedUserDetails = UserInfo.getCachedUserDetails(userInfo.getuID(),context);
+//                            if( cachedUserDetails != null)
+//                                loginListener.onSuccess(cachedUserDetails);
+//                            else
+                                getDetailsFromDB(userInfo, loginListener);
                         } else {
                             Log.w(TAG, task.getException());
                             loginListener.onFailure(task.getException());
@@ -158,6 +162,7 @@ public class NetworkMethods {
                 UserInfo nUserInfo = dataSnapshot.getValue(UserInfo.class);
                 Log.i(TAG,"getDetailsFromDB: successful");
 
+                //UserInfo.cacheUserDetails(nUserInfo,context);
                 loginListener.onSuccess(nUserInfo);
             }
 
@@ -192,6 +197,7 @@ public class NetworkMethods {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Log.i(TAG,"UpdateUser: successful");
+                    //UserInfo.cacheUserDetails(userInfo,context);
                     listener.onSuccess(userInfo);
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -241,7 +247,37 @@ public class NetworkMethods {
     }
 
     public void deleteUser(){
-        //Todo:
+
+//        if(adData.getNumberOfImages()>0) {
+//            FirebaseStorage storage = FirebaseStorage.getInstance();
+//            storage.getReference().child("images/" + adData.getAdID() + "/0s").delete();
+//            for (int i = 0; i < adData.getNumberOfImages(); i++)
+//                storage.getReference().child("images/" + adData.getAdID() + "/" + i).delete();
+//        }
+//        mDatabase.child("ads").child(adData.getAdID()).removeValue()
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        userInfo.removeUserAd(adData.getAdID());
+//                        UpdateUser(userInfo, new onUpdateListener() {
+//                            @Override
+//                            public void onSuccess(UserInfo userInfo) {
+//                                listener.onSuccess(userInfo);
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Exception e) {
+//                                listener.onFailure(e);
+//                            }
+//                        });
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                listener.onFailure(e);
+//            }
+//        });
+
     }
 
     //endregion

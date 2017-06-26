@@ -2,7 +2,11 @@ package com.blackboxindia.TakeIT.dataModels;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
@@ -10,9 +14,15 @@ import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-public class UserInfo {
+@SuppressWarnings("WeakerAccess")
+public class UserInfo implements Parcelable{
 
     //region Variables
 
@@ -34,6 +44,29 @@ public class UserInfo {
         uID = null;
         userAdKeys = new ArrayList<>();
     }
+
+    protected UserInfo(Parcel in) {
+        profileIMG = in.readString();
+        uID = in.readString();
+        name = in.readString();
+        email = in.readString();
+        address = in.readString();
+        phone = in.readString();
+        userAdKeys = in.createStringArrayList();
+        collegeName = in.readString();
+    }
+
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
+        @Override
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        @Override
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
 
     public UserInfo createCopy() {
         UserInfo userInfo = new UserInfo();
@@ -82,7 +115,7 @@ public class UserInfo {
 
     }
 
-    public void login(final String email, final String password, final Context context, final Boolean saveCred) {
+    public void login(final String email, final String password, final Context context) {
 
         final ProgressDialog dialog = ProgressDialog.show(context, "Logging in..", "", true, false);
         NetworkMethods net = new NetworkMethods(context);
@@ -90,11 +123,9 @@ public class UserInfo {
             @Override
             public void onSuccess(UserInfo userInfo) {
                 dialog.cancel();
+                UserCred userCred = new UserCred(email, password);
+                userCred.save_cred(context);
 
-                if(saveCred) {
-                    UserCred userCred = new UserCred(email, password);
-                    userCred.save_cred(context);
-                }
                 ((MainActivity) context).UpdateUI(userInfo, true, true);
             }
 
@@ -125,6 +156,91 @@ public class UserInfo {
     public void removeUserAd(String userAdKey) {
         if(userAdKeys.contains(userAdKey))
             userAdKeys.remove(userAdKey);
+    }
+
+    public static void cacheUserDetails(UserInfo userInfo, Context context) {
+        final String FILENAME = "profile_Img";
+
+        SharedPreferences cache = context.getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = cache.edit();
+
+        String profileIMG = userInfo.getProfileIMG();
+        if(profileIMG !=null) {
+            Log.i("YOYO","write: "+profileIMG);
+
+            FileOutputStream fos;
+            try {
+                fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                byte[] bytes = profileIMG.getBytes("UTF-8");
+                Log.i("YOYO",new String(bytes,"UTF-8"));
+                fos.write(bytes);
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //edit.putString("profileIMG", userInfo.getProfileIMG());
+        edit.putString("uID", userInfo.getuID());
+        edit.putString("name", userInfo.getName());
+        edit.putString("email", userInfo.getEmail());
+        edit.putString("address", userInfo.getAddress());
+        edit.putString("phone", userInfo.getPhone());
+
+        Set<String> UserAdKeys = new HashSet<>(userInfo.getUserAdKeys());
+
+        edit.putStringSet("userAdKeys", UserAdKeys );
+
+        if(userInfo.getCollegeName()!=null)
+            edit.putString("collegeName", userInfo.getCollegeName());
+
+        edit.apply();
+    }
+
+    public static UserInfo getCachedUserDetails(String uID, Context context) {
+        final String FILENAME = "profile_Img";
+
+        UserInfo userInfo = new UserInfo();
+
+        SharedPreferences cache = context.getSharedPreferences("user", Context.MODE_PRIVATE);
+        String id = cache.getString("uID", null);
+        if(id != null) {
+
+            if(id.equals(uID)) {
+
+                try {
+                    FileInputStream fileInputStream = context.openFileInput(FILENAME);
+                    byte[] bytes = new byte[1024*200];
+                    //noinspection ResultOfMethodCallIgnored
+                    fileInputStream.read(bytes);
+                    String s = new String(bytes,"UTF-8");
+                    Log.i("YOYO","read: "+s);
+                    userInfo.setProfileIMG(s);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                userInfo.setuID(id);
+                userInfo.setName(cache.getString("name", null));
+                userInfo.setEmail(cache.getString("email", null));
+                userInfo.setAddress(cache.getString("address", null));
+                userInfo.setPhone(cache.getString("phone", null));
+
+                Set<String> userAdKeys = cache.getStringSet("userAdKeys", null);
+                ArrayList<String> keys;
+                if (userAdKeys != null)
+                    keys = new ArrayList<>(userAdKeys);
+                else
+                    keys = new ArrayList<>();
+
+                userInfo.setUserAdKeys(keys);
+
+                userInfo.setProfileIMG(cache.getString("collegeName", "IIT Indore"));
+
+                return userInfo;
+            }
+        }
+        return null;
     }
 
     //region Getters and Setters
@@ -173,6 +289,11 @@ public class UserInfo {
         return userAdKeys;
     }
 
+    public void setUserAdKeys(ArrayList<String> userAdKeys) {
+        this.userAdKeys = userAdKeys;
+    }
+
+
     public String getProfileIMG() {
         return profileIMG;
     }
@@ -187,6 +308,24 @@ public class UserInfo {
 
     public void setCollegeName(String collegeName) {
         this.collegeName = collegeName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(profileIMG);
+        dest.writeString(uID);
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(address);
+        dest.writeString(phone);
+        dest.writeStringList(userAdKeys);
+        dest.writeString(collegeName);
     }
 
     //endregion

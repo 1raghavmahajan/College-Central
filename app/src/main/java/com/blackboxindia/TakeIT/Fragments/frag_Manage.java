@@ -8,8 +8,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
@@ -21,8 +22,9 @@ public class frag_Manage extends Fragment {
     View view;
     Context context;
 
-    Button btn_ChangePass;
+    TextView btn_ChangePass;
     LinearLayout linearLayout;
+    ImageView ic_right;
 
     Boolean opened;
     int ActualHeight;
@@ -41,7 +43,8 @@ public class frag_Manage extends Fragment {
 
         opened = false;
 
-        btn_ChangePass = (Button) view.findViewById(R.id.btn_OpenChangePass);
+        btn_ChangePass = (TextView) view.findViewById(R.id.btn_OpenChangePass);
+        ic_right = (ImageView) view.findViewById(R.id.card_open_icon);
         linearLayout = (LinearLayout) view.findViewById(R.id.other_stuff);
 
         linearLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -70,6 +73,16 @@ public class frag_Manage extends Fragment {
                 }
             });
             anim.setDuration(ANIMATION_DURATION);
+            ValueAnimator animator = ValueAnimator.ofFloat(0,90);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float val = (float) animation.getAnimatedValue();
+                    ic_right.setRotation(val);
+                }
+            });
+            animator.setDuration(ANIMATION_DURATION);
+            animator.start();
             anim.start();
             opened = true;
         }
@@ -85,9 +98,23 @@ public class frag_Manage extends Fragment {
                 }
             });
             anim.setDuration(ANIMATION_DURATION);
+            ValueAnimator animator = ValueAnimator.ofFloat(90,0);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float val = (float) animation.getAnimatedValue();
+                    ic_right.setRotation(val);
+                }
+            });
+            animator.setDuration(ANIMATION_DURATION);
+            animator.start();
             anim.start();
             opened = false;
         }
+    }
+
+    void changePass() {
+
     }
 
 }

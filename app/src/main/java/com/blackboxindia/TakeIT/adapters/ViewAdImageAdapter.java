@@ -18,6 +18,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.LockableScrollView;
@@ -28,6 +29,7 @@ import com.blackboxindia.TakeIT.dataModels.AdData;
 
 public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.imgViewHolder> {
 
+    //region Variables
     private static final String TAG = ViewAdImageAdapter.class.getSimpleName()+" YOYO";
     private LayoutInflater inflater;
     private AdData adData;
@@ -45,6 +47,8 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
     private boolean opened;
 
     private LockableScrollView scrollView;
+    private RelativeLayout relativeLayout;
+    //endregion
 
     public ViewAdImageAdapter(Context context, AdData adData, Bitmap main, View view) {
         inflater = LayoutInflater.from(context);
@@ -69,6 +73,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
         };
         expandedImageView = (ImageView) view.findViewById(R.id.expanded_image);
         scrollView = (LockableScrollView) view.findViewById(R.id.lockableScrollView);
+        relativeLayout = (RelativeLayout) view.findViewById(R.id.viewAdContainer);
     }
 
     @Override
@@ -116,8 +121,6 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
         view.findViewById(R.id.frame_container).getGlobalVisibleRect(finalBounds, globalOffset);
         startBounds.offset(-globalOffset.x, -globalOffset.y);
 
-        Log.i(TAG,"X: "+String.valueOf(-globalOffset.x)+" Y: "+String.valueOf(-globalOffset.y));
-
         finalBounds.offset(-globalOffset.x, -globalOffset.y);
 
         // Adjust the start bounds to be the same aspect ratio as the final bounds using the
@@ -143,9 +146,9 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
 
         // Hide the thumbnail and show the zoomed-in view. When the animation begins,
         // it will position the zoomed-in view in the place of the thumbnail.
+        relativeLayout.setAlpha(0.5f);
         thumbView.setAlpha(0f);
         expandedImageView.setVisibility(View.VISIBLE);
-        //closeButton.setVisibility(View.VISIBLE);
 
         // Set the pivot point for SCALE_X and SCALE_Y transformations to the top-left corner of
         // the zoomed-in view (the default is the center of the view).
@@ -173,6 +176,8 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
             @Override
             public void onAnimationCancel(Animator animation) {
                 mCurrentAnimator = null;
+                expandedImageView.setVisibility(View.GONE);
+                thumbView.setAlpha(1f);
             }
         });
         set.start();
@@ -195,6 +200,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
             mCurrentAnimator.cancel();
         }
 
+        relativeLayout.setAlpha(1f);
         // Animate the four positioning/sizing properties in parallel, back to their
         // original values.
         AnimatorSet set = new AnimatorSet();

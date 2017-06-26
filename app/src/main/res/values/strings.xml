@@ -88,6 +88,14 @@
     <string name="verify_text">A verification email has been sent to your registered email ID.</string>
     <string name="verify_btn">Click here after verification.</string>
     <string name="verify_check">Checking if account verified...</string>
+    <string name="change_password">Change Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="submit">Submit</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="skip">Skip</string>
+    <string name="finish">Finish</string>
 
 
 </resources>

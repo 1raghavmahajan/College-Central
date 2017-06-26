@@ -141,7 +141,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         mNextBtn = (ImageButton) findViewById(R.id.intro_btn_next);
         mNextBtn.setImageDrawable(
-                ImageUtils.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_chevron_right_24dp), Color.WHITE));
+                ImageUtils.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_right), Color.WHITE));
 
         mSkipBtn = (Button) findViewById(R.id.intro_btn_skip);
         mFinishBtn = (Button) findViewById(R.id.intro_btn_finish);

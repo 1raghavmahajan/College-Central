@@ -13,6 +13,7 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
+            android:id="@+id/viewAdContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
@@ -135,13 +136,10 @@
             android:id="@+id/expanded_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:zoomage_restrictBounds="true"
-            app:zoomage_animateOnReset="true"
-            app:zoomage_autoResetMode="UNDER"
-            app:zoomage_autoCenter="true"
+            app:zoomage_restrictBounds="false"
             app:zoomage_zoomable="true"
-            app:zoomage_translatable="true"
-            app:zoomage_minScale="0.6"
+            app:zoomage_autoCenter="true"
+            app:zoomage_minScale="0.5"
             app:zoomage_maxScale="8"
             android:visibility="gone"
             />

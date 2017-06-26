@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center"
-            android:text="Skip"
+            android:text="@string/skip"
             android:textColor="@android:color/white" />
 
         <LinearLayout
@@ -53,14 +53,16 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginEnd="@dimen/activity_margin_half"
-                android:background="@drawable/indicator_unselected" />
+                android:background="@drawable/indicator_unselected"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/intro_indicator_1"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginEnd="@dimen/activity_margin_half"
-                android:background="@drawable/indicator_unselected" />
+                android:background="@drawable/indicator_unselected"
+                tools:ignore="ContentDescription"/>
 
             <ImageView
                 android:id="@+id/intro_indicator_2"
@@ -68,14 +70,16 @@
                 android:layout_width="8dp"
                 android:layout_height="8dp"
                 android:layout_marginEnd="@dimen/activity_margin_half"
-                android:background="@drawable/indicator_unselected" />
+                android:background="@drawable/indicator_unselected"
+                tools:ignore="ContentDescription"/>
 
             <ImageView
                 android:id="@+id/intro_indicator_3"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="8dp"
                 android:layout_height="8dp"
-                android:background="@drawable/indicator_unselected" />
+                android:background="@drawable/indicator_unselected"
+                tools:ignore="ContentDescription"/>
 
         </LinearLayout>
 
@@ -86,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center"
-            android:text="Finish"
+            android:text="@string/finish"
             android:textColor="@android:color/white"
             android:visibility="gone" />
 
@@ -97,8 +101,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|center"
             android:padding="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_chevron_right_24dp"
-            android:tint="@android:color/white" />
+            android:src="@drawable/ic_right"
+            android:tint="@android:color/white"
+            tools:ignore="ContentDescription"/>
 
 
     </FrameLayout>

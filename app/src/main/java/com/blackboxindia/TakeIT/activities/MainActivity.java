@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
             final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
             final NetworkMethods methods = new NetworkMethods(context);
+
             final onLoginListener listener = new onLoginListener() {
                 @Override
                 public void onSuccess(UserInfo userInfo) {

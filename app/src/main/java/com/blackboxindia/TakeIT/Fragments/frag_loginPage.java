@@ -1,20 +1,28 @@
 package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class frag_loginPage extends Fragment {
 
@@ -23,9 +31,9 @@ public class frag_loginPage extends Fragment {
     private static String TAG = frag_loginPage.class.getSimpleName() + " YOYO";
     TextInputEditText etID, etPassword;
     Button btn_login;
-    CheckBox chkSave;
-    TextView tvCreateNew;
+    TextView tvCreateNew, btn_forgot;
     View view;
+    Context context;
 
     //endregion
 
@@ -41,6 +49,7 @@ public class frag_loginPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_login, container, false);
+        context = view.getContext();
 
         initVariables();
 
@@ -55,8 +64,7 @@ public class frag_loginPage extends Fragment {
         etPassword = (TextInputEditText) view.findViewById(R.id.login_etPassword);
         btn_login = (Button) view.findViewById(R.id.login_btnLogin);
 
-        chkSave = (CheckBox) view.findViewById(R.id.login_chkSave);
-
+        btn_forgot = (TextView) view.findViewById(R.id.login_forgotPassword);
         tvCreateNew = (TextView) view.findViewById(R.id.login_tvCreate);
 
         etID.requestFocus();
@@ -66,28 +74,73 @@ public class frag_loginPage extends Fragment {
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                validateAndLogin(v);
+                validateAndLogin();
             }
         });
 
         tvCreateNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity mainActivity = (MainActivity)v.getContext();
+                MainActivity mainActivity = (MainActivity)context;
                 mainActivity.launchOtherFragment(new frag_newAccount(), MainActivity.NEW_ACCOUNT_TAG);
+            }
+        });
+
+        btn_forgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(FirebaseAuth.getInstance().getCurrentUser() == null)
+                {
+                    if(isIDValid(etID.getText().toString().trim()))
+                    {
+                        new AlertDialog.Builder(context)
+                                .setMessage("A password reset mail will be sent to your registered email ID.")
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        FirebaseAuth.getInstance()
+                                                .sendPasswordResetEmail(etID.getText().toString().trim())
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        ((MainActivity)context).createSnackbar("Check email for further instructions");
+                                                        Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.e(TAG,"password reset failed",e);
+                                                        if(e.getMessage().contains("no user record"))
+                                                            Toast.makeText(context, "No account exists with that email ID", Toast.LENGTH_SHORT).show();
+                                                        else
+                                                            Toast.makeText(context, "Unable to send email", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                    }
+                                }).setNeutralButton("Cancel", null)
+                                .setCancelable(true)
+                                .create()
+                                .show();
+                    }
+                }
+                else
+                    Toast.makeText(context, "Already Logged In!", Toast.LENGTH_SHORT).show();
+
+
             }
         });
     }
 
     //endregion
 
-    public void validateAndLogin(View v) {
+    public void validateAndLogin() {
         String id = etID.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
         UserInfo userInfo = new UserInfo();
         if (isIDValid(id))
             if(isPasswordValid(password))
-                userInfo.login(id, password, v.getContext(),chkSave.isChecked());
+                userInfo.login(id, password, context);
     }
 
     private boolean isIDValid(String id) {

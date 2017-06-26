@@ -53,7 +53,6 @@ public class ImageUtils {
     private ImageAttachmentListener imageAttachment_callBack;
 
     private Uri imageUri;
-    private File path = null;
 
     private int from = 0;
     private boolean isFragment = false;
@@ -671,7 +670,6 @@ public class ImageUtils {
         String path, file_name;
 
         try {
-
             path = getRealPathFromURI(uri.getPath(), context);
             file_name = path.substring(path.lastIndexOf("/") + 1);
         } catch (Exception e) {
@@ -680,7 +678,6 @@ public class ImageUtils {
         }
 
         return file_name;
-
     }
 
 
@@ -692,9 +689,9 @@ public class ImageUtils {
      * @return
      */
 
-    public boolean checkimage(String file_name, String file_path) {
+    public static boolean checkimage(String file_name, String file_path) {
         boolean flag;
-        path = new File(file_path);
+        File path = new File(file_path);
 
         File file = new File(path, file_name);
         if (file.exists()) {
@@ -717,8 +714,9 @@ public class ImageUtils {
      * @return
      */
 
-    public Bitmap getImage(String file_name, String file_path) {
+    public static Bitmap getImage(String file_name, String file_path) {
 
+        File path;
         path = new File(file_path);
         File file = new File(path, file_name);
 
@@ -745,8 +743,9 @@ public class ImageUtils {
      */
 
 
-    public void createImage(Bitmap bitmap, String file_name, String filepath, boolean file_replace) {
+    public static void createImage(Bitmap bitmap, String file_name, String filepath, boolean file_replace) {
 
+        File path;
         path = new File(filepath);
 
         if (!path.exists()) {
@@ -780,7 +779,7 @@ public class ImageUtils {
      * @param file
      * @param bmp
      */
-    public void store_image(File file, Bitmap bmp) {
+    public static void store_image(File file, Bitmap bmp) {
         try {
             FileOutputStream out = new FileOutputStream(file);
             bmp.compress(Bitmap.CompressFormat.PNG, 80, out);
