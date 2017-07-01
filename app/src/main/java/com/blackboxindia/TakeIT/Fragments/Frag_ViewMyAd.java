@@ -30,10 +30,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import static com.blackboxindia.TakeIT.activities.MainActivity.MY_ADS_TAG;
 import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_MyAD_TAG;
 
-public class frag_ViewMyAd extends Fragment {
+public class Frag_ViewMyAd extends Fragment {
 
     //region Variables
-    private static String TAG = frag_ViewMyAd.class.getSimpleName() +" YOYO";
+    private static String TAG = Frag_ViewMyAd.class.getSimpleName() +" YOYO";
     RecyclerView imgRecyclerView;
     TextView tv_Title, tv_Price, tv_Description;
     View view;
@@ -70,7 +70,7 @@ public class frag_ViewMyAd extends Fragment {
                                 ((MainActivity)context).currentFragTag = MY_ADS_TAG;
 
                                 fragmentManager.beginTransaction()
-                                        .add(R.id.frame_layout,new frag_myAds(),MY_ADS_TAG)
+                                        .add(R.id.frame_layout,new Frag_myAds(),MY_ADS_TAG)
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                         .commit();
                             }
@@ -130,11 +130,11 @@ public class frag_ViewMyAd extends Fragment {
             setUpImgRecycler();
         }
         else
-            Log.i("frag_ViewAd YOYO","no adDATA");
+            Log.i("Frag_ViewAd YOYO","no adDATA");
     }
 
     void setUpImgRecycler() {
-        main = ((frag_myAds)(getFragmentManager().findFragmentByTag(MY_ADS_TAG))).current;
+        main = ((Frag_myAds)(getFragmentManager().findFragmentByTag(MY_ADS_TAG))).current;
         ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);

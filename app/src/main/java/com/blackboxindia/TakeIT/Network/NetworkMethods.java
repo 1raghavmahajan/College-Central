@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.blackboxindia.TakeIT.Fragments.frag_verifyEmail;
+import com.blackboxindia.TakeIT.Fragments.Frag_VerifyEmail;
 import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapUploadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrackMain;
@@ -86,7 +86,7 @@ public class NetworkMethods {
                                             UserCred userCred = new UserCred(userInfo.getEmail(),password);
                                             userCred.save_cred(context);
 
-                                            ((MainActivity)context).launchOtherFragment(frag_verifyEmail.newInstance(loginListener, userInfo),MainActivity.VERIFY_EMAIL_TAG);
+                                            ((MainActivity)context).launchOtherFragment(Frag_VerifyEmail.newInstance(loginListener, userInfo),MainActivity.VERIFY_EMAIL_TAG);
 
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {

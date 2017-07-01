@@ -19,9 +19,9 @@ import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class frag_verifyEmail extends Fragment {
+public class Frag_VerifyEmail extends Fragment {
 
-    private static String TAG = frag_verifyEmail.class.getSimpleName()+" YOYO";
+    private static String TAG = Frag_VerifyEmail.class.getSimpleName()+" YOYO";
     View view;
     Context context;
     public onLoginListener loginListener;
@@ -33,9 +33,9 @@ public class frag_verifyEmail extends Fragment {
     TextView textView;
 
 
-    public static frag_verifyEmail newInstance(onLoginListener loginListener, UserInfo userInfo) {
+    public static Frag_VerifyEmail newInstance(onLoginListener loginListener, UserInfo userInfo) {
 
-        frag_verifyEmail fragment = new frag_verifyEmail();
+        Frag_VerifyEmail fragment = new Frag_VerifyEmail();
         fragment.loginListener = loginListener;
         fragment.userInfo = userInfo;
 

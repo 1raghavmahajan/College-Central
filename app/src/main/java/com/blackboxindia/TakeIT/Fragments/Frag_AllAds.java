@@ -27,10 +27,10 @@ import java.util.ArrayList;
 
 import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_AD_TAG;
 
-public class frag_AllAds extends Fragment {
+public class Frag_AllAds extends Fragment {
 
     //region variables
-    private static String TAG = frag_AllAds.class.getSimpleName() + " YOYO";
+    private static String TAG = Frag_AllAds.class.getSimpleName() + " YOYO";
     private static Integer MAX_Ads = 40;
     View view;
     Context context;
@@ -83,6 +83,7 @@ public class frag_AllAds extends Fragment {
 
         query = query.trim().toLowerCase();
         if(!query.equals("")) {
+
             String[] split = query.split(" ");
             ArrayList<AdData> newList = new ArrayList<>();
 
@@ -142,7 +143,7 @@ public class frag_AllAds extends Fragment {
             @Override
             public void onClick(mainAdapter.adItemViewHolder holder, int position, AdData currentAd, Bitmap main) {
 
-                frag_ViewAd fragViewAd = new frag_ViewAd();
+                Frag_ViewAd fragViewAd = new Frag_ViewAd();
 
 //                fragViewAd.setSharedElementEnterTransition(new adViewTransition());
 //                fragViewAd.setEnterTransition(new Fade());
@@ -160,7 +161,7 @@ public class frag_AllAds extends Fragment {
 
 //                FragmentManager fragmentManager = getActivity().getFragmentManager();
 //                fragmentManager.beginTransaction()
-//                                .hide(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))
+//                                .hide(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))
 //                                .commit();
 //
 //                fragmentManager.beginTransaction()

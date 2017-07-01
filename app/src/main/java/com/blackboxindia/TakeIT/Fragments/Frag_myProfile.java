@@ -28,11 +28,11 @@ import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class frag_myProfile extends Fragment {
+public class Frag_myProfile extends Fragment {
 
     //region Variables
 
-    private static String TAG = frag_myProfile.class.getSimpleName() + " YOYO";
+    private static String TAG = Frag_myProfile.class.getSimpleName() + " YOYO";
     private static final int PICK_PHOTO_CODE = 120;
     TextInputEditText etName, etEmail, etAddress, etPhone, etCollege;
     Button btn_update, btn_ImageChange;

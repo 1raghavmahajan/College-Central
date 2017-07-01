@@ -50,10 +50,14 @@
     <color name="grey">#E0E0E0</color>
 
     <color name="white_70">#B3FFFFFF</color>
+    <color name="white_85">#c8ffffff</color>
+    <color name="Black_85">#b41b1b1b</color>
     <color name="cyan_50">#E0F7FA</color>
     <color name="amber_50">#FFF8E1</color>
     <color name="purple_50">#F3E5F5</color>
 
+    <color name="amberLight">#aaffc107</color>
+    <color name="amberDark">#e2ac0c</color>
 
 </resources>
 

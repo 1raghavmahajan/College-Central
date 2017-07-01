@@ -30,11 +30,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
-public class frag_newAd extends Fragment {
+public class Frag_newAd extends Fragment {
 
     //region Variables
 
-    private static String TAG = frag_newAd.class.getSimpleName()+" YOYO";
+    private static String TAG = Frag_newAd.class.getSimpleName()+" YOYO";
     private static Integer ADD_PHOTO_CODE = 154;
 
     EditText etTitle,etPrice,etDescription;

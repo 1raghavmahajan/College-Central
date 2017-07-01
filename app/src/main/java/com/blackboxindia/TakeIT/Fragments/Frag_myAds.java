@@ -27,11 +27,11 @@ import static com.blackboxindia.TakeIT.activities.MainActivity.MY_ADS_TAG;
 import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_MyAD_TAG;
 
 
-public class frag_myAds extends Fragment {
+public class Frag_myAds extends Fragment {
 
     //region variables
 
-    private static String TAG = frag_myAds.class.getSimpleName() + " YOYO";
+    private static String TAG = Frag_myAds.class.getSimpleName() + " YOYO";
     View view;
     Context context;
     NetworkMethods networkMethods;
@@ -74,7 +74,7 @@ public class frag_myAds extends Fragment {
         MyAdsAdapter myAdsAdapter = new MyAdsAdapter(context, userAdKeys, new MyAdsAdapter.ImageClickListener() {
             @Override
             public void onClick(MyAdsAdapter.adItemViewHolder holder, int position, AdData currentAd) {
-                frag_ViewMyAd fragViewMyAd = new frag_ViewMyAd();
+                Frag_ViewMyAd fragViewMyAd = new Frag_ViewMyAd();
 
                 Bundle args = new Bundle();
                 args.putParcelable("adData",currentAd);

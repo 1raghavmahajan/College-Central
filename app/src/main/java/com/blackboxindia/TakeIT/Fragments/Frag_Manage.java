@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 
-public class frag_Manage extends Fragment {
+public class Frag_Manage extends Fragment {
 
     private static final int ANIMATION_DURATION = 300;
 

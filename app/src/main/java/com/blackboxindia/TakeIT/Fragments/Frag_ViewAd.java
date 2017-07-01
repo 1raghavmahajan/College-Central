@@ -26,10 +26,10 @@ import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class frag_ViewAd extends Fragment {
+public class Frag_ViewAd extends Fragment {
 
     //region Variables
-    private static String TAG = frag_ViewAd.class.getSimpleName() +" YOYO";
+    private static String TAG = Frag_ViewAd.class.getSimpleName() +" YOYO";
     RecyclerView imgRecyclerView;
     TextView tv_Title, tv_Price, tv_Description;
     TextView tv_Name, tv_Address, tv_Phone, tv_College;
@@ -124,11 +124,11 @@ public class frag_ViewAd extends Fragment {
             setUpImgRecycler();
         }
         else
-            Log.i("frag_ViewAd YOYO","no adDATA");
+            Log.i("Frag_ViewAd YOYO","no adDATA");
     }
 
     void setUpImgRecycler() {
-        main = ((frag_AllAds)(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).current;
+        main = ((Frag_AllAds)(getFragmentManager().findFragmentByTag(MainActivity.ALL_FRAG_TAG))).current;
         ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);

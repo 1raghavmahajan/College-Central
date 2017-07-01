@@ -25,11 +25,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class frag_loginPage extends Fragment {
+public class Frag_LoginPage extends Fragment {
 
     //region Variables
 
-    private static String TAG = frag_loginPage.class.getSimpleName() + " YOYO";
+    private static String TAG = Frag_LoginPage.class.getSimpleName() + " YOYO";
     TextInputEditText etID, etPassword;
     Button btn_login;
     TextView tvCreateNew, btn_forgot;
@@ -83,7 +83,7 @@ public class frag_loginPage extends Fragment {
             @Override
             public void onClick(View v) {
                 MainActivity mainActivity = (MainActivity)context;
-                mainActivity.launchOtherFragment(new frag_newAccount(), MainActivity.NEW_ACCOUNT_TAG);
+                mainActivity.launchOtherFragment(new Frag_newAccount(), MainActivity.NEW_ACCOUNT_TAG);
             }
         });
 

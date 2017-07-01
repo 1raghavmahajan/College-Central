@@ -22,7 +22,7 @@ import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 
-public class frag_newAccount extends Fragment {
+public class Frag_newAccount extends Fragment {
 
     //region Variables
     private static final int PICK_PHOTO_CODE = 169;

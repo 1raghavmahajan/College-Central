@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.blackboxindia.TakeIT.R;
 
-public class frag_Main extends Fragment {
+public class Frag_Main extends Fragment {
 
     View view;
 
