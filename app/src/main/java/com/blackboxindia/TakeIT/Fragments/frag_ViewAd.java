@@ -128,7 +128,7 @@ public class frag_ViewAd extends Fragment {
     }
 
     void setUpImgRecycler() {
-        main = ((frag_Main)(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).current;
+        main = ((frag_AllAds)(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAG_TAG))).current;
         ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);

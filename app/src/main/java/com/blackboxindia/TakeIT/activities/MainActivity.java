@@ -42,7 +42,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blackboxindia.TakeIT.Fragments.frag_Main;
+import com.blackboxindia.TakeIT.Fragments.frag_AllAds;
 import com.blackboxindia.TakeIT.Fragments.frag_Manage;
 import com.blackboxindia.TakeIT.Fragments.frag_loginPage;
 import com.blackboxindia.TakeIT.Fragments.frag_myAds;
@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).filter("");
+                ((frag_AllAds)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).filter("");
                 if (item.isActionViewExpanded())
                     animateSearchToolbar(1, false, false);
                 return true;
@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
 
         currentFragTag = MAIN_FRAG_TAG;
 
-        frag_Main mc = new frag_Main();
+        frag_AllAds mc = new frag_AllAds();
         //mc.setRetainInstance(true);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, mc, MAIN_FRAG_TAG);
@@ -447,15 +447,15 @@ public class MainActivity extends AppCompatActivity {
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
                 if (clearAll)
-                    ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
+                    ((frag_AllAds)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
                 else if (toRefresh)
-                    ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
+                    ((frag_AllAds)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
             }
             else {
                 if (clearAll)
-                    ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
+                    ((frag_AllAds)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).clearRecycler();
                 else if (toRefresh)
-                    ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
+                    ((frag_AllAds)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
             }
         }
         else {
@@ -627,7 +627,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.toolbar_refresh)
-                    ((frag_Main)fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)).refresh();
+                    ((frag_AllAds)fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)).refresh();
                 return true;
             }
         });
@@ -670,7 +670,7 @@ public class MainActivity extends AppCompatActivity {
             goToMainFragment(false,toRefresh);
         else if (toRefresh){
             if(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG)!=null)
-                ((frag_Main) (fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
+                ((frag_AllAds) (fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).refresh();
             else
                 Log.i(TAG,"Main frag null");
         }
@@ -726,7 +726,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
-            ((frag_Main)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).filter(query);
+            ((frag_AllAds)(fragmentManager.findFragmentByTag(MAIN_FRAG_TAG))).filter(query);
         }
     }
 
