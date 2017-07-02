@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.activities.MainActivity;
 
 public class Frag_Main extends Fragment {
 
@@ -39,7 +40,7 @@ public class Frag_Main extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"onClick: card0");
-//                ((MainActivity)context).goToMainFragment(false,false);
+                ((MainActivity)context).goToMainFragment(false,false);
             }
         });
         cardView[1].setOnClickListener(new View.OnClickListener() {

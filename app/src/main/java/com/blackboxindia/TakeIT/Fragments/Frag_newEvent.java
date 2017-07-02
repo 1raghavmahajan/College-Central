@@ -181,7 +181,8 @@ public class Frag_newEvent extends Fragment {
             networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
                 @Override
                 public void onSuccess(AdData adData) {
-                    ((MainActivity)context).goToMainFragment(false, true);
+                    //Todo: redirect back and refresh
+                    //((MainActivity)context).goToMainFragment(false, true);
                     ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
                 }
 

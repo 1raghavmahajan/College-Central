@@ -69,7 +69,9 @@ public class Frag_VerifyEmail extends Fragment {
                     if (user.isEmailVerified()) {
                         Log.i(TAG, "Verified");
                         Toast.makeText(context, "Email Verified!", Toast.LENGTH_SHORT).show();
-                        ((MainActivity)context).goToMainFragment(false,true);
+                        //Todo:
+//                        ((MainActivity)context).goToMainFragment(false,true);
+                        ((MainActivity)context).launchOtherFragment(new Frag_Main(),MainActivity.MAIN_SCREEN_TAG);
                         loginListener.onSuccess(userInfo);
                     }
                     else {

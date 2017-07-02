@@ -68,7 +68,7 @@ public class Frag_LoginPage extends Fragment {
         btn_forgot = (TextView) view.findViewById(R.id.login_forgotPassword);
         tvCreateNew = (TextView) view.findViewById(R.id.login_tvCreate);
 
-        etID.requestFocus();
+//        etID.requestFocus();
     }
 
     private void setListeners() {

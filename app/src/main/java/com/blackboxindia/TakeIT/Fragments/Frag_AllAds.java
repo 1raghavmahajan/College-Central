@@ -47,12 +47,6 @@ public class Frag_AllAds extends Fragment {
     ArrayList<AdData> allAds;
     //endregion
 
-    public static Frag_AllAds newInstance(String type) {
-        Frag_AllAds fragment = new Frag_AllAds();
-        fragment.AdType = type;
-        return fragment;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -152,19 +146,14 @@ public class Frag_AllAds extends Fragment {
             @Override
             public void onClick(mainAdapter.adItemViewHolder holder, int position, AdData currentAd, Bitmap main) {
 
-                Frag_ViewAd fragViewAd = new Frag_ViewAd();
+                Frag_ViewAd fragViewAd = Frag_ViewAd.newInstance(allAds.get(position));
 
 //                fragViewAd.setSharedElementEnterTransition(new adViewTransition());
 //                fragViewAd.setEnterTransition(new Fade());
 //                setExitTransition(new Fade());
 //                fragViewAd.setSharedElementReturnTransition(new adViewTransition());
 
-                Bundle args = new Bundle();
-
-                args.putParcelable("adData",allAds.get(position));
                 current = main;
-
-                fragViewAd.setArguments(args);
 
                 ((MainActivity)context).launchOtherFragment(fragViewAd,VIEW_AD_TAG);
 

@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -123,6 +124,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(introIntent);
 
         setContentView(R.layout.activity_main);
+
+        View backgroundImage = findViewById(R.id.frame_layout);
+        Drawable background = backgroundImage.getBackground();
+        background.setAlpha(20);
 
         initVariables();
 
@@ -320,7 +325,9 @@ public class MainActivity extends AppCompatActivity {
                 drawer.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.nav_allAds:
-                        goToMainFragment(false,false);
+                        //Todo:
+                        //goToMainFragment(false,false);
+                        launchOtherFragment(new Frag_Main(), MAIN_SCREEN_TAG);
                         break;
                     case R.id.nav_manage:
                         launchOtherFragment(new Frag_Manage(), MANAGE_FRAG_TAG);
@@ -349,17 +356,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpMainScreen() {
 
-        showIT();
+        hideIT();
 
-        Log.i(TAG,"setUpMainScreen");
+//        currentFragTag = MAIN_SCREEN_TAG;
+//
+//        Frag_Main frag_main = new Frag_Main();
+//        //mc.setRetainInstance(true);
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.add(R.id.frame_layout, frag_main, MAIN_SCREEN_TAG);
+//        fragmentTransaction.commit();
 
-        currentFragTag = MAIN_SCREEN_TAG;
-
-        Frag_Main frag_main = new Frag_Main();
-        //mc.setRetainInstance(true);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout, frag_main, MAIN_SCREEN_TAG);
-        fragmentTransaction.commit();
+        currentFragTag = LOGIN_PAGE_TAG;
+        fragmentManager.beginTransaction().add(R.id.frame_layout,new Frag_LoginPage(),LOGIN_PAGE_TAG).commit();
     }
 
     private void setUpMainFragment() {
@@ -375,6 +383,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    // Todo: move the verify mail code
     private void setUpFab() {
         recentlySentMail = false;
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -485,6 +494,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchOtherFragment(Fragment frag, String tag) {
+            currentFragTag = tag;
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.frame_layout, frag,tag).addToBackStack(null).commit();
+    }
+
+    public void launchOtherFragmentOld(Fragment frag, String tag) {
         
         if(fragmentManager.findFragmentByTag(ALL_FRAG_TAG) != null)
         {
@@ -568,7 +583,6 @@ public class MainActivity extends AppCompatActivity {
         }
         else if(toolbar.getMenu().findItem(R.id.toolbar_search).isActionViewExpanded()) {
             toolbar.getMenu().findItem(R.id.toolbar_search).collapseActionView();
-//            animateSearchToolbar(1, false, false);
         }
         else {
             switch (currentFragTag) {
@@ -576,6 +590,8 @@ public class MainActivity extends AppCompatActivity {
                     if(closeImageListener!=null) {
                         if (closeImageListener.closeImage()) {
 
+                            super.onBackPressed();
+/*
                             fragmentManager.beginTransaction()
                                     .remove(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG))
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
@@ -586,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
                             fragmentManager.beginTransaction()
                                     .add(R.id.frame_layout, new Frag_myAds(), MY_ADS_TAG)
                                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                    .commit();
+                                    .commit();*/
                         }
                     }
                     break;
@@ -595,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
                     //Todo:
                     break;
 
-                case ALL_FRAG_TAG:
+                case MAIN_SCREEN_TAG:
 
                     if (twiceToExit) {
                         //cloudStorageMethods.saveCache();
@@ -616,13 +632,15 @@ public class MainActivity extends AppCompatActivity {
                 case VIEW_AD_TAG:
                     if(closeImageListener!=null) {
                         if (closeImageListener.closeImage()) {
-                            goToMainFragment(false,false);
+                            //goToMainFragment(false,false);
+                            super.onBackPressed();
                         }
                     }
                     break;
 
                 default:
-                    goToMainFragment(false, false);
+                    //goToMainFragment(false, false);
+                    super.onBackPressed();
                     break;
             }
         }
@@ -687,7 +705,9 @@ public class MainActivity extends AppCompatActivity {
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(false);
 
         if(redirect)
-            goToMainFragment(false,toRefresh);
+            launchOtherFragment(new Frag_Main(),MAIN_SCREEN_TAG);
+            //Todo:
+            //goToMainFragment(false,toRefresh);
         else if (toRefresh){
             if(fragmentManager.findFragmentByTag(ALL_FRAG_TAG)!=null)
                 ((Frag_AllAds) (fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).refresh();
@@ -718,7 +738,9 @@ public class MainActivity extends AppCompatActivity {
         navigationViewMenu.findItem(R.id.nav_logout).setVisible(false);
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(true);
 
-        goToMainFragment(true, false);
+        //Todo:
+        //goToMainFragment(true, false);
+        launchOtherFragment(new Frag_Main(),MAIN_SCREEN_TAG);
         createSnackbar("Logged out!");
     }
 

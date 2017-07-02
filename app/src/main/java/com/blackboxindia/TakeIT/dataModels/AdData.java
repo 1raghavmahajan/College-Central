@@ -1,9 +1,6 @@
 package com.blackboxindia.TakeIT.dataModels;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class AdData implements Parcelable {
+public class AdData {
 
     private String adID;
     private String createdBy;
@@ -18,6 +15,7 @@ public class AdData implements Parcelable {
     public AdData() {
         adID = "null";
         category = "null";
+        type = AdTypes.TYPE_SELL;
     }
 
     //region Getters and Setters
@@ -96,50 +94,6 @@ public class AdData implements Parcelable {
     public void setType(String type) {
         this.type = type;
     }
-
-    //endregion
-
-    //region Parcelable
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[]{this.adID,
-                this.createdBy,
-                this.title,
-                String.valueOf(this.price),
-                this.description,
-                String.valueOf(this.numberOfImages),
-                this.collegeName,
-                this.category
-        });
-    }
-
-    private AdData(Parcel in) {
-        adID = in.readString();
-        createdBy = in.readString();
-        title = in.readString();
-        price = Integer.getInteger(in.readString());
-        description = in.readString();
-        numberOfImages = Integer.getInteger(in.readString());
-        collegeName = in.readString();
-        category = in.readString();
-    }
-
-    public static final Creator<AdData> CREATOR = new Creator<AdData>() {
-        @Override
-        public AdData createFromParcel(Parcel in) {
-            return new AdData(in);
-        }
-
-        @Override
-        public AdData[] newArray(int size) {
-            return new AdData[size];
-        }
-    };
 
     //endregion
 }

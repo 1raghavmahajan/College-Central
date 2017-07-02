@@ -43,6 +43,14 @@ public class Frag_ViewAd extends Fragment {
     //endregion
 
     //region Initial Setup
+
+    public static Frag_ViewAd newInstance(AdData adData) {
+
+        Frag_ViewAd fragment = new Frag_ViewAd();
+        fragment.adData = adData;
+        return fragment;
+    }
+
     @Override
     public void onResume() {
         ((MainActivity)getActivity()).hideIT();
@@ -79,8 +87,6 @@ public class Frag_ViewAd extends Fragment {
     //endregion
 
     void PopulateViews() {
-
-        adData = getArguments().getParcelable("adData");
 
         if(adData!=null) {
 

@@ -126,7 +126,9 @@ public class Frag_newAd extends Fragment {
             networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
                 @Override
                 public void onSuccess(AdData adData) {
-                    ((MainActivity)context).goToMainFragment(false, true);
+                    //Todo:
+                    //((MainActivity)context).goToMainFragment(false, true);
+                    ((MainActivity)context).launchOtherFragment(new Frag_Main(),MainActivity.MAIN_SCREEN_TAG);
                     ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
                 }
 

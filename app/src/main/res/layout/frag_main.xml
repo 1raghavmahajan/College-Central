@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -84,18 +85,18 @@
 
         <android.support.v7.widget.CardView
             android:id="@+id/mainCard4"
-            android:layout_toEndOf="@id/mainCard3"
-            android:layout_below="@id/mainCard2"
             app:layout_widthPercent="49%"
             app:layout_aspectRatio="100%"
-            app:layout_marginPercent="0.5%"
+            app:layout_marginStartPercent="0.5%"
+            app:layout_marginEndPercent="0.5%"
             app:cardBackgroundColor="@color/deep_purple"
             android:foreground="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:background="@drawable/ripple2"
             app:cardElevation="@dimen/mainCardElevation"
             app:cardCornerRadius="@dimen/mainCardCornerRadius"
-            >
+            android:layout_alignTop="@+id/mainCard3"
+            android:layout_alignStart="@+id/mainCard2">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,7 +113,8 @@
             android:layout_below="@id/mainCard3"
             app:layout_widthPercent="49%"
             app:layout_aspectRatio="100%"
-            app:layout_marginPercent="0.5%"
+            app:layout_marginStartPercent="0.5%"
+            app:layout_marginTopPercent="0.5%"
             app:cardBackgroundColor="@color/green"
             android:foreground="?android:attr/selectableItemBackground"
             android:clickable="true"

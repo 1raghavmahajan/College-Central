@@ -74,11 +74,7 @@ public class Frag_myAds extends Fragment {
         MyAdsAdapter myAdsAdapter = new MyAdsAdapter(context, userAdKeys, new MyAdsAdapter.ImageClickListener() {
             @Override
             public void onClick(MyAdsAdapter.adItemViewHolder holder, int position, AdData currentAd) {
-                Frag_ViewMyAd fragViewMyAd = new Frag_ViewMyAd();
-
-                Bundle args = new Bundle();
-                args.putParcelable("adData",currentAd);
-                fragViewMyAd.setArguments(args);
+                Frag_ViewMyAd fragViewMyAd = Frag_ViewMyAd.newInstance(currentAd);
 
                 ((MainActivity)context).currentFragTag = VIEW_MyAD_TAG;
                 FragmentManager fragmentManager = getFragmentManager();
