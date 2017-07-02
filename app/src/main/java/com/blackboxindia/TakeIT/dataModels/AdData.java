@@ -13,6 +13,7 @@ public class AdData implements Parcelable {
     private Integer numberOfImages;
     private String collegeName;
     private String category;
+    private String type;
 
     public AdData() {
         adID = "null";
@@ -85,6 +86,17 @@ public class AdData implements Parcelable {
         this.category = category;
     }
 
+    public String getType() {
+        if(type!=null)
+            return type;
+        else
+            return AdTypes.TYPE_SELL;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     //endregion
 
     //region Parcelable
@@ -128,5 +140,6 @@ public class AdData implements Parcelable {
             return new AdData[size];
         }
     };
+
     //endregion
 }

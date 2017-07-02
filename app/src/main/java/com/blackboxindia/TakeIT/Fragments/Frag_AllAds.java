@@ -31,7 +31,10 @@ public class Frag_AllAds extends Fragment {
 
     //region variables
     private static String TAG = Frag_AllAds.class.getSimpleName() + " YOYO";
+    //Todo: load rest after 40
     private static Integer MAX_Ads = 40;
+    private String AdType;
+
     View view;
     Context context;
     NetworkMethods networkMethods;
@@ -43,6 +46,12 @@ public class Frag_AllAds extends Fragment {
     Bitmap current;
     ArrayList<AdData> allAds;
     //endregion
+
+    public static Frag_AllAds newInstance(String type) {
+        Frag_AllAds fragment = new Frag_AllAds();
+        fragment.AdType = type;
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -79,7 +88,7 @@ public class Frag_AllAds extends Fragment {
 
     public void filter(String query) {
 
-        //Todo: implement prioritized search
+        //Todo: implement prioritized search, filter by location
 
         query = query.trim().toLowerCase();
         if(!query.equals("")) {
@@ -87,10 +96,10 @@ public class Frag_AllAds extends Fragment {
             String[] split = query.split(" ");
             ArrayList<AdData> newList = new ArrayList<>();
 
-            for (int i = 0; i < allAds.size(); i++) {
+            for (AdData i:allAds) {
                 for (String aSplit : split) {
-                    if (allAds.get(i).getTitle().toLowerCase().startsWith(aSplit)) {
-                        newList.add(allAds.get(i));
+                    if (i.getTitle().toLowerCase().contains(aSplit)) {
+                        newList.add(i);
                         break;
                     }
                 }

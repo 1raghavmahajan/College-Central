@@ -14,6 +14,7 @@ import com.blackboxindia.TakeIT.Network.Interfaces.BitmapUploadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrackMain;
 import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteUserListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onUpdateListener;
 import com.blackboxindia.TakeIT.activities.MainActivity;
@@ -246,37 +247,51 @@ public class NetworkMethods {
         mAuth.signOut();
     }
 
-    public void deleteUser(){
+    public void deleteUser(final UserInfo userInfo, final onDeleteUserListener listener){
 
-//        if(adData.getNumberOfImages()>0) {
-//            FirebaseStorage storage = FirebaseStorage.getInstance();
-//            storage.getReference().child("images/" + adData.getAdID() + "/0s").delete();
-//            for (int i = 0; i < adData.getNumberOfImages(); i++)
-//                storage.getReference().child("images/" + adData.getAdID() + "/" + i).delete();
-//        }
-//        mDatabase.child("ads").child(adData.getAdID()).removeValue()
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        userInfo.removeUserAd(adData.getAdID());
-//                        UpdateUser(userInfo, new onUpdateListener() {
-//                            @Override
-//                            public void onSuccess(UserInfo userInfo) {
-//                                listener.onSuccess(userInfo);
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Exception e) {
-//                                listener.onFailure(e);
-//                            }
-//                        });
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(@NonNull Exception e) {
-//                listener.onFailure(e);
-//            }
-//        });
+        ArrayList<String> userAdKeys = userInfo.getUserAdKeys();
+        final boolean[] allDone = new boolean[userAdKeys.size()];
+        for (int i = 0; i < userAdKeys.size(); i++)
+            allDone[i] = false;
+
+//        final int retryCount = 0;
+        for (int i=0;i<userAdKeys.size();i++) {
+
+            final int finalI = i;
+            mDatabase.child("ads").child(userAdKeys.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    AdData adData = dataSnapshot.getValue(AdData.class);
+                    deleteAd(userInfo, adData, new onDeleteListener() {
+                        @Override
+                        public void onSuccess(UserInfo userInfo) {
+                            allDone[finalI] = true;
+                            boolean f = true;
+                            for (boolean k : allDone) {
+                                f = f&&k;
+                            }
+                            if(f){
+                                listener.onSuccess();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            listener.onFailure(e);
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                    Log.w(TAG, "getAd: onCancelled", databaseError.toException());
+                    listener.onFailure(databaseError.toException());
+                }
+
+            });
+        }
 
     }
 
@@ -400,7 +415,6 @@ public class NetworkMethods {
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
                     AdData adData = dataSnapshot.getValue(AdData.class);
-                    Log.i(TAG, "getAd: onDataChange successful");
                     listener.onSuccess(adData);
                 }
 
@@ -410,6 +424,7 @@ public class NetworkMethods {
                     Log.w(TAG, "getAd: onCancelled", databaseError.toException());
                     listener.onFailure(databaseError.toException());
                 }
+
             });
         }
     }

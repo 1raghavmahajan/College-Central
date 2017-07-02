@@ -4,16 +4,25 @@ import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Frag_Manage extends Fragment {
 
@@ -22,9 +31,11 @@ public class Frag_Manage extends Fragment {
     View view;
     Context context;
 
-    TextView btn_ChangePass;
+    Button btn_ChangePass;
+    TextView Open_ChangePass;
     LinearLayout linearLayout;
     ImageView ic_right;
+    TextInputEditText et_Current, et_New, et_New2;
 
     Boolean opened;
     int ActualHeight;
@@ -43,21 +54,37 @@ public class Frag_Manage extends Fragment {
 
         opened = false;
 
-        btn_ChangePass = (TextView) view.findViewById(R.id.btn_OpenChangePass);
-        ic_right = (ImageView) view.findViewById(R.id.card_open_icon);
-        linearLayout = (LinearLayout) view.findViewById(R.id.other_stuff);
+        initVariables();
 
-        linearLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        ActualHeight = linearLayout.getMeasuredHeight();
-
-        btn_ChangePass.setOnClickListener(new View.OnClickListener() {
+        Open_ChangePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openIt();
             }
         });
+        btn_ChangePass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isPasswordValid())
+                    changePass();
+            }
+        });
 
         return view;
+    }
+
+    private void initVariables() {
+        Open_ChangePass = (TextView) view.findViewById(R.id.btn_OpenChangePass);
+        ic_right = (ImageView) view.findViewById(R.id.card_open_icon);
+        linearLayout = (LinearLayout) view.findViewById(R.id.other_stuff);
+        btn_ChangePass = (Button) view.findViewById(R.id.btn_ChangePass);
+
+        linearLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ActualHeight = linearLayout.getMeasuredHeight();
+
+        et_Current = (TextInputEditText) view.findViewById(R.id.currentPassword);
+        et_New = (TextInputEditText) view.findViewById(R.id.newPassword);
+        et_New2 = (TextInputEditText) view.findViewById(R.id.conf_newPassword);
     }
 
     private void openIt() {
@@ -114,7 +141,63 @@ public class Frag_Manage extends Fragment {
     }
 
     void changePass() {
+        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser()!=null){
 
+            //noinspection ConstantConditions
+            mAuth.getCurrentUser()
+                    .reauthenticate(
+                            EmailAuthProvider.getCredential(
+                                    mAuth.getCurrentUser().getEmail(),
+                                    et_Current.getText().toString().trim()))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            mAuth.getCurrentUser().updatePassword(et_New.getText().toString().trim())
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        ((MainActivity)context).createSnackbar("Password Changed Successfully!", Snackbar.LENGTH_LONG);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+        }
+    }
+
+    boolean isPasswordValid() {
+
+        String password = et_New.getText().toString().trim();
+        String cPassword = et_New2.getText().toString().trim();
+
+        if(!password.equals(cPassword))
+        {
+            et_New2.setError(getString(R.string.pass_dont_match));
+            return false;
+        }
+        else if(password.length()<getResources().getInteger(R.integer.Min_Password_Size))
+        {
+            et_New.setError(String.format(getString(R.string.pass_min_size),getResources().getInteger(R.integer.Min_Password_Size)));
+            return false;
+        }
+        else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))
+        {
+            et_New.setError(getString(R.string.pass_illegal_char));
+            return false;
+        }
+        else
+            return true;
     }
 
 }

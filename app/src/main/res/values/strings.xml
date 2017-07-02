@@ -41,7 +41,7 @@
     <!-- Ad -->
     <string name="setTitle">Set Title</string>
     <string name="setPrice">Price:</string>
-    <string name="hintDescription">Describe in max 2000 characters.</string>
+    <string name="hintDescriptionAd">Describe in max 2000 characters.</string>
     <string name="create_ad">Create Ad</string>
     <string name="Profile_image">Profile Image</string>
     <string name="change">Change</string>
@@ -87,7 +87,7 @@
     <string name="description_zoom_touch_close">Expanded image (touch to close)</string>
     <string name="verify_text">A verification email has been sent to your registered email ID.</string>
     <string name="verify_btn">Click here after verification.</string>
-    <string name="verify_check">Checking if account verified...</string>
+    <string name="verify_check">Checking if account verified…</string>
     <string name="change_password">Change Password</string>
     <string name="current_password">Current Password</string>
     <string name="new_password">New Password</string>
@@ -98,6 +98,12 @@
     <string name="finish">Finish</string>
     <string name="lost_found"><![CDATA[Lost & Found]]></string>
     <string name="buy_sell">Buy / Sell</string>
+    <string name="timetables_datesheets_etc">Timetables / Datesheets etc.</string>
+    <string name="skills">Skills</string>
+    <string name="events">Events</string>
+    <string name="time">Time:</string>
+    <string name="date">Date:</string>
+    <string name="hintDescriptionEvent">Add details about the event here:\n   Venue, Fees, etc…</string>
 
 
 </resources>
