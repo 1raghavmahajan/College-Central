@@ -19,7 +19,6 @@ import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.MyAdsAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -36,19 +35,12 @@ public class Frag_myAds extends Fragment {
     Context context;
     NetworkMethods networkMethods;
     UserInfo userInfo;
-    FirebaseAuth mAuth;
 
     ArrayList<String> userAdKeys;
 
     public Bitmap current;
 
     //endregion
-
-    @Override
-    public void onResume() {
-        ((MainActivity)context).hideIT();
-        super.onResume();
-    }
 
     @Nullable
     @Override
@@ -60,8 +52,7 @@ public class Frag_myAds extends Fragment {
 
             userInfo = ((MainActivity)context).userInfo;
             userAdKeys = userInfo.getUserAdKeys();
-            mAuth = FirebaseAuth.getInstance();
-            networkMethods = new NetworkMethods(context,mAuth);
+            networkMethods = new NetworkMethods(context);
             setUpRecycler();
         }
 

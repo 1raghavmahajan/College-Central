@@ -12,7 +12,9 @@ import com.blackboxindia.TakeIT.Fragments.Frag_VerifyEmail;
 import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapUploadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrackMain;
+import com.blackboxindia.TakeIT.Network.Interfaces.addCollegeDataListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.getCollegeDataListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteUserListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
@@ -26,6 +28,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 @SuppressWarnings("VisibleForTests")
@@ -43,6 +47,11 @@ public class NetworkMethods {
     //region Variables
 
     private final static String TAG = NetworkMethods.class.getSimpleName() + " YOYO";
+
+    private final static String DIRECTORY_ADS = "ads";
+    private final static String DIRECTORY_USERS = "users";
+    private final static String DIRECTORY_HOSTELS = "hostels";
+    private final static String DIRECTORY_COLLEGES = "colleges";
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -56,11 +65,6 @@ public class NetworkMethods {
     public NetworkMethods(Context context) {
         this.context = context;
         mAuth = FirebaseAuth.getInstance();
-    }
-
-    public NetworkMethods(Context context, FirebaseAuth auth) {
-        this.context = context;
-        mAuth = auth;
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
@@ -122,7 +126,7 @@ public class NetworkMethods {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mDatabase.child("users").child(uID).setValue(userInfo);
+        mDatabase.child(DIRECTORY_USERS).child(uID).setValue(userInfo);
         Log.i(TAG,"addDetailsToDB: successful");
     }
 
@@ -156,7 +160,7 @@ public class NetworkMethods {
         Log.i(TAG,"getDetailsFromDB: in progress");
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mDatabase.child("users").child(userInfo.getuID()).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child(DIRECTORY_USERS).child(userInfo.getuID()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -193,7 +197,7 @@ public class NetworkMethods {
         }
         else {
 
-            mDatabase.child("users").child(userInfo.getuID()).setValue(userInfo)
+            mDatabase.child(DIRECTORY_USERS).child(userInfo.getuID()).setValue(userInfo)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -215,7 +219,7 @@ public class NetworkMethods {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        mDatabase.child("users").child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child(DIRECTORY_USERS).child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -247,22 +251,72 @@ public class NetworkMethods {
         mAuth.signOut();
     }
 
-    public void deleteUser(final UserInfo userInfo, final onDeleteUserListener listener){
+    public void deleteUser(final UserInfo userInfo, final onDeleteUserListener listener) {
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+            deleteUserData(userInfo, new onDeleteUserListener() {
+                @Override
+                public void onSuccess() {
+                    UserCred userCred = new UserCred();
+                    userCred.load_Cred(context);
+                    //noinspection ConstantConditions
+                    FirebaseAuth.getInstance().getCurrentUser()
+                            .reauthenticate(EmailAuthProvider.getCredential(mAuth.getCurrentUser().getEmail(), userCred.getpwd()))
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+
+                                        FirebaseAuth.getInstance().getCurrentUser().delete()
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        listener.onSuccess();
+                                                        ((MainActivity) context).UpdateUIonLogout();
+                                                        UserCred.clear_cred(context);
+                                                    }
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        listener.onFailure(e);
+                                                    }
+                                                });
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        listener.onFailure(e);
+                                    }
+                                });
+
+                }
+                @Override
+                public void onFailure(Exception e) {
+                    listener.onFailure(e);
+                }
+            });
+        }
+        else
+            listener.onFailure(new Exception("Not Logged In!"));
+    }
+
+    private int deleteUserRetryCount = 0;
+    private boolean deleteUserFlag = true;
+    private void deleteUserData(final UserInfo userInfo, final onDeleteUserListener listener){
+        deleteUserRetryCount = 0;
 
         ArrayList<String> userAdKeys = userInfo.getUserAdKeys();
         final boolean[] allDone = new boolean[userAdKeys.size()];
         for (int i = 0; i < userAdKeys.size(); i++)
             allDone[i] = false;
 
-//        final int retryCount = 0;
         for (int i=0;i<userAdKeys.size();i++) {
 
             final int finalI = i;
-            mDatabase.child("ads").child(userAdKeys.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabase.child(DIRECTORY_ADS).child(userAdKeys.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    AdData adData = dataSnapshot.getValue(AdData.class);
+                    final AdData adData = dataSnapshot.getValue(AdData.class);
                     deleteAd(userInfo, adData, new onDeleteListener() {
                         @Override
                         public void onSuccess(UserInfo userInfo) {
@@ -278,7 +332,30 @@ public class NetworkMethods {
 
                         @Override
                         public void onFailure(Exception e) {
-                            listener.onFailure(e);
+                            deleteUserFlag = true;
+                            while (deleteUserRetryCount <5 && deleteUserFlag){
+                                deleteUserRetryCount++;
+                                deleteAd(userInfo, adData, new onDeleteListener() {
+                                    @Override
+                                    public void onSuccess(UserInfo userInfo) {
+                                        deleteUserFlag = false;
+                                        allDone[finalI] = true;
+                                        boolean f = true;
+                                        for (boolean k : allDone) {
+                                            f = f&&k;
+                                        }
+                                        if(f){
+                                            listener.onSuccess();
+                                        }
+                                    }
+                                    @Override
+                                    public void onFailure(Exception e) {
+
+                                    }
+                                });
+                            }
+                            if(!deleteUserFlag || deleteUserRetryCount>5)
+                                listener.onFailure(e);
                         }
                     });
                 }
@@ -318,13 +395,13 @@ public class NetworkMethods {
         else {
             final ProgressDialog progressDialog = ProgressDialog.show(context, "Creating Ad...", "", true, false);
 
-            final String key = mDatabase.child("ads").push().getKey();
+            final String key = mDatabase.child(DIRECTORY_ADS).push().getKey();
             String uID = mAuth.getCurrentUser().getUid();
 
             adData.setAdID(key);
             adData.setCreatedBy(uID);
 
-            final CloudStorageMethods methods = new CloudStorageMethods(context);
+            final ImageStorageMethods methods = new ImageStorageMethods(context);
 
             methods.uploadBitmap(key, major, new BitmapUploadListener() {
                 @Override
@@ -335,7 +412,7 @@ public class NetworkMethods {
                         @Override
                         public void onSuccess() {
 
-                            mDatabase.child("ads").child(key).setValue(adData)
+                            mDatabase.child(DIRECTORY_ADS).child(key).setValue(adData)
                                     .addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
@@ -409,7 +486,7 @@ public class NetworkMethods {
         }
         else {
 
-            mDatabase.child("ads").child(adID).addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabase.child(DIRECTORY_ADS).child(adID).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -431,7 +508,7 @@ public class NetworkMethods {
 
     public void getAllAds(Integer max_limit, final getAllAdsListener listener) {
 
-        mDatabase.child("ads").limitToLast(max_limit)
+        mDatabase.child(DIRECTORY_ADS).limitToLast(max_limit)
         .addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -459,7 +536,7 @@ public class NetworkMethods {
             for (int i = 0; i < adData.getNumberOfImages(); i++)
                 storage.getReference().child("images/" + adData.getAdID() + "/" + i).delete();
         }
-        mDatabase.child("ads").child(adData.getAdID()).removeValue()
+        mDatabase.child(DIRECTORY_ADS).child(adData.getAdID()).removeValue()
         .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -485,5 +562,69 @@ public class NetworkMethods {
     }
 
     //endregion
+
+    public void getCollegeOptions(final getCollegeDataListener listener){
+        mDatabase.child(DIRECTORY_COLLEGES).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String[] strArray = new String[(int) dataSnapshot.getChildrenCount()];
+                strArray = dataSnapshot.getValue(strArray.getClass());
+                ArrayList<String> colleges = new ArrayList<>(Arrays.asList(strArray));
+                listener.onSuccess(colleges);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailure(databaseError.toException());
+            }
+        });
+    }
+
+    public void addNewCollege(ArrayList<String> colleges, final addCollegeDataListener listener){
+        mDatabase.child(DIRECTORY_COLLEGES).setValue(colleges)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    listener.onSuccess();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onFailure(e);
+                }
+            });
+    }
+
+    public void getHostelOptions(String collegeName, final getCollegeDataListener listener){
+        mDatabase.child(DIRECTORY_HOSTELS).child(collegeName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String[] strArray = new String[(int) dataSnapshot.getChildrenCount()];
+                strArray = dataSnapshot.getValue(strArray.getClass());
+                ArrayList<String> hostels = new ArrayList<>(Arrays.asList(strArray));
+                listener.onSuccess(hostels);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailure(databaseError.toException());
+            }
+        });
+    }
+
+    public void addNewHostel(ArrayList<String> hostels, String collegeName, final addCollegeDataListener listener){
+        mDatabase.child(DIRECTORY_HOSTELS).child(collegeName).setValue(hostels)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        listener.onSuccess();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onFailure(e);
+            }
+        });
+    }
 
 }

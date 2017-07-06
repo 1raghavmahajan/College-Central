@@ -37,15 +37,15 @@ import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings("VisibleForTests")
-public class CloudStorageMethods {
+public class ImageStorageMethods {
 
-    private static String TAG = CloudStorageMethods.class.getSimpleName() + " YOYO";
+    private static String TAG = ImageStorageMethods.class.getSimpleName() + " YOYO";
     private static Integer MAX_UPLOAD_RES[] = {900,900};
 
     private Context context;
     private FirebaseStorage storage;
 
-    public CloudStorageMethods(Context context) {
+    public ImageStorageMethods(Context context) {
         this.context = context;
         storage = FirebaseStorage.getInstance();
         cachedBigImages = new HashMap<>();

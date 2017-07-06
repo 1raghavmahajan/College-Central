@@ -95,7 +95,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             setListeners(currentAd, holder, position);
 
             if(currentAd.getNumberOfImages()>0) {
-                ((MainActivity)context).cloudStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+                ((MainActivity)context).imageStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
                     @Override
                     public void onSuccess(Uri uri) {
                         if (majorImage != null){

@@ -91,7 +91,7 @@
                 android:textSize="15sp"
                 />
             <TextView
-                android:id="@+id/Ad_tvAddress"
+                android:id="@+id/Ad_tvRoomNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/Ad_tvName"
@@ -101,10 +101,20 @@
                 android:textSize="15sp"
                 />
             <TextView
+                android:id="@+id/Ad_tvHostel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Ad_tvRoomNumber"
+                android:text="@string/hostel"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="6dp"
+                android:textSize="15sp"
+                />
+            <TextView
                 android:id="@+id/Ad_tvPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/Ad_tvAddress"
+                android:layout_below="@id/Ad_tvHostel"
                 android:text="@string/phone_number"
                 android:layout_marginStart="12dp"
                 android:layout_marginBottom="6dp"
@@ -117,7 +127,7 @@
                 android:layout_below="@id/Ad_tvPhone"
                 android:text="@string/sample_college"
                 android:layout_marginStart="12dp"
-                android:layout_marginBottom="6dp"
+                android:layout_marginBottom="20dp"
                 android:textSize="15sp"/>
 
             <de.hdodenhof.circleimageview.CircleImageView

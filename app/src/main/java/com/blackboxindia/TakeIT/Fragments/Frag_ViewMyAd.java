@@ -25,7 +25,6 @@ import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
-import com.google.firebase.auth.FirebaseAuth;
 
 import static com.blackboxindia.TakeIT.activities.MainActivity.MY_ADS_TAG;
 import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_MyAD_TAG;
@@ -52,7 +51,6 @@ public class Frag_ViewMyAd extends Fragment {
 
     @Override
     public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
         MenuItem item = ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete);
         item.setVisible(true);
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -61,7 +59,7 @@ public class Frag_ViewMyAd extends Fragment {
                 if(item.getItemId() == R.id.toolbar_delete){
 
                     final ProgressDialog dialog = ProgressDialog.show(context, "Deleting...", "", true, false);
-                    NetworkMethods methods = new NetworkMethods(context, FirebaseAuth.getInstance());
+                    NetworkMethods methods = new NetworkMethods(context);
                     methods.deleteAd(((MainActivity) getActivity()).userInfo, adData, new onDeleteListener() {
                         @Override
                         public void onSuccess(UserInfo userInfo) {

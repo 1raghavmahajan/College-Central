@@ -3,8 +3,6 @@ package com.blackboxindia.TakeIT.dataModels;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("WeakerAccess")
-public class UserInfo implements Parcelable{
+public class UserInfo{
 
     //region Variables
 
@@ -30,7 +28,8 @@ public class UserInfo implements Parcelable{
     private String uID;
     private String name;
     private String email;
-    private String address;
+    private String roomNumber;
+    private String hostel;
     private String phone;
 
     private ArrayList<String> userAdKeys;
@@ -42,35 +41,13 @@ public class UserInfo implements Parcelable{
 
     public UserInfo(){
         uID = null;
+        profileIMG = "";
         userAdKeys = new ArrayList<>();
     }
 
-    protected UserInfo(Parcel in) {
-        profileIMG = in.readString();
-        uID = in.readString();
-        name = in.readString();
-        email = in.readString();
-        address = in.readString();
-        phone = in.readString();
-        userAdKeys = in.createStringArrayList();
-        collegeName = in.readString();
-    }
-
-    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
-        @Override
-        public UserInfo createFromParcel(Parcel in) {
-            return new UserInfo(in);
-        }
-
-        @Override
-        public UserInfo[] newArray(int size) {
-            return new UserInfo[size];
-        }
-    };
-
     public UserInfo createCopy() {
         UserInfo userInfo = new UserInfo();
-        userInfo.setData(name,email,address,phone);
+        userInfo.setData(name,email, roomNumber,phone);
         userInfo.setuID(uID);
         userInfo.setProfileIMG(profileIMG);
         for(String s:userAdKeys){
@@ -86,7 +63,7 @@ public class UserInfo implements Parcelable{
     public void setData(String name, String email, String address, String phone) {
         this.name = name;
         this.email = email;
-        this.address = address;
+        this.roomNumber = address;
         this.phone = phone;
         collegeName = "IIT Indore";
     }
@@ -184,7 +161,7 @@ public class UserInfo implements Parcelable{
         edit.putString("uID", userInfo.getuID());
         edit.putString("name", userInfo.getName());
         edit.putString("email", userInfo.getEmail());
-        edit.putString("address", userInfo.getAddress());
+        edit.putString("roomNumber", userInfo.getRoomNumber());
         edit.putString("phone", userInfo.getPhone());
 
         Set<String> UserAdKeys = new HashSet<>(userInfo.getUserAdKeys());
@@ -223,7 +200,7 @@ public class UserInfo implements Parcelable{
                 userInfo.setuID(id);
                 userInfo.setName(cache.getString("name", null));
                 userInfo.setEmail(cache.getString("email", null));
-                userInfo.setAddress(cache.getString("address", null));
+                userInfo.setRoomNumber(cache.getString("roomNumber", null));
                 userInfo.setPhone(cache.getString("phone", null));
 
                 Set<String> userAdKeys = cache.getStringSet("userAdKeys", null);
@@ -277,12 +254,12 @@ public class UserInfo implements Parcelable{
         this.phone = phone;
     }
 
-    public String getAddress() {
-        return address;
+    public String getRoomNumber() {
+        return roomNumber;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setRoomNumber(String roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
     public ArrayList<String> getUserAdKeys() {
@@ -292,7 +269,6 @@ public class UserInfo implements Parcelable{
     public void setUserAdKeys(ArrayList<String> userAdKeys) {
         this.userAdKeys = userAdKeys;
     }
-
 
     public String getProfileIMG() {
         return profileIMG;
@@ -310,22 +286,12 @@ public class UserInfo implements Parcelable{
         this.collegeName = collegeName;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getHostel() {
+        return hostel;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-
-        dest.writeString(profileIMG);
-        dest.writeString(uID);
-        dest.writeString(name);
-        dest.writeString(email);
-        dest.writeString(address);
-        dest.writeString(phone);
-        dest.writeStringList(userAdKeys);
-        dest.writeString(collegeName);
+    public void setHostel(String hostel) {
+        this.hostel = hostel;
     }
 
     //endregion

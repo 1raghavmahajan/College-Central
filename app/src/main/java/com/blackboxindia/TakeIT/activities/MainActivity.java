@@ -43,7 +43,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blackboxindia.TakeIT.Fragments.Frag_AllAds;
+import com.blackboxindia.TakeIT.Fragments.Frag_Ads;
 import com.blackboxindia.TakeIT.Fragments.Frag_LoginPage;
 import com.blackboxindia.TakeIT.Fragments.Frag_Main;
 import com.blackboxindia.TakeIT.Fragments.Frag_Manage;
@@ -51,7 +51,7 @@ import com.blackboxindia.TakeIT.Fragments.Frag_myAds;
 import com.blackboxindia.TakeIT.Fragments.Frag_myProfile;
 import com.blackboxindia.TakeIT.Fragments.Frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.Frag_newAd;
-import com.blackboxindia.TakeIT.Network.CloudStorageMethods;
+import com.blackboxindia.TakeIT.Network.ImageStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     Menu navigationViewMenu;
 
     public UserInfo userInfo;
-    public CloudStorageMethods cloudStorageMethods;
+    public ImageStorageMethods imageStorageMethods;
 
     boolean recentlySentMail;
 
@@ -172,7 +172,9 @@ public class MainActivity extends AppCompatActivity {
                                                 UpdateUI(userInfo,false,true);
                                                 dialog.cancel();
                                                 createSnackbar("Logged In!");
-                                                setUpMainFragment();
+                                                //Todo:
+                                                //setUpMainFragment();
+                                                setUpMainScreen();
                                             }
 
                                             @Override
@@ -185,7 +187,9 @@ public class MainActivity extends AppCompatActivity {
                                                     createSnackbar("Session Expired. Please login again.");
                                                     UserCred.clear_cred(context);
                                                 }
-                                                setUpMainFragment();
+                                                //Todo:
+                                                //setUpMainFragment();
+                                                setUpMainScreen();
                                             }
                                         });
                                     }
@@ -195,7 +199,9 @@ public class MainActivity extends AppCompatActivity {
                         createSnackbar("Session Expired. Please login again.");
                         UserCred.clear_cred(context);
                     }
-                    setUpMainFragment();
+                    //Todo:
+                    //setUpMainFragment();
+                    setUpMainScreen();
                 }
             };
             methods.Login(userCred.getEmail(), userCred.getpwd(), listener);
@@ -219,8 +225,8 @@ public class MainActivity extends AppCompatActivity {
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
         fragmentManager = getFragmentManager();
         context = this;
-        cloudStorageMethods = new CloudStorageMethods(context);
-        cloudStorageMethods.getCache();
+        imageStorageMethods = new ImageStorageMethods(context);
+        imageStorageMethods.getCache();
     }
 
     private void setUpToolbar() {
@@ -243,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                ((Frag_AllAds)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter("");
+                ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter("");
                 if (item.isActionViewExpanded())
                     animateSearchToolbar(1, false, false);
                 return true;
@@ -358,16 +364,17 @@ public class MainActivity extends AppCompatActivity {
 
         hideIT();
 
-//        currentFragTag = MAIN_SCREEN_TAG;
-//
-//        Frag_Main frag_main = new Frag_Main();
-//        //mc.setRetainInstance(true);
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.frame_layout, frag_main, MAIN_SCREEN_TAG);
-//        fragmentTransaction.commit();
+        currentFragTag = MAIN_SCREEN_TAG;
 
-        currentFragTag = LOGIN_PAGE_TAG;
-        fragmentManager.beginTransaction().add(R.id.frame_layout,new Frag_LoginPage(),LOGIN_PAGE_TAG).commit();
+        Frag_Main frag_main = new Frag_Main();
+        //mc.setRetainInstance(true);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout, frag_main, MAIN_SCREEN_TAG);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+
+//        currentFragTag = LOGIN_PAGE_TAG;
+//        fragmentManager.beginTransaction().add(R.id.frame_layout,new Frag_LoginPage(),LOGIN_PAGE_TAG).commit();
     }
 
     private void setUpMainFragment() {
@@ -376,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
 
         currentFragTag = ALL_FRAG_TAG;
 
-        Frag_AllAds mc = new Frag_AllAds();
+        Frag_Ads mc = new Frag_Ads();
         //mc.setRetainInstance(true);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frame_layout, mc, ALL_FRAG_TAG);
@@ -476,19 +483,19 @@ public class MainActivity extends AppCompatActivity {
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .commit();
                 if (clearAll)
-                    ((Frag_AllAds)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).clearRecycler();
+                    ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).clearRecycler();
                 else if (toRefresh)
-                    ((Frag_AllAds)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).refresh();
+                    ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).refresh();
             }
             else {
                 if (clearAll)
-                    ((Frag_AllAds)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).clearRecycler();
+                    ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).clearRecycler();
                 else if (toRefresh)
-                    ((Frag_AllAds)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).refresh();
+                    ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).refresh();
             }
         }
         else {
-            setUpMainFragment();
+//            setUpMainFragment();
         }
 
     }
@@ -614,7 +621,7 @@ public class MainActivity extends AppCompatActivity {
                 case MAIN_SCREEN_TAG:
 
                     if (twiceToExit) {
-                        //cloudStorageMethods.saveCache();
+                        //imageStorageMethods.saveCache();
                         finish();
                     }
 
@@ -665,7 +672,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.toolbar_refresh)
-                    ((Frag_AllAds)fragmentManager.findFragmentByTag(ALL_FRAG_TAG)).refresh();
+                    ((Frag_Ads)fragmentManager.findFragmentByTag(ALL_FRAG_TAG)).refresh();
                 return true;
             }
         });
@@ -710,7 +717,7 @@ public class MainActivity extends AppCompatActivity {
             //goToMainFragment(false,toRefresh);
         else if (toRefresh){
             if(fragmentManager.findFragmentByTag(ALL_FRAG_TAG)!=null)
-                ((Frag_AllAds) (fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).refresh();
+                ((Frag_Ads) (fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).refresh();
             else
                 Log.i(TAG,"Main frag null");
         }
@@ -768,14 +775,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
-            ((Frag_AllAds)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter(query);
+            ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter(query);
         }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        cloudStorageMethods.saveCache();
+        imageStorageMethods.saveCache();
     }
 
     public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {

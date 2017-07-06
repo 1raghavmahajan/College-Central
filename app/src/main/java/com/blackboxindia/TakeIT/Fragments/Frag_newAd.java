@@ -26,7 +26,6 @@ import com.blackboxindia.TakeIT.adapters.NewAdImageAdapter;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -49,13 +48,7 @@ public class Frag_newAd extends Fragment {
     ArrayList<Uri> imgURIs;
     //endregion
 
-    //region Init Setup
-
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
+    //region Initial Setup
 
     @Nullable
     @Override
@@ -122,7 +115,7 @@ public class Frag_newAd extends Fragment {
 
             adData.setNumberOfImages(imgURIs.size());
 
-            NetworkMethods networkMethods = new NetworkMethods(context, FirebaseAuth.getInstance());
+            NetworkMethods networkMethods = new NetworkMethods(context);
             networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
                 @Override
                 public void onSuccess(AdData adData) {

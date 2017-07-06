@@ -46,7 +46,7 @@
     <string name="Profile_image">Profile Image</string>
     <string name="change">Change</string>
     <string name="Sample_Name">Set Name</string>
-    <string name="address">Hostel Address</string>
+    <string name="roomNumber">Room Number</string>
     <string name="phone">Phone</string>
     <string name="label_update_changes">Update Changes</string>
     <string name="create_account">Create Account</string>
@@ -104,6 +104,9 @@
     <string name="time">Time:</string>
     <string name="date">Date:</string>
     <string name="hintDescriptionEvent">Add details about the event here:\n   Venue, Fees, etc…</string>
+    <string name="hostel">Hostel</string>
+    <string name="add">add</string>
+    <string name="cancel">Cancel</string>
 
 
 </resources>

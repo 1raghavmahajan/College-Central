@@ -44,7 +44,6 @@ public class Frag_VerifyEmail extends Fragment {
 
     @Override
     public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
         verified = false;
         super.onResume();
     }

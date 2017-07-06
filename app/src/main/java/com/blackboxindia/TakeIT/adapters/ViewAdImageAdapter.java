@@ -253,7 +253,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                     imageView.setVisibility(View.VISIBLE);
                 }
             }
-            ((MainActivity)context).cloudStorageMethods.getBigImage(adData.getAdID(), position, new ImageDownloadListener() {
+            ((MainActivity)context).imageStorageMethods.getBigImage(adData.getAdID(), position, new ImageDownloadListener() {
                 @Override
                 public void onSuccess(Uri uri) {
 

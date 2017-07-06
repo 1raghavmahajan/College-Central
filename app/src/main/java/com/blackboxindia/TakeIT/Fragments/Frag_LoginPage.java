@@ -40,12 +40,6 @@ public class Frag_LoginPage extends Fragment {
 
     //region Initial setup
 
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {

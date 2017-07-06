@@ -1,8 +1,11 @@
 package com.blackboxindia.TakeIT.Fragments;
 
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteUserListener;
+import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,18 +38,13 @@ public class Frag_Manage extends Fragment {
 
     Button btn_ChangePass;
     TextView Open_ChangePass;
+    TextView btn_delete;
     LinearLayout linearLayout;
     ImageView ic_right;
     TextInputEditText et_Current, et_New, et_New2;
 
     Boolean opened;
     int ActualHeight;
-
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
 
     @Nullable
     @Override
@@ -70,7 +70,50 @@ public class Frag_Manage extends Fragment {
             }
         });
 
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAccount();
+            }
+        });
+
         return view;
+    }
+
+    private void deleteAccount() {
+        new AlertDialog.Builder(context)
+                .setIcon(R.drawable.ic_error)
+                .setTitle("Delete Account")
+                .setMessage("All your ads/data will be deleted, are you sure?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        NetworkMethods networkMethods = new NetworkMethods(context);
+                        final ProgressDialog show = ProgressDialog.show(context, "Deleting Account", "Please wait...", true, false);
+                        networkMethods.deleteUser(((MainActivity) context).userInfo, new onDeleteUserListener() {
+                            @Override
+                            public void onSuccess() {
+                                show.cancel();
+                                dialog.cancel();
+
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                show.cancel();
+                                dialog.cancel();
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Error!")
+                                        .setMessage(e.getMessage())
+                                        .setCancelable(true)
+                                        .create().show();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("No", null)
+                .setCancelable(true)
+                .create().show();
     }
 
     private void initVariables() {
@@ -78,6 +121,7 @@ public class Frag_Manage extends Fragment {
         ic_right = (ImageView) view.findViewById(R.id.card_open_icon);
         linearLayout = (LinearLayout) view.findViewById(R.id.other_stuff);
         btn_ChangePass = (Button) view.findViewById(R.id.btn_ChangePass);
+        btn_delete = (TextView) view.findViewById(R.id.btn_DeleteAccount);
 
         linearLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         ActualHeight = linearLayout.getMeasuredHeight();

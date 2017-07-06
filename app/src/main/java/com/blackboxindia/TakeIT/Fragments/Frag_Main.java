@@ -40,7 +40,7 @@ public class Frag_Main extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"onClick: card0");
-                ((MainActivity)context).goToMainFragment(false,false);
+                ((MainActivity)context).launchOtherFragment(new Frag_Ads(),MainActivity.ALL_FRAG_TAG);
             }
         });
         cardView[1].setOnClickListener(new View.OnClickListener() {

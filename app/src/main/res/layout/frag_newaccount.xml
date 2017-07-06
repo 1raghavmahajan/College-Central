@@ -87,35 +87,58 @@
 
         </android.support.design.widget.TextInputLayout>
 
+        <Spinner
+            android:id="@+id/create_etCollege"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/create_etEmailFrame"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="8dp"
+            />
+
         <android.support.design.widget.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:id="@+id/create_etAddressFrame"
-            app:layout_constraintTop_toBottomOf="@+id/create_etEmailFrame"
+            app:layout_constraintTop_toBottomOf="@+id/create_etCollege"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp">
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="8dp">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/create_etAddress"
                 android:inputType="textPostalAddress"
-                android:hint="@string/address"
+                android:hint="@string/roomNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
 
         </android.support.design.widget.TextInputLayout>
 
+        <Spinner
+            android:id="@+id/create_etHostels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/create_etAddressFrame"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="8dp"/>
+
         <android.support.design.widget.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:id="@+id/create_etPhoneFrame"
-            app:layout_constraintTop_toBottomOf="@+id/create_etAddressFrame"
+            app:layout_constraintTop_toBottomOf="@+id/create_etHostels"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp">
+            android:layout_marginEnd="30dp"
+            android:layout_marginTop="8dp">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/create_etPhone"

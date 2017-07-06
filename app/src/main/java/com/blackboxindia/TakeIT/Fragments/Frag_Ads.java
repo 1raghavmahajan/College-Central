@@ -26,11 +26,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.ArrayList;
 
 import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_AD_TAG;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_LOSTFOUND;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_SELL;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_TEACH;
 
-public class Frag_AllAds extends Fragment {
+public class Frag_Ads extends Fragment {
 
     //region variables
-    private static String TAG = Frag_AllAds.class.getSimpleName() + " YOYO";
+    private static String TAG = Frag_Ads.class.getSimpleName() + " YOYO";
     //Todo: load rest after 40
     private static Integer MAX_Ads = 40;
     private String AdType;
@@ -47,13 +50,29 @@ public class Frag_AllAds extends Fragment {
     ArrayList<AdData> allAds;
     //endregion
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frag_allads, container, false);
+        view = inflater.inflate(R.layout.frag_ads, container, false);
         context = view.getContext();
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = (RecyclerView) view.findViewById(R.id.ads_recycler);
+
+        Bundle arguments = getArguments();
+        String adType = arguments.getString("AdType");
+        if (adType == null) {
+            adType = TYPE_SELL;
+        }
+
+        switch (adType){
+            case TYPE_SELL:
+                break;
+            case TYPE_LOSTFOUND:
+                break;
+            case TYPE_TEACH:
+                break;
+        }
 
         refresh();
 
@@ -75,7 +94,7 @@ public class Frag_AllAds extends Fragment {
         if(swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);
         if(mAuth.getCurrentUser()!=null){
-            networkMethods = new NetworkMethods(context, mAuth);
+            networkMethods = new NetworkMethods(context);
             getAllAds();
         }
     }
@@ -181,6 +200,17 @@ public class Frag_AllAds extends Fragment {
     public void clearRecycler() {
         if(recyclerView.getAdapter()!=null)
             recyclerView.swapAdapter(null,true);
+    }
+
+    @Override
+    public void onResume() {
+        ((MainActivity)context).showIT();
+        super.onResume();
+    }
+    @Override
+    public void onStop() {
+        ((MainActivity)context).hideIT();
+        super.onStop();
     }
 
 }

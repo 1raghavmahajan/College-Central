@@ -30,7 +30,6 @@ import com.blackboxindia.TakeIT.adapters.NewAdImageAdapter;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,12 +56,6 @@ public class Frag_newEvent extends Fragment {
     //endregion
 
     //region Init Setup
-
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
 
     @Nullable
     @Override
@@ -177,7 +170,7 @@ public class Frag_newEvent extends Fragment {
 
             adData.setNumberOfImages(imgURIs.size());
 
-            NetworkMethods networkMethods = new NetworkMethods(context, FirebaseAuth.getInstance());
+            NetworkMethods networkMethods = new NetworkMethods(context);
             networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
                 @Override
                 public void onSuccess(AdData adData) {
@@ -191,6 +184,7 @@ public class Frag_newEvent extends Fragment {
                     Toast.makeText(context, "Error: "+ e.getMessage() , Toast.LENGTH_SHORT).show();
                 }
             });
+
         }
         else
         {

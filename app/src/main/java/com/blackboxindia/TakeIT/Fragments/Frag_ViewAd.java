@@ -24,7 +24,6 @@ import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class Frag_ViewAd extends Fragment {
 
@@ -51,12 +50,6 @@ public class Frag_ViewAd extends Fragment {
         return fragment;
     }
 
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -77,7 +70,7 @@ public class Frag_ViewAd extends Fragment {
         tv_Description = (TextView) view.findViewById(R.id.Ad_tvDescription);
         imgRecyclerView = (RecyclerView) view.findViewById(R.id.Ad_imgRecycler);
         tv_Name = (TextView) view.findViewById(R.id.Ad_tvName);
-        tv_Address = (TextView) view.findViewById(R.id.Ad_tvAddress);
+        tv_Address = (TextView) view.findViewById(R.id.Ad_tvRoomNumber);
         tv_Phone = (TextView) view.findViewById(R.id.Ad_tvPhone);
         tv_College = (TextView) view.findViewById(R.id.Ad_tvCollege);
         imageView = (ImageView) view.findViewById(R.id.Ad_Profile);
@@ -98,12 +91,12 @@ public class Frag_ViewAd extends Fragment {
             tv_Title.setText(adData.getTitle());
             tv_Description.setText(adData.getDescription());
 
-            NetworkMethods networkMethods = new NetworkMethods(context, FirebaseAuth.getInstance());
+            NetworkMethods networkMethods = new NetworkMethods(context);
             networkMethods.getUserDetails(adData.getCreatedBy(), new onLoginListener() {
                 @Override
                 public void onSuccess(UserInfo userInfo) {
                     tv_Name.setText(userInfo.getName());
-                    tv_Address.setText(userInfo.getAddress());
+                    tv_Address.setText(userInfo.getRoomNumber());
                     tv_Phone.setText(userInfo.getPhone());
                     tv_College.setText(userInfo.getCollegeName());
                     tv_Phone.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +127,7 @@ public class Frag_ViewAd extends Fragment {
     }
 
     void setUpImgRecycler() {
-        main = ((Frag_AllAds)(getFragmentManager().findFragmentByTag(MainActivity.ALL_FRAG_TAG))).current;
+        main = ((Frag_Ads)(getFragmentManager().findFragmentByTag(MainActivity.ALL_FRAG_TAG))).current;
         ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         imgRecyclerView.setLayoutManager(linearLayoutManager);

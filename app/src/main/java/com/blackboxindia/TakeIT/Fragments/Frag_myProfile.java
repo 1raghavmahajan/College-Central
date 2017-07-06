@@ -26,7 +26,6 @@ import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class Frag_myProfile extends Fragment {
 
@@ -42,16 +41,11 @@ public class Frag_myProfile extends Fragment {
     ImageUtils imageUtils;
 
     UserInfo userInfo;
-    UserInfo userInfo1;
+    UserInfo userInfoNew;
 
     //endregion
 
     //region Initial Setup
-    @Override
-    public void onResume() {
-        ((MainActivity)getActivity()).hideIT();
-        super.onResume();
-    }
 
     @Nullable
     @Override
@@ -63,8 +57,8 @@ public class Frag_myProfile extends Fragment {
 
         if(((MainActivity)context).userInfo!=null) {
             userInfo = ((MainActivity) context).userInfo;
-            userInfo1 = userInfo.createCopy();
-            userInfo1.setuID(userInfo.getuID());
+            userInfoNew = userInfo.createCopy();
+            userInfoNew.setuID(userInfo.getuID());
             populateViews();
         }
 
@@ -101,26 +95,28 @@ public class Frag_myProfile extends Fragment {
         etName.setText(userInfo.getName());
         etEmail.setText(userInfo.getEmail());
         etPhone.setText(userInfo.getPhone());
-        etAddress.setText(userInfo.getAddress());
+        etAddress.setText(userInfo.getRoomNumber());
         etCollege.setText(userInfo.getCollegeName());
+
+
     }
 
     private void UpdateCredentials() {
 
-        userInfo1.setData(
+        userInfoNew.setData(
                 etName.getText().toString().trim(),
                 etEmail.getText().toString().trim(),
                 etAddress.getText().toString().trim(),
                 etPhone.getText().toString().trim());
 
-        userInfo1.setCollegeName(etCollege.getText().toString().trim());
+        userInfoNew.setCollegeName(etCollege.getText().toString().trim());
 
-        if(validateDetails(userInfo1)) {
+        if(validateDetails(userInfoNew)) {
 
-            userInfo = userInfo1;
+            userInfo = userInfoNew;
 
             final ProgressDialog show = ProgressDialog.show(context, "Updating...", "", true, false);
-            NetworkMethods methods = new NetworkMethods(context, FirebaseAuth.getInstance());
+            NetworkMethods methods = new NetworkMethods(context);
             methods.UpdateUser(userInfo, new onUpdateListener() {
                 @Override
                 public void onSuccess(UserInfo userInfo) {
@@ -146,7 +142,7 @@ public class Frag_myProfile extends Fragment {
             etName.setError("Field Required");
             f = false;
         }
-        if(userInfo.getAddress().equals("")){
+        if(userInfo.getRoomNumber().equals("")){
             etAddress.setError("Field Required");
             f = false;
         }
@@ -175,7 +171,7 @@ public class Frag_myProfile extends Fragment {
                     } else if (w > h) {
                         file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
                     }
-                    userInfo1.setProfileIMG(ImageUtils.BitMapToString(file, 75));
+                    userInfoNew.setProfileIMG(ImageUtils.BitMapToString(file, 75));
 //                    if (imageView.getDrawable() != null)
 //                        ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
                     imageView.setImageBitmap(file);
