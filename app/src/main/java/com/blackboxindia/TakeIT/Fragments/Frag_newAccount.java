@@ -82,15 +82,21 @@ public class Frag_newAccount extends Fragment {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 userInfo.setData(
                         etName.getText().toString().trim(),
                         etEmail.getText().toString().trim(),
                         etAddress.getText().toString().trim(),
-                        etPhone.getText().toString().trim() );
-                if (validateDetails(userInfo))
+                        etPhone.getText().toString().trim()
+                        );
+
+                if (validateDetails(userInfo)) {
+                    userInfo.setHostel(hostelList.get(hostelSpinner.getSelectedItemPosition()-1));
+                    userInfo.setCollegeName(collegeList.get(collegeSpinner.getSelectedItemPosition()-1));
                     if (isPasswordValid()) {
                         userInfo.newUser(etPassword.getText().toString().trim(), v.getContext());
                     }
+                }
             }
         });
 
@@ -99,18 +105,76 @@ public class Frag_newAccount extends Fragment {
 
     private void populateSpinners() {
 
+        ArrayList<String> defHostel = new ArrayList<>();
+        defHostel.add("Select Hostel...");
+        ArrayAdapter<String> defHostelAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,defHostel){
+            @Override
+            public boolean isEnabled(int position){
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0)
+                    tv.setTextColor(Color.GRAY);
+                else
+                    tv.setTextColor(Color.BLACK);
+                return view;
+            }
+        };
+        defHostelAdapter.setDropDownViewResource(R.layout.spinner_item);
+        hostelSpinner.setAdapter(defHostelAdapter);
+
+        ArrayList<String> defCollege = new ArrayList<>();
+        defCollege.add("Select College...");
+        ArrayAdapter<String> defCollegeAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,defCollege){
+            @Override
+            public boolean isEnabled(int position){
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0)
+                    tv.setTextColor(Color.GRAY);
+                else
+                    tv.setTextColor(Color.BLACK);
+                return view;
+            }
+        };
+        defCollegeAdapter.setDropDownViewResource(R.layout.spinner_item);
+        collegeSpinner.setAdapter(defCollegeAdapter);
+
+
         networkMethods.getCollegeOptions(new getCollegeDataListener() {
             @Override
             public void onSuccess(ArrayList<String> data) {
-                collegeList = data;
+                view.findViewById(R.id.create_collegeProgress).setVisibility(View.INVISIBLE);
+                if(data!=null)
+                    collegeList = data;
+                else
+                    collegeList = new ArrayList<>();
+
                 collegeListener = new ClickListener() {
 
                     @Override
                     public void onItemSelect(String name) {
+                        view.findViewById(R.id.create_hostelProgress).setVisibility(View.VISIBLE);
                         networkMethods.getHostelOptions(name, new getCollegeDataListener() {
                             @Override
                             public void onSuccess(ArrayList<String> data) {
-                                hostelList = data;
+                                view.findViewById(R.id.create_hostelProgress).setVisibility(View.INVISIBLE);
+                                if(data!=null)
+                                    hostelList = data;
+                                else
+                                    hostelList = new ArrayList<>();
+
                                 hostelListener = new ClickListener() {
                                     @Override
                                     public void onItemSelect(String name) {
@@ -120,32 +184,37 @@ public class Frag_newAccount extends Fragment {
                                     public void onNewItem(String name) {
                                         final ProgressDialog progressDialog = ProgressDialog.show(context, "Adding new hostel", "Please wait...", true, false);
                                         hostelList.add(name);
-                                        networkMethods.addNewHostel(hostelList,
-                                                collegeList.get(collegeSpinner.getSelectedItemPosition()),
-                                                new addCollegeDataListener() {
-                                                    @Override
-                                                    public void onSuccess() {
-                                                        progressDialog.cancel();
-                                                        configureSpinner(hostelList,hostelListener);
-                                                    }
+                                        int position = collegeSpinner.getSelectedItemPosition();
+                                        if(position!=0 && position!=collegeList.size()+1) {
+                                            networkMethods.addNewHostel(hostelList,
+                                                    collegeList.get(position-1),
+                                                    new addCollegeDataListener() {
+                                                        @Override
+                                                        public void onSuccess() {
+                                                            progressDialog.cancel();
+                                                            Toast.makeText(context, "Successfully added!", Toast.LENGTH_SHORT).show();
+                                                            configureHostelSpinner(hostelListener);
+                                                        }
 
-                                                    @Override
-                                                    public void onFailure(Exception e) {
-                                                        progressDialog.cancel();
-                                                        hostelList.remove(hostelList.size()-1);
-                                                        Log.e(TAG,"Add hostel error", e);
-                                                        Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
+                                                        @Override
+                                                        public void onFailure(Exception e) {
+                                                            progressDialog.cancel();
+                                                            hostelList.remove(hostelList.size() - 1);
+                                                            Log.e(TAG, "Add hostel error", e);
+                                                            Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                        }
                                     }
                                 };
 
-                                configureSpinner(addStuff(data, 1), hostelListener);
+                                configureHostelSpinner(hostelListener);
                             }
 
                             @Override
                             public void onFailure(Exception e) {
-
+                                Log.e(TAG,"Get hostel list error", e);
+                                Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
                     }
@@ -159,7 +228,8 @@ public class Frag_newAccount extends Fragment {
                             @Override
                             public void onSuccess() {
                                 progressDialog.cancel();
-                                configureSpinner(addStuff(collegeList,0), collegeListener);
+                                Toast.makeText(context, "Successfully added!", Toast.LENGTH_SHORT).show();
+                                configureCollegeSpinner(collegeListener);
                             }
 
                             @Override
@@ -171,8 +241,9 @@ public class Frag_newAccount extends Fragment {
                             }
                         });
                     }
+
                 };
-                configureSpinner(addStuff(data, 0), collegeListener);
+                configureCollegeSpinner(collegeListener);
             }
 
             @Override
@@ -198,18 +269,9 @@ public class Frag_newAccount extends Fragment {
         return strings1;
     }
 
-//    private ArrayList<String> getStuff(ArrayList<String> strings){
-//        ArrayList<String> strings1 = new ArrayList<>();
-//        for (int i = 1; i < strings.size()-1; i++) {
-//            strings1.add(strings.get(i));
-//        }
-//        return strings1;
-//    }
+    private void configureCollegeSpinner(final ClickListener listener){
 
-    private void configureSpinner(ArrayList<String> list, final ClickListener listener){
-        final int size = list.size();
-
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,list){
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,addStuff(collegeList,0)){
             @Override
             public boolean isEnabled(int position){
                 return position != 0;
@@ -233,33 +295,101 @@ public class Frag_newAccount extends Fragment {
         collegeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == size - 1) {
-                    final Dialog dialog = new Dialog(context);
-                    dialog.setContentView(R.layout.dialog_text);
-                    dialog.findViewById(R.id.dialog_Submit).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            String s = ((EditText) dialog.findViewById(R.id.dialog_text)).getText().toString().trim();
-                            if (s.equals(""))
-                                Toast.makeText(context, "Invalid name", Toast.LENGTH_SHORT).show();
-                            else {
-                                dialog.cancel();
-                                listener.onNewItem(s);
-                            }
-                        }
-                    });
-                    dialog.setCancelable(true);
-                    dialog.setCanceledOnTouchOutside(true);
-                    dialog.show();
+                int size=0;
+                if(collegeList!=null)
+                    size = collegeList.size();
+
+                if (position == size+1) {
+                    createCustomDialog("College Name:", listener);
                 }
-                else
+                else if(position != 0) {
+                    view.findViewById(R.id.create_collegeError).setVisibility(View.INVISIBLE);
                     listener.onItemSelect(parent.getItemAtPosition(position).toString());
+                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+    }
+
+    private void configureHostelSpinner(final ClickListener listener){
+
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,addStuff(hostelList,1)){
+            @Override
+            public boolean isEnabled(int position){
+                return position != 0;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, @NonNull ViewGroup parent) {
+
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0)
+                    tv.setTextColor(Color.GRAY);
+                else
+                    tv.setTextColor(Color.BLACK);
+                return view;
+            }
+        };
+
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        hostelSpinner.setAdapter(spinnerArrayAdapter);
+        hostelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                Log.i(TAG, "onItemSelected of " + id + " " + position );
+                if(hostelList!=null)
+                    Log.i(TAG, "hostel no: "+hostelList.size());
+                int size=0;
+                if (hostelList != null) {
+                    size = hostelList.size();
+                }
+                if (position == size+1) {
+                    createCustomDialog("Hostel Name:",listener);
+                }
+                else if(position != 0) {
+                    view.findViewById(R.id.create_hostelError).setVisibility(View.INVISIBLE);
+                    listener.onItemSelect(parent.getItemAtPosition(position).toString());
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    void createCustomDialog(String title, final ClickListener listener){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_text);
+        dialog.findViewById(R.id.dialog_Submit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String s = ((EditText) v).getText().toString().trim();
+                if (s.equals(""))
+                    Toast.makeText(context, "Invalid name", Toast.LENGTH_SHORT).show();
+                else if(s.contains(".") || s.contains("#") || s.contains("$") || s.contains("[") || s.contains("]"))
+                    ((EditText) v).setError("'.', '#', '$', '[', ']' not allowed");
+                else {
+                    dialog.cancel();
+                    listener.onNewItem(s);
+                }
+            }
+        });
+        dialog.findViewById(R.id.dialog_Cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+        ((TextView)dialog.findViewById(R.id.dialog_Title)).setText(title);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     private void initVariables() {
@@ -300,9 +430,20 @@ public class Frag_newAccount extends Fragment {
             f = false;
         }
         if(!Patterns.EMAIL_ADDRESS.matcher(userInfo.getEmail()).matches()) {
-            etEmail.setError("Invalid EmailID");
+            etEmail.setError("Invalid Email ID");
             f = false;
         }
+
+        if(collegeSpinner.getSelectedItemPosition()==0 || collegeSpinner.getSelectedItemPosition()==collegeList.size()+1){
+            view.findViewById(R.id.create_collegeError).setVisibility(View.VISIBLE);
+            f = false;
+        }
+
+        if(hostelSpinner.getSelectedItemPosition()==0 || hostelSpinner.getSelectedItemPosition()==hostelList.size()+1){
+            view.findViewById(R.id.create_hostelError).setVisibility(View.VISIBLE);
+            f = false;
+        }
+
         return f;
     }
 

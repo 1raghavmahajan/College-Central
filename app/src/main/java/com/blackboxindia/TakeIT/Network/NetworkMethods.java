@@ -34,11 +34,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 @SuppressWarnings("VisibleForTests")
@@ -567,10 +567,15 @@ public class NetworkMethods {
         mDatabase.child(DIRECTORY_COLLEGES).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String[] strArray = new String[(int) dataSnapshot.getChildrenCount()];
-                strArray = dataSnapshot.getValue(strArray.getClass());
-                ArrayList<String> colleges = new ArrayList<>(Arrays.asList(strArray));
-                listener.onSuccess(colleges);
+
+                ArrayList<String> colleges;
+                colleges = dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<String>>() {});
+
+                if(colleges!= null) {
+                    listener.onSuccess(colleges);
+                }
+                else
+                    listener.onSuccess(null);
             }
 
             @Override
@@ -599,10 +604,14 @@ public class NetworkMethods {
         mDatabase.child(DIRECTORY_HOSTELS).child(collegeName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String[] strArray = new String[(int) dataSnapshot.getChildrenCount()];
-                strArray = dataSnapshot.getValue(strArray.getClass());
-                ArrayList<String> hostels = new ArrayList<>(Arrays.asList(strArray));
-                listener.onSuccess(hostels);
+
+                ArrayList<String> hostels;
+                hostels = dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<String>>() {});
+
+                if(hostels !=null)
+                    listener.onSuccess(hostels);
+                else
+                    listener.onSuccess(null);
             }
 
             @Override

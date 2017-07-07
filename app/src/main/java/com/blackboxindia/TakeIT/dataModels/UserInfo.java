@@ -29,11 +29,11 @@ public class UserInfo{
     private String name;
     private String email;
     private String roomNumber;
-    private String hostel;
     private String phone;
+    private String hostel;
+    private String collegeName;
 
     private ArrayList<String> userAdKeys;
-    private String collegeName;
 
     //endregion
 
@@ -60,12 +60,22 @@ public class UserInfo{
 
     //endregion
 
-    public void setData(String name, String email, String address, String phone) {
+    public void setData(String name, String email, String roomNumber, String phone) {
         this.name = name;
         this.email = email;
-        this.roomNumber = address;
+        this.roomNumber = roomNumber;
         this.phone = phone;
-        collegeName = "IIT Indore";
+        this.hostel = "Simrol Hostel";
+        this.collegeName = "IIT Indore";
+    }
+
+    public void setData(String name, String email, String roomNumber, String phone, String hostel, String collegeName) {
+        this.name = name;
+        this.email = email;
+        this.roomNumber = roomNumber;
+        this.phone = phone;
+        this.hostel = hostel;
+        this.collegeName = collegeName;
     }
 
     public void newUser(String password, final Context context) {

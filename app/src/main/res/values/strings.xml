@@ -107,6 +107,7 @@
     <string name="hostel">Hostel</string>
     <string name="add">add</string>
     <string name="cancel">Cancel</string>
+    <string name="error_image">Error Image</string>
 
 
 </resources>
