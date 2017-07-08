@@ -52,6 +52,7 @@ import com.blackboxindia.TakeIT.Fragments.Frag_myAds;
 import com.blackboxindia.TakeIT.Fragments.Frag_myProfile;
 import com.blackboxindia.TakeIT.Fragments.Frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.Frag_newAd;
+import com.blackboxindia.TakeIT.Fragments.Frag_newEvent;
 import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
 import com.blackboxindia.TakeIT.Network.ImageStorageMethods;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     //region Static Variables
     public final static String ALL_FRAG_TAG = "ALL_ADS";
+    public final static String ALL_EVENTS_TAG = "ALL_EVENTS";
     public final static String MAIN_SCREEN_TAG = "MAIN_SCREEN";
     public final static String LOGIN_PAGE_TAG = "LOGIN_PAGE";
     public final static String MY_PROFILE_TAG = "MY_PROFILE";
@@ -82,7 +84,9 @@ public class MainActivity extends AppCompatActivity {
     public final static String NEW_ACCOUNT_TAG = "NEW_ACCOUNT";
     public final static String MY_ADS_TAG = "MY_ADS";
     public final static String NEW_AD_TAG = "NEW_AD";
+    public final static String NEW_EVENT_TAG = "NEW_EVENT";
     public final static String VIEW_AD_TAG = "VIEW_AD";
+    public final static String VIEW_EVENT_TAG = "VIEW_EVENT";
     public final static String VIEW_MyAD_TAG = "VIEW_MyAD";
     public final static String VERIFY_EMAIL_TAG = "VERIFY_EMAIL";
 
@@ -377,6 +381,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
 
                         case TYPE_EVENT:
+                            launchOtherFragment(new Frag_newEvent(), NEW_EVENT_TAG);
                             break;
                     }
                 }
@@ -596,7 +601,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
-            ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter(query);
+
+            if(currentFragTag.equals(ALL_FRAG_TAG)) {
+                if (fragmentManager.findFragmentByTag(ALL_FRAG_TAG) != null)
+                    ((Frag_Ads) (fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter(query);
+            }
+
         }
     }
 

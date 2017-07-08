@@ -184,6 +184,7 @@ public class Frag_newAccount extends Fragment {
         networkMethods.getCollegeOptions(new getCollegeDataListener() {
             @Override
             public void onSuccess(ArrayList<String> data) {
+                Log.i(TAG, "onSuccess: getCollegeDetails");
                 ParentView.findViewById(R.id.create_collegeProgress).setVisibility(View.INVISIBLE);
                 if(data!=null)
                     collegeList = data;

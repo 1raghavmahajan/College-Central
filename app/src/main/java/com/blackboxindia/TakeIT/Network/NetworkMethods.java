@@ -9,12 +9,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.blackboxindia.TakeIT.Fragments.Frag_VerifyEmail;
-import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapUploadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.KeepTrackMain;
 import com.blackboxindia.TakeIT.Network.Interfaces.addCollegeDataListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.getCollegeDataListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.newAdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteUserListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
@@ -49,6 +49,7 @@ public class NetworkMethods {
     private final static String TAG = NetworkMethods.class.getSimpleName() + " YOYO";
 
     private final static String DIRECTORY_ADS = "ads";
+    private final static String DIRECTORY_EVENTS = "events";
     private final static String DIRECTORY_USERS = "users";
     private final static String DIRECTORY_HOSTELS = "hostels";
     private final static String DIRECTORY_COLLEGES = "colleges";
@@ -82,42 +83,67 @@ public class NetworkMethods {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                            new ImageStorageMethods(context)
-                                    .uploadProfileImage(
-                                            FirebaseAuth.getInstance().getCurrentUser().getUid(), profileImage, new BitmapUploadListener() {
-                                                @Override
-                                                public void onSuccess() {
+                            if(userInfo.getHasProfileIMG()) {
+                                new ImageStorageMethods(context)
+                                        .uploadProfileImage(
+                                                FirebaseAuth.getInstance().getCurrentUser().getUid(), profileImage, new BitmapUploadListener() {
+                                                    @Override
+                                                    public void onSuccess() {
 
-                                                    mAuth.getCurrentUser().sendEmailVerification()
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void aVoid) {
-                                                                    Log.i(TAG, "Create Account Successful: " + userInfo.toString());
-                                                                    addDetailsToDB(userInfo);
-                                                                    UserCred userCred = new UserCred(userInfo.getEmail(),password);
-                                                                    userCred.save_cred(context);
+                                                        mAuth.getCurrentUser().sendEmailVerification()
+                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                    @Override
+                                                                    public void onSuccess(Void aVoid) {
+                                                                        Log.i(TAG, "Create Account Successful: " + userInfo.toString());
+                                                                        addDetailsToDB(userInfo);
+                                                                        UserCred userCred = new UserCred(userInfo.getEmail(), password);
+                                                                        userCred.save_cred(context);
 
-                                                                    ((MainActivity)context).launchOtherFragment(
-                                                                            Frag_VerifyEmail.newInstance(loginListener, userInfo),
-                                                                            MainActivity.VERIFY_EMAIL_TAG);
+                                                                        ((MainActivity) context).launchOtherFragment(
+                                                                                Frag_VerifyEmail.newInstance(loginListener, userInfo),
+                                                                                MainActivity.VERIFY_EMAIL_TAG);
 
-                                                                }
-                                                            }).addOnFailureListener(new OnFailureListener() {
-                                                                @Override
-                                                                public void onFailure(@NonNull Exception e) {
-                                                                    Log.e(TAG,"Failed to send email.",e);
-                                                                    mAuth.getCurrentUser().delete();
-                                                                }
-                                                            });
+                                                                    }
+                                                                }).addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.e(TAG, "Failed to send email.", e);
+                                                                mAuth.getCurrentUser().delete();
+                                                            }
+                                                        });
 
-                                                }
+                                                    }
 
-                                                @Override
-                                                public void onFailure(Exception e) {
-                                                    Log.e(TAG, "onFailure: profileImageUpload", e);
-                                                    loginListener.onFailure(e);
-                                                }
-                                            });
+                                                    @Override
+                                                    public void onFailure(Exception e) {
+                                                        Log.e(TAG, "onFailure: profileImageUpload", e);
+                                                        loginListener.onFailure(e);
+                                                    }
+                                                });
+                            }
+                            else {
+                                mAuth.getCurrentUser().sendEmailVerification()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.i(TAG, "Create Account Successful: " + userInfo.toString());
+                                                addDetailsToDB(userInfo);
+                                                UserCred userCred = new UserCred(userInfo.getEmail(), password);
+                                                userCred.save_cred(context);
+
+                                                ((MainActivity) context).launchOtherFragment(
+                                                        Frag_VerifyEmail.newInstance(loginListener, userInfo),
+                                                        MainActivity.VERIFY_EMAIL_TAG);
+
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.e(TAG, "Failed to send email.", e);
+                                        mAuth.getCurrentUser().delete();
+                                    }
+                                });
+                            }
 
                         } else {
                             Log.w(TAG, "Create Account Failure: ", task.getException());
@@ -131,7 +157,7 @@ public class NetworkMethods {
     private void addDetailsToDB(UserInfo userInfo) {
         Log.i(TAG,"addDetailsToDB: in progress");
 
-        String uID = mAuth.getCurrentUser().getUid();
+        String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userInfo.setuID(uID);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -422,13 +448,13 @@ public class NetworkMethods {
 
     //region Ad Related
 
-    private Integer try_update;
-    private Boolean once;
-    public void createNewAd(final UserInfo userInfo, final AdData adData, final ArrayList<Uri> imgURIs, Bitmap major, final AdListener listener) {
+    private Integer try_update_NewAd;
+    private Boolean once_NewAd;
+    public void createNewAd(final UserInfo userInfo, final AdData adData, final ArrayList<Uri> imgURIs, Bitmap major, final newAdListener listener) {
 
         Log.i(TAG,"createNewAd: begin");
-        once = true;
-        try_update = 5;
+        once_NewAd = true;
+        try_update_NewAd = 5;
 
         if(mAuth==null)
         {
@@ -478,9 +504,9 @@ public class NetworkMethods {
                                                 }
                                                 @Override
                                                 public void onFailure(Exception e) {
-                                                    if(try_update >0) {
-                                                        try_update--;
-                                                        Log.i(TAG,"onUpdate Retry #" + (2- try_update));
+                                                    if(try_update_NewAd >0) {
+                                                        try_update_NewAd--;
+                                                        Log.i(TAG,"onUpdate Retry #" + (2- try_update_NewAd));
                                                         UpdateUser(userInfo, this);
                                                     }
                                                     else {
@@ -499,9 +525,9 @@ public class NetworkMethods {
                             storage.getReference().child("images/" + key + "/0s").delete();
                             for(int i=0;i<imgURIs.size();i++)
                                 storage.getReference().child("images/" + key + "/" + i).delete();
-                            if(once)
+                            if(once_NewAd)
                             {
-                                once=false;
+                                once_NewAd =false;
                                 progressDialog.cancel();
                                 listener.onFailure(e);
                             }
@@ -519,7 +545,7 @@ public class NetworkMethods {
         }
     }
 
-    public void getAd(String adID, final AdListener listener) {
+    public void getAd(String adID, final newAdListener listener) {
 
         if(mAuth==null)
         {
@@ -628,12 +654,15 @@ public class NetworkMethods {
 
     //endregion
 
+
     //region College Data
 
     public void getCollegeOptions(final getCollegeDataListener listener){
+        Log.i(TAG, "getCollegeOptions: called");
         mDatabase.child(DIRECTORY_COLLEGES).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Log.i(TAG, "onDataChange: getCollegeOptions");
 
                 ArrayList<String> colleges;
                 colleges = dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<String>>() {});

@@ -22,6 +22,7 @@ import com.blackboxindia.TakeIT.Network.Interfaces.getAllAdsListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
+import com.blackboxindia.TakeIT.adapters.EventsAdapter;
 import com.blackboxindia.TakeIT.adapters.MainAdapter;
 import com.blackboxindia.TakeIT.adapters.teachingAdAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdData;
@@ -29,6 +30,7 @@ import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 import java.util.ArrayList;
 
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_EVENT;
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_LOSTFOUND;
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_SELL;
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_TEACH;
@@ -154,10 +156,17 @@ public class Frag_Ads extends Fragment {
                         if(allAds.size()!=0)
                             view.findViewById(R.id.ads_default).setVisibility(View.GONE);
 
-                        if(adType.equals(TYPE_TEACH))
-                            ((teachingAdAdapter) recyclerView.getAdapter()).change(allAds);
-                        else
-                            ((MainAdapter) recyclerView.getAdapter()).change(allAds);
+                        switch (adType) {
+                            case TYPE_TEACH:
+                                ((teachingAdAdapter) recyclerView.getAdapter()).change(allAds);
+                                break;
+                            case TYPE_EVENT:
+                                ((EventsAdapter) recyclerView.getAdapter()).change(allAds);
+                                break;
+                            default:
+                                ((MainAdapter) recyclerView.getAdapter()).change(allAds);
+                                break;
+                        }
                     }
                 }
                 else
@@ -201,6 +210,9 @@ public class Frag_Ads extends Fragment {
                 break;
             case TYPE_TEACH:
                 setUp2();
+                break;
+            case TYPE_EVENT:
+                setUp3();
                 break;
         }
     }
@@ -257,6 +269,33 @@ public class Frag_Ads extends Fragment {
                         .addToBackStack(null)
                         .commit();
 
+
+            }
+        });
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void setUp3() {
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+
+        EventsAdapter adapter = new EventsAdapter(context,allAds, new EventsAdapter.ImageClickListener() {
+            @Override
+            public void onClick(EventsAdapter.adItemViewHolder holder, int position, AdData currentAd, Bitmap main) {
+
+
+                Frag_ViewEvent fragViewAd = Frag_ViewEvent.newInstance(allAds.get(position));
+//                ((MainActivity)context).launchOtherFragment(fragViewAd,VIEW_AD_TAG);
+
+                fragViewAd.setSharedElementEnterTransition(new adViewTransition());
+                fragViewAd.setEnterTransition(new Fade());
+                setExitTransition(new Fade());
+                fragViewAd.setSharedElementReturnTransition(new adViewTransition());
+
+                getActivity().getFragmentManager().beginTransaction()
+                        .addSharedElement(holder.getMajorImage(), "adImage0")
+                        .replace(R.id.frame_layout, fragViewAd, MainActivity.VIEW_EVENT_TAG)
+                        .addToBackStack(null)
+                        .commit();
 
             }
         });

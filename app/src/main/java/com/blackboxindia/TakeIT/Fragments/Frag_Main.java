@@ -68,9 +68,13 @@ public class Frag_Main extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"onClick: card2");
-                Frag_Events frag_events = new Frag_Events();
+                Frag_Ads frag_ads = new Frag_Ads();
 
-                ((MainActivity)context).launchOtherFragment(frag_events,MainActivity.ALL_FRAG_TAG);
+                Bundle args = new Bundle();
+                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_EVENT);
+                frag_ads.setArguments(args);
+
+                ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
 
             }
         });

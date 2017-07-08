@@ -113,6 +113,8 @@
     <string name="hintDescriptionEvent">Add details about the event here:\n   Venue, Fees, etc…</string>
     <string name="hintDescriptionLostFound">When, Where, What, How? \nWrite details here…</string>
     <string name="hintDescriptionTeach">A short note about the class…</string>
+    <string name="dd_mm_yy">dd/MM/yy</string>
+    <string name="sample_time">24:00</string>
 
 
 </resources>

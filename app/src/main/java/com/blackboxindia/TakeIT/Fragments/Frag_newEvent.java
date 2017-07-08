@@ -22,13 +22,15 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.newAdListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.NewAdImageAdapter;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.AdData;
+import com.blackboxindia.TakeIT.dataModels.AdTypes;
+import com.blackboxindia.TakeIT.dataModels.DateObject;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 import java.text.SimpleDateFormat;
@@ -53,6 +55,8 @@ public class Frag_newEvent extends Fragment {
     UserInfo userInfo;
     ImageUtils imageUtils;
     ArrayList<Uri> imgURIs;
+
+    Calendar myCalendar;
     //endregion
 
     //region Init Setup
@@ -74,6 +78,7 @@ public class Frag_newEvent extends Fragment {
     }
 
     private void initVariables() {
+        myCalendar = Calendar.getInstance();
 
         etTitle = (EditText) view.findViewById(R.id.newAd_etTitle);
         etDate = (EditText) view.findViewById(R.id.newAd_etDate);
@@ -111,16 +116,17 @@ public class Frag_newEvent extends Fragment {
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar myCalendar = Calendar.getInstance();
-                final int yy,mm,dd;
-                yy = myCalendar.get(Calendar.YEAR);
-                mm = myCalendar.get(Calendar.MONTH);
-                dd = myCalendar.get(Calendar.DAY_OF_MONTH);
+                Calendar currentDate= Calendar.getInstance();
+                int
+                    yy = currentDate.get(Calendar.YEAR),
+                    mm = currentDate.get(Calendar.MONTH),
+                    dd = currentDate.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(context,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
                                 myCalendar.set(Calendar.YEAR, year);
                                 myCalendar.set(Calendar.MONTH, monthOfYear);
                                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -132,6 +138,7 @@ public class Frag_newEvent extends Fragment {
                         }, yy, mm, dd);
                 datePickerDialog.setCancelable(true);
                 datePickerDialog.setTitle("Set Date:");
+                datePickerDialog.show();
 
             }
         });
@@ -146,9 +153,13 @@ public class Frag_newEvent extends Fragment {
                 mTimePicker = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+
+                        myCalendar.set(Calendar.HOUR_OF_DAY,selectedHour);
+                        myCalendar.set(Calendar.MINUTE,selectedMinute);
+
                         etTime.setText( selectedHour + ":" + selectedMinute);
                     }
-                }, hour, minute, true);
+                }, hour, minute, false);
                 mTimePicker.setTitle("Select Time");
                 mTimePicker.show();
             }
@@ -160,22 +171,24 @@ public class Frag_newEvent extends Fragment {
         userInfo = ((MainActivity)context).userInfo;
         if(userInfo!=null) {
 
-            AdData adData = new AdData();
+            AdData event = new AdData();
 
-            adData.setCreatedBy(userInfo);
-            adData.setTitle(etTitle.getText().toString().trim());
-            adData.setPrice(Integer.valueOf(etDate.getText().toString()));
-            adData.setDescription(etDescription.getText().toString().trim());
+            event.setCreatedBy(userInfo);
+            event.setTitle(etTitle.getText().toString().trim());
+            event.setPrice(null);
+            event.setDescription(etDescription.getText().toString().trim());
 
-            adData.setNumberOfImages(imgURIs.size());
+            event.setNumberOfImages(imgURIs.size());
+            event.setDateTime(new DateObject(myCalendar));
+
+            event.setType(AdTypes.TYPE_EVENT);
 
             NetworkMethods networkMethods = new NetworkMethods(context);
-            networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
+            networkMethods.createNewAd(userInfo, event, imgURIs, adapter.getMajor(), new newAdListener() {
                 @Override
-                public void onSuccess(AdData adData) {
+                public void onSuccess(AdData event) {
                     //Todo: redirect back and refresh
-                    //((MainActivity)context).goToMainFragment(false, true);
-                    ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
+                    ((MainActivity)context).createSnackbar("AdData Created Successfully", Snackbar.LENGTH_LONG);
                 }
 
                 @Override

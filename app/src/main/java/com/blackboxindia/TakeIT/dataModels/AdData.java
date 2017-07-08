@@ -10,6 +10,7 @@ public class AdData {
     private Integer numberOfImages;
     private String category;
     private String type;
+    private DateObject dateTime;
 
     public AdData() {
         adID = "null";
@@ -84,6 +85,14 @@ public class AdData {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public DateObject getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(DateObject dateTime) {
+        this.dateTime = dateTime;
     }
 
     //endregion

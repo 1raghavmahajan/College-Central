@@ -18,16 +18,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.newAdListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.NewAdImageAdapter;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.AdData;
+import com.blackboxindia.TakeIT.dataModels.DateObject;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import static com.blackboxindia.TakeIT.Fragments.Frag_Ads.ARGS_AdType;
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_LOSTFOUND;
@@ -151,8 +153,10 @@ public class Frag_newAd extends Fragment {
 
             adData.setNumberOfImages(imgURIs.size());
 
+            adData.setDateTime(new DateObject(Calendar.getInstance()));
+
             NetworkMethods networkMethods = new NetworkMethods(context);
-            networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new AdListener() {
+            networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new newAdListener() {
                 @Override
                 public void onSuccess(AdData adData) {
                     //Todo:

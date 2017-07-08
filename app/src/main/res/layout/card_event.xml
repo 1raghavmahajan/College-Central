@@ -28,7 +28,8 @@
                 android:src="@drawable/ad_img_placeholder"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"/>
-            <TextView
+
+            <!--<TextView
                 android:id="@+id/adItem_Price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,7 +41,22 @@
                 android:textColor="@android:color/black"
                 android:background="@color/img_text"
                 android:fadingEdgeLength="3dp"
+                android:padding="2dp"/>-->
+
+            <TextView
+                android:id="@+id/adItem_Date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:text="@string/date"
+                android:textSize="18sp"
+                android:textStyle="italic"
+                android:elevation="4dp"
+                android:textColor="@android:color/black"
+                android:background="@color/img_text"
+                android:fadingEdgeLength="3dp"
                 android:padding="2dp"/>
+
             <ProgressBar
                 android:id="@+id/adItem_progress"
                 android:layout_width="wrap_content"

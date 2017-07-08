@@ -1,7 +1,10 @@
 package com.blackboxindia.TakeIT.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -13,102 +16,94 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
-import com.blackboxindia.TakeIT.Network.Interfaces.newAdListener;
-import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 
-public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHolder> {
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemViewHolder> {
 
-    private static String TAG = MyAdsAdapter.class.getSimpleName()+" YOYO";
+    private static String TAG = EventsAdapter.class.getSimpleName()+" YOYO";
 
     private final ImageClickListener mListener;
-    private ArrayList<String> userAds;
+    private List<AdData> adList;
     private LayoutInflater inflater;
 
-    private NetworkMethods networkMethods;
-
-    public MyAdsAdapter(Context context, ArrayList<String> keys, ImageClickListener listener) {
+    public EventsAdapter(Context context, ArrayList<AdData> allAds, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
-        networkMethods = new NetworkMethods(context);
-        userAds = keys;
-        Collections.reverse(userAds);
+        adList = allAds;
         mListener = listener;
     }
 
     @Override
     public adItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.card_ad, parent, false);
+        View view = inflater.inflate(R.layout.card_event, parent, false);
         return new adItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final adItemViewHolder holder, int position) {
+    public void onBindViewHolder(adItemViewHolder holder, int position) {
+        AdData currentAd = adList.get(position);
+        holder.setData(currentAd, position, holder);
+    }
 
-        networkMethods.getAd(userAds.get(position), new newAdListener() {
-            @Override
-            public void onSuccess(AdData adData) {
-                if(holder!=null){
-                    holder.setData(adData, holder.getAdapterPosition());
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Log.e(TAG,"getAd #"+holder.getAdapterPosition()+" ",e);
-            }
-        });
+    public void change(ArrayList<AdData> allAds){
+        adList = allAds;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return userAds.size();
+        return adList.size();
     }
 
     public interface ImageClickListener {
 
-        void onClick(adItemViewHolder holder, int position, AdData currentAd);
+        void onClick(adItemViewHolder holder, int position, AdData currentAd, Bitmap main);
     }
 
     public class adItemViewHolder extends RecyclerView.ViewHolder{
 
         ImageView majorImage;
-        TextView tv_title;
-        TextView tv_Price;
+        TextView tv_title,tv_Date;
+//        TextView tv_Price;
         Context context;
         CardView cardView;
+        Bitmap main;
         ProgressBar progressBar;
 
         adItemViewHolder(View itemView) {
             super(itemView);
             majorImage = (ImageView) itemView.findViewById(R.id.adItem_Image);
             tv_title = (TextView) itemView.findViewById(R.id.adItem_Title);
-            tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
+//            tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
+            tv_Date = (TextView) itemView.findViewById(R.id.adItem_Date);
             cardView = (CardView) itemView.findViewById(R.id.adItem);
             progressBar = (ProgressBar) itemView.findViewById(R.id.adItem_progress);
             context = itemView.getContext();
         }
 
-        ImageView getMajorImage() {
+        public ImageView getMajorImage() {
             return majorImage;
         }
 
-        void setData(final AdData currentAd, final int position) {
-            if(currentAd!=null) {
-                setListeners(currentAd, this, position);
-                ((MainActivity)context).imageStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+        void setData(final AdData currentEvent, final int position, adItemViewHolder holder) {
+
+            setListeners(currentEvent, holder, position);
+
+            if(currentEvent.getNumberOfImages()>0) {
+                ((MainActivity)context).imageStorageMethods.getMajorImage(currentEvent.getAdID(), new BitmapDownloadListener() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        if (majorImage != null && currentAd.getNumberOfImages() > 0) {
-                            GlideApp.with(context).load(uri).into(majorImage);
+                        if (majorImage != null){
                             progressBar.setVisibility(View.GONE);
+                            new loadBitmap().execute(uri);
                         }
                     }
 
@@ -117,14 +112,14 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                         Log.e(TAG, "onFailure #" + position + " ", e);
                     }
                 });
-                tv_title.setText(currentAd.getTitle());
-                if (currentAd.getPrice() == 0)
-                    tv_Price.setText(R.string.free);
-                else
-                    tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
             }
-            else
-                Log.i(TAG,"CurrentAd null");
+
+            tv_title.setText(currentEvent.getTitle());
+
+            String myFormat = "dd/MM/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            tv_Date.setText(sdf.format(currentEvent.getDateTime()));
+
         }
 
         private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {
@@ -133,9 +128,26 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onClick(holder, position, currentAd);
+                    mListener.onClick(holder, position, currentAd, main);
                 }
             });
         }
+
+        class loadBitmap extends AsyncTask<Uri, Void, Void>{
+
+            @Override
+            protected Void doInBackground(Uri... params) {
+                main = BitmapFactory.decodeFile(params[0].getPath());
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                majorImage.setImageBitmap(main);
+            }
+        }
+
     }
+
 }
