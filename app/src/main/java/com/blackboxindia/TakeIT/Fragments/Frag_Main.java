@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
+import com.blackboxindia.TakeIT.dataModels.AdTypes;
 
 public class Frag_Main extends Fragment {
 
@@ -40,35 +41,63 @@ public class Frag_Main extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"onClick: card0");
-                ((MainActivity)context).launchOtherFragment(new Frag_Ads(),MainActivity.ALL_FRAG_TAG);
+
+                Frag_Ads frag_ads = new Frag_Ads();
+
+                Bundle args = new Bundle();
+                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_SELL);
+                frag_ads.setArguments(args);
+
+                ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
             }
         });
         cardView[1].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"onClick: card1");
-//                ((MainActivity)context).goToMainFragment(false,false);
+                Frag_Ads frag_ads = new Frag_Ads();
+
+                Bundle args = new Bundle();
+                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_LOSTFOUND);
+                frag_ads.setArguments(args);
+
+                ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
             }
         });
         cardView[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"onClick: card2");
-//                ((MainActivity)context).goToMainFragment(false,false);
+                Frag_Events frag_events = new Frag_Events();
+
+                ((MainActivity)context).launchOtherFragment(frag_events,MainActivity.ALL_FRAG_TAG);
+
             }
         });
         cardView[3].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"onClick: card3");
-//                ((MainActivity)context).goToMainFragment(false,false);
+                Frag_Ads frag_ads = new Frag_Ads();
+
+                Bundle args = new Bundle();
+                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_TEACH);
+                frag_ads.setArguments(args);
+
+                ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
             }
         });
         cardView[4].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.i(TAG,"onClick: card4");
-//                ((MainActivity)context).goToMainFragment(false,false);
+//                Frag_Ads frag_ads = new Frag_Ads();
+//
+//                Bundle args = new Bundle();
+//                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_INFO);
+//                frag_ads.setArguments(args);
+//
+//                ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
             }
         });
     }

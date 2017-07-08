@@ -50,6 +50,7 @@ public class ImageStorageMethods {
         storage = FirebaseStorage.getInstance();
         cachedBigImages = new HashMap<>();
         cachedIcons = new HashMap<>();
+        cachedProfileImages = new HashMap<>();
     }
 
     private ArrayList<Integer> progress;
@@ -136,7 +137,7 @@ public class ImageStorageMethods {
 
     void uploadBitmap(String AdID, Bitmap bitmap, final BitmapUploadListener listener){
         Log.i(TAG,"bitmap up started");
-        uploadBitmapWorker task = new uploadBitmapWorker(AdID, listener);
+        uploadBitmapWorker task = new uploadBitmapWorker("images/"+AdID+"/0s", listener);
         task.execute(bitmap);
     }
 
@@ -200,6 +201,43 @@ public class ImageStorageMethods {
         }
     }
 
+
+    void uploadProfileImage(String uID, Bitmap bitmap, final BitmapUploadListener listener){
+        Log.i(TAG,"bitmap up started");
+        uploadBitmapWorker task = new uploadBitmapWorker("user/"+uID+"/profileImage", listener);
+        task.execute(bitmap);
+    }
+
+    private Map<String,Uri> cachedProfileImages;
+    public void getProfileImage(final String uID, final BitmapDownloadListener listener) {
+
+        if(cachedProfileImages.containsKey(uID)) {
+            Log.i(TAG,"getProfileImage cached");
+            listener.onSuccess(cachedProfileImages.get(uID));
+        }
+        else {
+            final File localFile;
+
+            localFile = new File(context.getCacheDir(), uID + "_image.webp");
+
+            storage.getReference().child("user/"+uID+"/profileImage").getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getPath());
+                            cachedProfileImages.put(uID,Uri.fromFile(localFile));
+                            listener.onSuccess(Uri.fromFile(localFile));
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onFailure(e);
+                }
+            });
+        }
+    }
+
+
     public void saveCache(){
         Log.i(TAG,"saveCache");
 
@@ -218,6 +256,11 @@ public class ImageStorageMethods {
         edit.putStringSet("big",allBigKeys);
         for(String key: allBigKeys)
             edit.putString(key,cachedBigImages.get(key).toString());
+
+        Set<String> allProfileImageKeys = cachedProfileImages.keySet();
+        edit.putStringSet("profileImages",allProfileImageKeys);
+        for(String key: allProfileImageKeys)
+            edit.putString(key, cachedProfileImages.get(key).toString());
 
         edit.apply();
 
@@ -247,16 +290,26 @@ public class ImageStorageMethods {
                 s = cache.getString(key, s);
                 cachedBigImages.put(key, Uri.parse(s));
             }
+
+            cachedProfileImages = new HashMap<>();
+            Set<String> profileImages = new HashSet<>();
+            profileImages = cache.getStringSet("icons", profileImages);
+            for (String key : profileImages) {
+                String s = "";
+                s = cache.getString(key, s);
+                cachedProfileImages.put(key, Uri.parse(s));
+            }
+
         }
     }
 
     private class uploadBitmapWorker extends AsyncTask<Bitmap,Void,byte[]> {
 
-        String AdID;
+        String path;
         BitmapUploadListener listener;
 
-        uploadBitmapWorker(String AdID, BitmapUploadListener listener){
-            this.AdID = AdID;
+        uploadBitmapWorker(String path, BitmapUploadListener listener){
+            this.path = path;
             this.listener = listener;
         }
 
@@ -273,7 +326,7 @@ public class ImageStorageMethods {
         protected void onPostExecute(byte[] bytes) {
             super.onPostExecute(bytes);
 
-            StorageReference reference = storage.getReference().child("images/"+AdID+"/0s");
+            StorageReference reference = storage.getReference().child(path);
             reference.putBytes(bytes)
                     .addOnFailureListener(new OnFailureListener() {
                         @Override

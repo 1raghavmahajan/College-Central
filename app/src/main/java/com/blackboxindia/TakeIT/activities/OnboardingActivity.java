@@ -20,7 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blackboxindia.TakeIT.Network.GlideApp;
+import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 
@@ -191,7 +191,7 @@ public class OnboardingActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-            View rootView = inflater.inflate(R.layout.fragment_onboarding, container, false);
+            View rootView = inflater.inflate(R.layout.frag_onboarding, container, false);
 
 
             TextView tv_Title = (TextView) rootView.findViewById(R.id.section_Title);

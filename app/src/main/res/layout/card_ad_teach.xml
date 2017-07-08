@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2dp"
+    app:cardCornerRadius="3dp"
+    app:cardElevation="3dp"
+    android:backgroundTint="@color/colorCardBackground"
+    android:id="@+id/adItem">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        >
+        <TextView
+            android:id="@+id/adItem_Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+
+            android:text="@string/sampleTitle"
+            android:gravity="start"
+            android:textSize="22sp"
+            android:textColor="@android:color/black"
+            />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/adItem_CreatedByImage"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:adjustViewBounds="true"
+            />
+
+        <TextView
+            android:id="@+id/adItem_CreatedBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/adItem_Title"
+            app:layout_constraintRight_toLeftOf="@id/adItem_CreatedByImage"
+            android:layout_marginEnd="4dp"
+            android:text="@string/name"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/adItem_Title"
+            app:layout_constraintRight_toLeftOf="@+id/adItem_CreatedBy"
+            android:layout_marginEnd="5dp"
+            android:layout_gravity="end"
+            android:text="@string/by"
+            android:textSize="16sp"
+            android:textStyle="italic"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

@@ -98,16 +98,21 @@
     <string name="finish">Finish</string>
     <string name="lost_found"><![CDATA[Lost & Found]]></string>
     <string name="buy_sell">Buy / Sell</string>
-    <string name="timetables_datesheets_etc">Timetables / Datesheets etc.</string>
+    <string name="timetables_datesheets_etc">Timetables / Calender etc.</string>
     <string name="skills">Skills</string>
     <string name="events">Events</string>
     <string name="time">Time:</string>
     <string name="date">Date:</string>
-    <string name="hintDescriptionEvent">Add details about the event here:\n   Venue, Fees, etc…</string>
     <string name="hostel">Hostel</string>
     <string name="add">add</string>
     <string name="cancel">Cancel</string>
     <string name="error_image">Error Image</string>
+    <string name="by">by</string>
+
+
+    <string name="hintDescriptionEvent">Add details about the event here:\n   Venue, Fees, etc…</string>
+    <string name="hintDescriptionLostFound">When, Where, What, How? \nWrite details here…</string>
+    <string name="hintDescriptionTeach">A short note about the class…</string>
 
 
 </resources>

@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.CustomViews.LockableScrollView;
+import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
 import com.blackboxindia.TakeIT.Network.Interfaces.ImageDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
@@ -78,7 +79,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
 
     @Override
     public imgViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.viewad_img_card, parent, false);
+        View view = inflater.inflate(R.layout.card_viewad_img, parent, false);
         return new imgViewHolder(view);
     }
 
@@ -105,7 +106,8 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
         opened = true;
 
         // Load the high-resolution "zoomed-in" image.
-        expandedImageView.setImageURI(uri);
+//        expandedImageView.setImageURI(uri);
+        GlideApp.with(context).load(uri).into(expandedImageView);
 
         // Calculate the starting and ending bounds for the zoomed-in image. This step
         // involves lots of math. Yay, math.
@@ -258,7 +260,8 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                 public void onSuccess(Uri uri) {
 
                     progressBar.setVisibility(View.INVISIBLE);
-                    imageView.setImageURI(uri);
+//                    imageView.setImageURI(uri);
+                    GlideApp.with(context).load(uri).into(imageView);
                     imageView.setVisibility(View.VISIBLE);
 
                     final Uri finalUri = uri;

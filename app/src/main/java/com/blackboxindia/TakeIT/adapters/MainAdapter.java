@@ -25,15 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHolder> {
+public class MainAdapter extends RecyclerView.Adapter<MainAdapter.adItemViewHolder> {
 
-    private static String TAG = mainAdapter.class.getSimpleName()+" YOYO";
+    private static String TAG = MainAdapter.class.getSimpleName()+" YOYO";
 
     private final ImageClickListener mListener;
     private List<AdData> adList;
     private LayoutInflater inflater;
 
-    public mainAdapter(Context context, ArrayList<AdData> allAds, ImageClickListener listener) {
+    public MainAdapter(Context context, ArrayList<AdData> allAds, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
         adList = allAds;
         mListener = listener;
@@ -41,7 +41,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
     @Override
     public adItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.ad_item, parent, false);
+        View view = inflater.inflate(R.layout.card_ad, parent, false);
         return new adItemViewHolder(view);
     }
 
@@ -86,7 +86,7 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
             context = itemView.getContext();
         }
 
-        ImageView getMajorImage() {
+        public ImageView getMajorImage() {
             return majorImage;
         }
 
@@ -113,10 +113,14 @@ public class mainAdapter extends RecyclerView.Adapter<mainAdapter.adItemViewHold
 
             tv_title.setText(currentAd.getTitle());
 
-            if(currentAd.getPrice()==0)
-                tv_Price.setText(R.string.free);
+            if(currentAd.getPrice()!=null) {
+                if (currentAd.getPrice() == 0)
+                    tv_Price.setText(R.string.free);
+                else
+                    tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
+            }
             else
-                tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
+                tv_Price.setVisibility(View.INVISIBLE);
         }
 
         private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {

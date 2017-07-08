@@ -1,4 +1,4 @@
-package com.blackboxindia.TakeIT.adapters;
+package com.blackboxindia.TakeIT.HelperClasses;
 
 import android.content.Context;
 import android.transition.ChangeBounds;

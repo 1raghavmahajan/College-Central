@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.blackboxindia.TakeIT.Network.GlideApp;
+import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
 import com.blackboxindia.TakeIT.Network.Interfaces.AdListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
@@ -45,7 +45,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
 
     @Override
     public adItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.ad_item, parent, false);
+        View view = inflater.inflate(R.layout.card_ad, parent, false);
         return new adItemViewHolder(view);
     }
 

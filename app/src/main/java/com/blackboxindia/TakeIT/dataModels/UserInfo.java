@@ -2,29 +2,20 @@ package com.blackboxindia.TakeIT.dataModels;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.activities.MainActivity;
-import com.google.firebase.auth.FirebaseAuth;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class UserInfo{
 
     //region Variables
 
-    private String profileIMG;
+    private boolean hasProfileIMG;
     private String uID;
     private String name;
     private String email;
@@ -41,7 +32,7 @@ public class UserInfo{
 
     public UserInfo(){
         uID = null;
-        profileIMG = "";
+        hasProfileIMG = false;
         userAdKeys = new ArrayList<>();
     }
 
@@ -49,7 +40,7 @@ public class UserInfo{
         UserInfo userInfo = new UserInfo();
         userInfo.setData(name,email, roomNumber,phone);
         userInfo.setuID(uID);
-        userInfo.setProfileIMG(profileIMG);
+        userInfo.setHasProfileIMG(hasProfileIMG);
         for(String s:userAdKeys){
             userInfo.addUserAd(s);
         }
@@ -76,30 +67,6 @@ public class UserInfo{
         this.phone = phone;
         this.hostel = hostel;
         this.collegeName = collegeName;
-    }
-
-    public void newUser(String password, final Context context) {
-        NetworkMethods net = new NetworkMethods(context);
-        net.Create_Account(this,password, new onLoginListener() {
-            @Override
-            public void onSuccess(UserInfo userInfo) {
-                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    ((MainActivity) context).UpdateUI(userInfo,true,true);
-                    ((MainActivity) context).createSnackbar("Account Created Successfully",Snackbar.LENGTH_LONG);
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                if (e != null) {
-                    if (e.getMessage().contains("network"))
-                        Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
-                    else
-                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
     }
 
     public void login(final String email, final String password, final Context context) {
@@ -145,46 +112,48 @@ public class UserInfo{
             userAdKeys.remove(userAdKey);
     }
 
-    public static void cacheUserDetails(UserInfo userInfo, Context context) {
-        final String FILENAME = "profile_Img";
+    //region Cache User Details
+    /*
+        public static void cacheUserDetails(UserInfo userInfo, Context context) {
+            final String FILENAME = "profile_Img";
 
-        SharedPreferences cache = context.getSharedPreferences("user", Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = cache.edit();
+            SharedPreferences cache = context.getSharedPreferences("user", Context.MODE_PRIVATE);
+            SharedPreferences.Editor edit = cache.edit();
 
-        String profileIMG = userInfo.getProfileIMG();
-        if(profileIMG !=null) {
-            Log.i("YOYO","write: "+profileIMG);
+            String profileIMG = userInfo.getHasProfileIMG();
+            if(profileIMG !=null) {
+                Log.i("YOYO","write: "+profileIMG);
 
-            FileOutputStream fos;
-            try {
-                fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-                byte[] bytes = profileIMG.getBytes("UTF-8");
-                Log.i("YOYO",new String(bytes,"UTF-8"));
-                fos.write(bytes);
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                FileOutputStream fos;
+                try {
+                    fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                    byte[] bytes = profileIMG.getBytes("UTF-8");
+                    Log.i("YOYO",new String(bytes,"UTF-8"));
+                    fos.write(bytes);
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+
+            //edit.putString("hasProfileIMG", userInfo.getHasProfileIMG());
+            edit.putString("uID", userInfo.getuID());
+            edit.putString("name", userInfo.getName());
+            edit.putString("email", userInfo.getEmail());
+            edit.putString("roomNumber", userInfo.getRoomNumber());
+            edit.putString("phone", userInfo.getPhone());
+
+            Set<String> UserAdKeys = new HashSet<>(userInfo.getUserAdKeys());
+
+            edit.putStringSet("userAdKeys", UserAdKeys );
+
+            if(userInfo.getCollegeName()!=null)
+                edit.putString("collegeName", userInfo.getCollegeName());
+
+            edit.apply();
         }
 
-        //edit.putString("profileIMG", userInfo.getProfileIMG());
-        edit.putString("uID", userInfo.getuID());
-        edit.putString("name", userInfo.getName());
-        edit.putString("email", userInfo.getEmail());
-        edit.putString("roomNumber", userInfo.getRoomNumber());
-        edit.putString("phone", userInfo.getPhone());
-
-        Set<String> UserAdKeys = new HashSet<>(userInfo.getUserAdKeys());
-
-        edit.putStringSet("userAdKeys", UserAdKeys );
-
-        if(userInfo.getCollegeName()!=null)
-            edit.putString("collegeName", userInfo.getCollegeName());
-
-        edit.apply();
-    }
-
-    public static UserInfo getCachedUserDetails(String uID, Context context) {
+        public static UserInfo getCachedUserDetails(String uID, Context context) {
         final String FILENAME = "profile_Img";
 
         UserInfo userInfo = new UserInfo();
@@ -202,7 +171,7 @@ public class UserInfo{
                     fileInputStream.read(bytes);
                     String s = new String(bytes,"UTF-8");
                     Log.i("YOYO","read: "+s);
-                    userInfo.setProfileIMG(s);
+                    userInfo.setHasProfileIMG(s);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -222,13 +191,15 @@ public class UserInfo{
 
                 userInfo.setUserAdKeys(keys);
 
-                userInfo.setProfileIMG(cache.getString("collegeName", "IIT Indore"));
+                userInfo.setHasProfileIMG(cache.getString("collegeName", "IIT Indore"));
 
                 return userInfo;
             }
         }
         return null;
     }
+    */
+    //endregion
 
     //region Getters and Setters
 
@@ -280,12 +251,12 @@ public class UserInfo{
         this.userAdKeys = userAdKeys;
     }
 
-    public String getProfileIMG() {
-        return profileIMG;
+    public boolean getHasProfileIMG() {
+        return hasProfileIMG;
     }
 
-    public void setProfileIMG(String profileIMG) {
-        this.profileIMG = profileIMG;
+    public void setHasProfileIMG(boolean hasProfileIMG) {
+        this.hasProfileIMG = hasProfileIMG;
     }
 
     public String getCollegeName() {

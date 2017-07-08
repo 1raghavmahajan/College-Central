@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -51,11 +52,12 @@ import com.blackboxindia.TakeIT.Fragments.Frag_myAds;
 import com.blackboxindia.TakeIT.Fragments.Frag_myProfile;
 import com.blackboxindia.TakeIT.Fragments.Frag_newAccount;
 import com.blackboxindia.TakeIT.Fragments.Frag_newAd;
+import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
 import com.blackboxindia.TakeIT.Network.ImageStorageMethods;
+import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
-import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserCred;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -64,6 +66,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.blackboxindia.TakeIT.activities.OnboardingActivity.PREFERENCES_FILE;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_EVENT;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_LOSTFOUND;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_SELL;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_TEACH;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -96,20 +102,23 @@ public class MainActivity extends AppCompatActivity {
     AppBarLayout appBarLayout;
     FragmentManager fragmentManager;
     DrawerLayout drawer;
-    FloatingActionButton fab;
+    public FloatingActionButton fab;
     NavigationView navigationView;
     Menu navigationViewMenu;
 
     public UserInfo userInfo;
     public ImageStorageMethods imageStorageMethods;
 
-    boolean recentlySentMail;
-
     public closeImageListener closeImageListener;
 
     //endregion
 
     //region Initial Setup
+
+    public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
+        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
+        return sharedPref.getString(settingName, defaultValue);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +144,9 @@ public class MainActivity extends AppCompatActivity {
 
         setUpDrawer();
 
-        setUpFab();
+//        setUpFab(null);
+
+        setUpMainScreen();
 
         loadData();
 
@@ -151,12 +162,11 @@ public class MainActivity extends AppCompatActivity {
             final onLoginListener listener = new onLoginListener() {
                 @Override
                 public void onSuccess(UserInfo userInfo) {
+                    UpdateUI(userInfo,false, false);
                     dialog.cancel();
                     createSnackbar("Logged In!");
-                    //Todo:
-                    //setUpMainFragment();
-                    setUpMainScreen();
-                    //UpdateUI(userInfo,false, true);
+//                    Todo:
+//                    setUpMainFragment();
                 }
 
                 @Override
@@ -169,12 +179,11 @@ public class MainActivity extends AppCompatActivity {
                                         methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
                                             @Override
                                             public void onSuccess(UserInfo userInfo) {
-                                                UpdateUI(userInfo,false,true);
+                                                UpdateUI(userInfo,false,false);
                                                 dialog.cancel();
                                                 createSnackbar("Logged In!");
-                                                //Todo:
-                                                //setUpMainFragment();
-                                                setUpMainScreen();
+//                                                Todo:
+//                                                setUpMainFragment();
                                             }
 
                                             @Override
@@ -187,9 +196,8 @@ public class MainActivity extends AppCompatActivity {
                                                     createSnackbar("Session Expired. Please login again.");
                                                     UserCred.clear_cred(context);
                                                 }
-                                                //Todo:
-                                                //setUpMainFragment();
-                                                setUpMainScreen();
+//                                                Todo:
+//                                                setUpMainFragment();
                                             }
                                         });
                                     }
@@ -201,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //Todo:
                     //setUpMainFragment();
-                    setUpMainScreen();
                 }
             };
             methods.Login(userCred.getEmail(), userCred.getpwd(), listener);
@@ -215,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
                     });
             //Todo:
             //setUpMainFragment();
-            setUpMainScreen();
         }
     }
 
@@ -223,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
         appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
         progressBar = (ProgressBar) findViewById(R.id.progressBarTop);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fragmentManager = getFragmentManager();
         context = this;
         imageStorageMethods = new ImageStorageMethods(context);
@@ -255,53 +262,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
 
-    public void animateSearchToolbar(int numberOfMenuIcon, boolean containsOverflow, boolean show) {
-
-        //noinspection deprecation
-        toolbar.setBackgroundColor(getResources().getColor(R.color.colorSearch));
-
-        if (show) {
-            int width = toolbar.getWidth() -
-                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.action_button_min_width_overflow_material) : 0) -
-                    ((getResources().getDimensionPixelSize(R.dimen.action_button_min_width_material) * numberOfMenuIcon) / 2);
-            Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(toolbar,
-                    isRtl(getResources()) ? toolbar.getWidth() - width : width, toolbar.getHeight() / 2, 0.0f, (float) width);
-            createCircularReveal.setDuration(400);
-            createCircularReveal.start();
-        }
-        else {
-
-            int width = toolbar.getWidth() -
-                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.action_button_min_width_overflow_material) : 0) -
-                    ((getResources().getDimensionPixelSize(R.dimen.action_button_min_width_material) * numberOfMenuIcon) / 2);
-            Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(toolbar,
-                    isRtl(getResources()) ? toolbar.getWidth() - width : width, toolbar.getHeight() / 2, (float) width, 0.0f);
-            createCircularReveal.setDuration(300);
-            createCircularReveal.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    toolbar.setBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimary));
-                    drawer.setStatusBarBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimaryDark));
-                }
-            });
-            createCircularReveal.start();
-            drawer.setStatusBarBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimaryDark));
-        }
-    }
-
-    private boolean isRtl(Resources resources) {
-        return resources.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
-    }
-
-    private static int getThemeColor(Context context, int id) {
-        Resources.Theme theme = context.getTheme();
-        TypedArray a = theme.obtainStyledAttributes(new int[]{id});
-        int result = a.getColor(0, 0);
-        a.recycle();
-        return result;
     }
 
     private void setUpDrawer() {
@@ -368,13 +329,13 @@ public class MainActivity extends AppCompatActivity {
 
         Frag_Main frag_main = new Frag_Main();
         //mc.setRetainInstance(true);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.frame_layout, frag_main, MAIN_SCREEN_TAG);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
 
-//        currentFragTag = LOGIN_PAGE_TAG;
-//        fragmentManager.beginTransaction().add(R.id.frame_layout,new Frag_LoginPage(),LOGIN_PAGE_TAG).commit();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frame_layout, frag_main, MAIN_SCREEN_TAG)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack(null)
+                .commit();
+
     }
 
     private void setUpMainFragment() {
@@ -390,76 +351,43 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    // Todo: move the verify mail code
-    private void setUpFab() {
-        recentlySentMail = false;
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+    public void setUpFab(final String adType) {
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                if(currentUser==null) {
-                    createSnackbar("Please Login to continue", Snackbar.LENGTH_LONG, "Login", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
-                                }
-                            });
-                }
-                else {
-                    currentUser.reload();
-                    if(recentlySentMail){
-                        if(currentUser.isEmailVerified()) {
-                            UpdateUI(userInfo,false,false);
-                            launchOtherFragment(new Frag_newAd(), NEW_AD_TAG);
-                        }
-                        else
-                            Toast.makeText(context, "Please try again in a second.", Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                if (checkVerification()) {
+                    ((TextView) findViewById(R.id.nav_email)).setText(userInfo.getEmail());
 
-                        if (currentUser.isEmailVerified()) {
-                            UpdateUI(userInfo,false,false);
-                            launchOtherFragment(new Frag_newAd(), NEW_AD_TAG);
-                        }
-                        else {
-                            new AlertDialog.Builder(MainActivity.this)
-                                    .setMessage("You need to verify email before posting an Ad.")
-                                    .setPositiveButton("OK", null)
-                                    .setNeutralButton("Resend Email", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            //noinspection ConstantConditions
-                                            FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification()
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                        @Override
-                                                        public void onSuccess(Void aVoid) {
-                                                            Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
-                                                            recentlySentMail = true;
-                                                            new Handler().postDelayed(new Runnable() {
-                                                                @Override
-                                                                public void run() {
-                                                                    recentlySentMail = false;
-                                                                }
-                                                            }, 5 * 60 * 1000);
-                                                        }
-                                                    })
-                                                    .addOnFailureListener(new OnFailureListener() {
-                                                        @Override
-                                                        public void onFailure(@NonNull Exception e) {
-                                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                        }
-                                    })
-                                    .create()
-                                    .show();
-                        }
-                    }
+                    switch (adType) {
 
+                        case TYPE_SELL:
+                        case TYPE_LOSTFOUND:
+                        case TYPE_TEACH:
+
+                            Frag_newAd frag_newAd = new Frag_newAd();
+
+                            Bundle args = new Bundle();
+                            args.putString(Frag_Ads.ARGS_AdType,adType);
+
+                            frag_newAd.setArguments(args);
+
+                            launchOtherFragment(new Frag_newAd(), NEW_AD_TAG);
+
+                            break;
+
+                        case TYPE_EVENT:
+                            break;
+                    }
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        imageStorageMethods.saveCache();
     }
     //endregion
 
@@ -501,10 +429,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchOtherFragment(Fragment frag, String tag) {
+//        if(!currentFragTag.equals(tag)) {
             currentFragTag = tag;
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.frame_layout, frag,tag).addToBackStack(null).commit();
-    }
+            fragmentManager.beginTransaction()
+                    .replace(R.id.frame_layout, frag, tag)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .addToBackStack(null).commit();
+            }
 
     public void launchOtherFragmentOld(Fragment frag, String tag) {
         
@@ -653,6 +584,69 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public interface closeImageListener {
+        boolean closeImage();
+    }
+
+    //endregion
+
+    //region Search Related
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter(query);
+        }
+    }
+
+    public void animateSearchToolbar(int numberOfMenuIcon, boolean containsOverflow, boolean show) {
+
+        //noinspection deprecation
+        toolbar.setBackgroundColor(getResources().getColor(R.color.colorSearch));
+
+        if (show) {
+            int width = toolbar.getWidth() -
+                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.action_button_min_width_overflow_material) : 0) -
+                    ((getResources().getDimensionPixelSize(R.dimen.action_button_min_width_material) * numberOfMenuIcon) / 2);
+            Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(toolbar,
+                    isRtl(getResources()) ? toolbar.getWidth() - width : width, toolbar.getHeight() / 2, 0.0f, (float) width);
+            createCircularReveal.setDuration(400);
+            createCircularReveal.start();
+        }
+        else {
+
+            int width = toolbar.getWidth() -
+                    (containsOverflow ? getResources().getDimensionPixelSize(R.dimen.action_button_min_width_overflow_material) : 0) -
+                    ((getResources().getDimensionPixelSize(R.dimen.action_button_min_width_material) * numberOfMenuIcon) / 2);
+            Animator createCircularReveal = ViewAnimationUtils.createCircularReveal(toolbar,
+                    isRtl(getResources()) ? toolbar.getWidth() - width : width, toolbar.getHeight() / 2, (float) width, 0.0f);
+            createCircularReveal.setDuration(300);
+            createCircularReveal.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    toolbar.setBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimary));
+                    drawer.setStatusBarBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimaryDark));
+                }
+            });
+            createCircularReveal.start();
+            drawer.setStatusBarBackgroundColor(getThemeColor(MainActivity.this, R.attr.colorPrimaryDark));
+        }
+    }
+
+    private boolean isRtl(Resources resources) {
+        return resources.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+    }
+
+    private static int getThemeColor(Context context, int id) {
+        Resources.Theme theme = context.getTheme();
+        TypedArray a = theme.obtainStyledAttributes(new int[]{id});
+        int result = a.getColor(0, 0);
+        a.recycle();
+        return result;
+    }
+
     //endregion
 
     //region UI updating
@@ -678,6 +672,72 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    boolean recentlySentMail=false;
+    public boolean checkVerification() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser==null) {
+            createSnackbar("Please Login to continue", Snackbar.LENGTH_LONG, "Login", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                }
+            });
+            return false;
+        }
+        else {
+            currentUser.reload();
+            if(recentlySentMail){
+                if(currentUser.isEmailVerified()) {
+                    return true;
+                }
+                else {
+                    Toast.makeText(context, "Please try again in a second.", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+            else {
+
+                if (currentUser.isEmailVerified()) {
+                    return true;
+                }
+                else {
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setMessage("You need to verify email before posting an Ad.")
+                            .setPositiveButton("OK", null)
+                            .setNeutralButton("Resend Email", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //noinspection ConstantConditions
+                                    FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
+                                                    recentlySentMail = true;
+                                                    new Handler().postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            recentlySentMail = false;
+                                                        }
+                                                    }, 5 * 60 * 1000);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+                            })
+                            .create()
+                            .show();
+                    return false;
+                }
+            }
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     @SuppressWarnings("ConstantConditions")
     public void UpdateUI(UserInfo userInfo, Boolean redirect, Boolean toRefresh) {
@@ -691,16 +751,25 @@ public class MainActivity extends AppCompatActivity {
         if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified())
             notVerified = "";
         ((TextView) findViewById(R.id.nav_email)).setText(userInfo.getEmail()+notVerified);
-        ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
-        if(userInfo.getProfileIMG()!= null) {
-            if (!userInfo.getProfileIMG().equals("null")) {
-                imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
-            } else {
-                imageView.setImageResource(R.drawable.avatar);
-            }
+        final ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
+        if(userInfo.getHasProfileIMG()) {
+            imageStorageMethods.getProfileImage(userInfo.getuID(), new BitmapDownloadListener() {
+                @Override
+                public void onSuccess(Uri uri) {
+//                    imageView.setImageURI(uri);
+                    GlideApp.with(context).load(uri).into(imageView);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e(TAG, "onFailure: getProfileImage ", e);
+                    GlideApp.with(context).load(R.drawable.avatar).into(imageView);
+//                    imageView.setImageResource(R.drawable.avatar);
+                }
+            });
         }
         else {
-            imageView.setImageResource(R.drawable.avatar);
+            GlideApp.with(context).load(R.drawable.avatar).into(imageView);
         }
 
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.GONE);
@@ -734,7 +803,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(imageView.getDrawable() !=null) {
 //            ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
-            imageView.setImageResource(R.drawable.avatar);
+            GlideApp.with(context).load(R.drawable.avatar).into(imageView);
         }
 
         (findViewById(R.id.nav_btnLogin)).setVisibility(View.VISIBLE);
@@ -771,26 +840,4 @@ public class MainActivity extends AppCompatActivity {
 
     //endregion
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter(query);
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        imageStorageMethods.saveCache();
-    }
-
-    public static String readSharedSetting(Context ctx, String settingName, String defaultValue) {
-        SharedPreferences sharedPref = ctx.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
-        return sharedPref.getString(settingName, defaultValue);
-    }
-
-    public interface closeImageListener {
-        boolean closeImage();
-    }
 }

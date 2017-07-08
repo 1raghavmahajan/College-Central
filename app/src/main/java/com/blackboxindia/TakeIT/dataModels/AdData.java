@@ -3,12 +3,11 @@ package com.blackboxindia.TakeIT.dataModels;
 public class AdData {
 
     private String adID;
-    private String createdBy;
+    private UserInfo createdBy;
     private String title;
     private Integer price;
     private String description;
     private Integer numberOfImages;
-    private String collegeName;
     private String category;
     private String type;
 
@@ -52,11 +51,11 @@ public class AdData {
         this.adID = adID;
     }
 
-    public String getCreatedBy() {
+    public UserInfo getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(UserInfo createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -66,14 +65,6 @@ public class AdData {
 
     public void setNumberOfImages(Integer numberOfImages) {
         this.numberOfImages = numberOfImages;
-    }
-
-    public String getCollegeName() {
-        return collegeName;
-    }
-
-    public void setCollegeName(String collegeName) {
-        this.collegeName = collegeName;
     }
 
     public String getCategory() {

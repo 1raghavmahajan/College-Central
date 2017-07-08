@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.util.Log;
 import android.util.Patterns;
@@ -28,10 +29,13 @@ import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Network.Interfaces.addCollegeDataListener;
 import com.blackboxindia.TakeIT.Network.Interfaces.getCollegeDataListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
+import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -44,21 +48,22 @@ public class Frag_newAccount extends Fragment {
 
     TextInputEditText etName, etPhone, etAddress, etEmail, etPassword, etConfirmPass;
     Spinner collegeSpinner, hostelSpinner;
+//    ImageView hostelError, collegeError;
+//    ProgressBar hostelProgress, collegeProgress;
     Button btnCreate, btn_image;
-    View view;
+    View ParentView;
 
     Context context;
     ImageView imageView;
     ImageUtils imageUtils;
 
     UserInfo userInfo;
+    Bitmap profileImage;
 
     ArrayList<String> collegeList;
     ArrayList<String> hostelList;
-
     ClickListener collegeListener;
     ClickListener hostelListener;
-
     NetworkMethods networkMethods;
 
     //endregion
@@ -69,8 +74,8 @@ public class Frag_newAccount extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.frag_newaccount, container, false);
-        context = view.getContext();
+        ParentView = inflater.inflate(R.layout.frag_newaccount, container, false);
+        context = ParentView.getContext();
         networkMethods = new NetworkMethods(context);
 
         initVariables();
@@ -93,14 +98,38 @@ public class Frag_newAccount extends Fragment {
                 if (validateDetails(userInfo)) {
                     userInfo.setHostel(hostelList.get(hostelSpinner.getSelectedItemPosition()-1));
                     userInfo.setCollegeName(collegeList.get(collegeSpinner.getSelectedItemPosition()-1));
+                    if(!userInfo.getHasProfileIMG())
+                        profileImage = null;
                     if (isPasswordValid()) {
-                        userInfo.newUser(etPassword.getText().toString().trim(), v.getContext());
+
+                        String password = etPassword.getText().toString().trim();
+
+                        NetworkMethods net = new NetworkMethods(context);
+                        net.Create_Account(userInfo,password, profileImage, new onLoginListener() {
+                            @Override
+                            public void onSuccess(UserInfo userInfo) {
+                                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                                    ((MainActivity) context).UpdateUI(userInfo,true,true);
+                                    ((MainActivity) context).createSnackbar("Account Created Successfully", Snackbar.LENGTH_LONG);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                if (e != null) {
+                                    if (e.getMessage().contains("network"))
+                                        Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+                                    else
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                     }
                 }
             }
         });
 
-        return view;
+        return ParentView;
     }
 
     private void populateSpinners() {
@@ -155,7 +184,7 @@ public class Frag_newAccount extends Fragment {
         networkMethods.getCollegeOptions(new getCollegeDataListener() {
             @Override
             public void onSuccess(ArrayList<String> data) {
-                view.findViewById(R.id.create_collegeProgress).setVisibility(View.INVISIBLE);
+                ParentView.findViewById(R.id.create_collegeProgress).setVisibility(View.INVISIBLE);
                 if(data!=null)
                     collegeList = data;
                 else
@@ -165,11 +194,11 @@ public class Frag_newAccount extends Fragment {
 
                     @Override
                     public void onItemSelect(String name) {
-                        view.findViewById(R.id.create_hostelProgress).setVisibility(View.VISIBLE);
+                        ParentView.findViewById(R.id.create_hostelProgress).setVisibility(View.VISIBLE);
                         networkMethods.getHostelOptions(name, new getCollegeDataListener() {
                             @Override
                             public void onSuccess(ArrayList<String> data) {
-                                view.findViewById(R.id.create_hostelProgress).setVisibility(View.INVISIBLE);
+                                ParentView.findViewById(R.id.create_hostelProgress).setVisibility(View.INVISIBLE);
                                 if(data!=null)
                                     hostelList = data;
                                 else
@@ -303,7 +332,7 @@ public class Frag_newAccount extends Fragment {
                     createCustomDialog("College Name:", listener);
                 }
                 else if(position != 0) {
-                    view.findViewById(R.id.create_collegeError).setVisibility(View.INVISIBLE);
+                    ParentView.findViewById(R.id.create_collegeError).setVisibility(View.INVISIBLE);
                     listener.onItemSelect(parent.getItemAtPosition(position).toString());
                 }
             }
@@ -352,7 +381,7 @@ public class Frag_newAccount extends Fragment {
                     createCustomDialog("Hostel Name:",listener);
                 }
                 else if(position != 0) {
-                    view.findViewById(R.id.create_hostelError).setVisibility(View.INVISIBLE);
+                    ParentView.findViewById(R.id.create_hostelError).setVisibility(View.INVISIBLE);
                     listener.onItemSelect(parent.getItemAtPosition(position).toString());
                 }
             }
@@ -396,20 +425,21 @@ public class Frag_newAccount extends Fragment {
 
         userInfo = new UserInfo();
 
-        etName = (TextInputEditText) view.findViewById(R.id.create_etName);
-        etPhone = (TextInputEditText) view.findViewById(R.id.create_etPhone);
-        etAddress = (TextInputEditText) view.findViewById(R.id.create_etAddress);
-        etEmail = (TextInputEditText) view.findViewById(R.id.create_etEmail);
-        etPassword = (TextInputEditText) view.findViewById(R.id.create_etPassword);
-        etConfirmPass= (TextInputEditText) view.findViewById(R.id.create_etPasswordConfirm);
+        etName = (TextInputEditText) ParentView.findViewById(R.id.create_etName);
+        etPhone = (TextInputEditText) ParentView.findViewById(R.id.create_etPhone);
+        etAddress = (TextInputEditText) ParentView.findViewById(R.id.create_etAddress);
+        etEmail = (TextInputEditText) ParentView.findViewById(R.id.create_etEmail);
+        etPassword = (TextInputEditText) ParentView.findViewById(R.id.create_etPassword);
+        etConfirmPass= (TextInputEditText) ParentView.findViewById(R.id.create_etPasswordConfirm);
 
-        imageView = (ImageView) view.findViewById(R.id.create_img);
+        imageView = (ImageView) ParentView.findViewById(R.id.create_img);
 
-        btnCreate = (Button) view.findViewById(R.id.create_btnCreate);
-        btn_image = (Button) view.findViewById(R.id.create_btnImageChange);
+        btnCreate = (Button) ParentView.findViewById(R.id.create_btnCreate);
+        btn_image = (Button) ParentView.findViewById(R.id.create_btnImageChange);
 
-        collegeSpinner = (Spinner) view.findViewById(R.id.create_etCollege);
-        hostelSpinner = (Spinner) view.findViewById(R.id.create_etHostels);
+        collegeSpinner = (Spinner) ParentView.findViewById(R.id.create_etCollege);
+        hostelSpinner = (Spinner) ParentView.findViewById(R.id.create_etHostels);
+
     }
 
     //endregion
@@ -435,12 +465,12 @@ public class Frag_newAccount extends Fragment {
         }
 
         if(collegeSpinner.getSelectedItemPosition()==0 || collegeSpinner.getSelectedItemPosition()==collegeList.size()+1){
-            view.findViewById(R.id.create_collegeError).setVisibility(View.VISIBLE);
+            ParentView.findViewById(R.id.create_collegeError).setVisibility(View.VISIBLE);
             f = false;
         }
 
         if(hostelSpinner.getSelectedItemPosition()==0 || hostelSpinner.getSelectedItemPosition()==hostelList.size()+1){
-            view.findViewById(R.id.create_hostelError).setVisibility(View.VISIBLE);
+            ParentView.findViewById(R.id.create_hostelError).setVisibility(View.VISIBLE);
             f = false;
         }
 
@@ -484,7 +514,8 @@ public class Frag_newAccount extends Fragment {
                     } else if (w > h) {
                         file = Bitmap.createBitmap(file, (w - h) / 2, 0, h, h);
                     }
-                    userInfo.setProfileIMG(ImageUtils.BitMapToString(file, 75));
+                    userInfo.setHasProfileIMG(true);
+                    profileImage = file;
                     imageView.setImageBitmap(file);
                 }
                 else

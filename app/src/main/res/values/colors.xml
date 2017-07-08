@@ -13,6 +13,8 @@
 
     <color name="RecyclerBackground">#E0E0E0</color>
 
+    <color name="RecyclerBackgroundNew">#9c9c9c</color>
+
      <!--<color name="colorPrimary">#37474f</color>-->
     <!--<color name="colorPrimaryDark">#263238</color>-->
     <!--<color name="colorAccent">#a4b220</color>-->

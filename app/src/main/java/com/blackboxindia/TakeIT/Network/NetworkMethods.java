@@ -72,42 +72,52 @@ public class NetworkMethods {
 
     //region User Related
 
-    public void Create_Account(final UserInfo userInfo, final String password, final onLoginListener loginListener) {
+
+    public void Create_Account(final UserInfo userInfo, final String password, final Bitmap profileImage, final onLoginListener loginListener) {
 
         mAuth.createUserWithEmailAndPassword(userInfo.getEmail(), password)
                 .addOnCompleteListener((Activity)context, new OnCompleteListener<AuthResult>() {
+                    @SuppressWarnings("ConstantConditions")
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                            //noinspection ConstantConditions
-                            mAuth.getCurrentUser().sendEmailVerification()
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
+                            new ImageStorageMethods(context)
+                                    .uploadProfileImage(
+                                            FirebaseAuth.getInstance().getCurrentUser().getUid(), profileImage, new BitmapUploadListener() {
+                                                @Override
+                                                public void onSuccess() {
 
-                                            Log.i(TAG, "Create Account Successful: " + userInfo.toString());
-                                            addDetailsToDB(userInfo);
-                                            UserCred userCred = new UserCred(userInfo.getEmail(),password);
-                                            userCred.save_cred(context);
+                                                    mAuth.getCurrentUser().sendEmailVerification()
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    Log.i(TAG, "Create Account Successful: " + userInfo.toString());
+                                                                    addDetailsToDB(userInfo);
+                                                                    UserCred userCred = new UserCred(userInfo.getEmail(),password);
+                                                                    userCred.save_cred(context);
 
-                                            ((MainActivity)context).launchOtherFragment(Frag_VerifyEmail.newInstance(loginListener, userInfo),MainActivity.VERIFY_EMAIL_TAG);
+                                                                    ((MainActivity)context).launchOtherFragment(
+                                                                            Frag_VerifyEmail.newInstance(loginListener, userInfo),
+                                                                            MainActivity.VERIFY_EMAIL_TAG);
 
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.e(TAG,"Failed to send email.",e);
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.e(TAG,"Failed to send email.",e);
+                                                                    mAuth.getCurrentUser().delete();
+                                                                }
+                                                            });
 
-                                            mAuth.getCurrentUser().delete();
+                                                }
 
-                                            //Log.i(TAG, "Create Account Successful: " + userInfo.toString());
-                                            //addDetailsToDB(userInfo);
-//                                            UserCred userCred = new UserCred(userInfo.getEmail(),password);
-//                                            userCred.save_cred(context);
-
-                                        }
-                                    });
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    Log.e(TAG, "onFailure: profileImageUpload", e);
+                                                    loginListener.onFailure(e);
+                                                }
+                                            });
 
                         } else {
                             Log.w(TAG, "Create Account Failure: ", task.getException());
@@ -181,7 +191,11 @@ public class NetworkMethods {
 
     }
 
-    public void UpdateUser(final UserInfo userInfo, final onUpdateListener listener) {
+    private void UpdateUser(final UserInfo userInfo, final onUpdateListener listener) {
+        UpdateUser(userInfo,null, listener);
+    }
+
+    public void UpdateUser(final UserInfo userInfo, Bitmap profileImage, final onUpdateListener listener) {
 
         Log.i(TAG,"UpdateUser: in progress");
 
@@ -197,21 +211,53 @@ public class NetworkMethods {
         }
         else {
 
-            mDatabase.child(DIRECTORY_USERS).child(userInfo.getuID()).setValue(userInfo)
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    Log.i(TAG,"UpdateUser: successful");
-                    //UserInfo.cacheUserDetails(userInfo,context);
-                    listener.onSuccess(userInfo);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.i(TAG,"UpdateUser: failed",e);
-                    listener.onFailure(e);
-                }
-            });
+            if(profileImage!=null){
+                ImageStorageMethods imageStorageMethods = new ImageStorageMethods(context);
+                imageStorageMethods.uploadProfileImage(userInfo.getuID(), profileImage, new BitmapUploadListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.i(TAG, "onSuccess: Profile Image Upload");
+                        mDatabase.child(DIRECTORY_USERS).child(userInfo.getuID()).setValue(userInfo)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.i(TAG, "UpdateUser: successful");
+                                        //UserInfo.cacheUserDetails(userInfo,context);
+                                        listener.onSuccess(userInfo);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.i(TAG, "UpdateUser: failed", e);
+                                listener.onFailure(e);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Log.e(TAG, "onFailure: profileImageUpload", e);
+                        listener.onFailure(e);
+                    }
+                });
+            }
+            else {
+                mDatabase.child(DIRECTORY_USERS).child(userInfo.getuID()).setValue(userInfo)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.i(TAG, "UpdateUser: successful");
+                                //UserInfo.cacheUserDetails(userInfo,context);
+                                listener.onSuccess(userInfo);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.i(TAG, "UpdateUser: failed", e);
+                        listener.onFailure(e);
+                    }
+                });
+            }
         }
     }
 
@@ -396,17 +442,16 @@ public class NetworkMethods {
             final ProgressDialog progressDialog = ProgressDialog.show(context, "Creating Ad...", "", true, false);
 
             final String key = mDatabase.child(DIRECTORY_ADS).push().getKey();
-            String uID = mAuth.getCurrentUser().getUid();
 
             adData.setAdID(key);
-            adData.setCreatedBy(uID);
+            adData.setCreatedBy(userInfo);
 
             final ImageStorageMethods methods = new ImageStorageMethods(context);
 
             methods.uploadBitmap(key, major, new BitmapUploadListener() {
                 @Override
                 public void onSuccess() {
-                    //progressDialog.cancel();
+
                     methods.uploadPics(imgURIs, key,progressDialog, new KeepTrackMain() {
 
                         @Override
@@ -508,24 +553,44 @@ public class NetworkMethods {
 
     public void getAllAds(Integer max_limit, final getAllAdsListener listener) {
 
-        mDatabase.child(DIRECTORY_ADS).limitToLast(max_limit)
-        .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                ArrayList<AdData> list = new ArrayList<>();
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    list.add(postSnapshot.getValue(AdData.class));
-                }
-                Collections.reverse(list);
-                listener.onSuccess(list);
-            }
+        if(max_limit!=0) {
+            mDatabase.child(DIRECTORY_ADS).limitToLast(max_limit)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            ArrayList<AdData> list = new ArrayList<>();
+                            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                                list.add(postSnapshot.getValue(AdData.class));
+                            }
+                            Collections.reverse(list);
+                            listener.onSuccess(list);
+                        }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                listener.onFailure(databaseError.toException());
-            }
-        });
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            listener.onFailure(databaseError.toException());
+                        }
+                    });
+        }
+        else {
+            mDatabase.child(DIRECTORY_ADS)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            ArrayList<AdData> list = new ArrayList<>();
+                            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                                list.add(postSnapshot.getValue(AdData.class));
+                            }
+                            Collections.reverse(list);
+                            listener.onSuccess(list);
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            listener.onFailure(databaseError.toException());
+                        }
+                    });
+        }
     }
 
     public void deleteAd(final UserInfo userInfo, final AdData adData, final onDeleteListener listener) {
@@ -562,6 +627,8 @@ public class NetworkMethods {
     }
 
     //endregion
+
+    //region College Data
 
     public void getCollegeOptions(final getCollegeDataListener listener){
         mDatabase.child(DIRECTORY_COLLEGES).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -635,5 +702,6 @@ public class NetworkMethods {
             }
         });
     }
+    //endregion
 
 }

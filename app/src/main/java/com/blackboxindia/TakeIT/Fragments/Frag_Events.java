@@ -1,14 +1,12 @@
 package com.blackboxindia.TakeIT.Fragments;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
@@ -23,20 +21,18 @@ import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.MainAdapter;
-import com.blackboxindia.TakeIT.adapters.teachingAdAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 import java.util.ArrayList;
 
-import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_LOSTFOUND;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_EVENT;
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_SELL;
-import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_TEACH;
 
-public class Frag_Ads extends Fragment {
+public class Frag_Events extends Fragment {
 
     //region variables
-    private static final String TAG = Frag_Ads.class.getSimpleName() + " YOYO";
+    private static final String TAG = Frag_Events.class.getSimpleName() + " YOYO";
     public static final String ARGS_AdType = "AdType";
 
 
@@ -58,6 +54,7 @@ public class Frag_Ads extends Fragment {
 
     //endregion
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -73,8 +70,6 @@ public class Frag_Ads extends Fragment {
         if (adType == null) {
             adType = TYPE_SELL;
         }
-
-        ((MainActivity)context).setUpFab(adType);
 
         refresh();
 
@@ -119,23 +114,16 @@ public class Frag_Ads extends Fragment {
                     }
                 }
             }
-            if(newList.isEmpty()) {
-                view.findViewById(R.id.ads_default).setVisibility(View.VISIBLE);
+            if(newList.isEmpty())
                 Toast.makeText(context, "No matches found.", Toast.LENGTH_SHORT).show();
-            }
             else {
-                if(recyclerView.getAdapter() != null) {
-                    view.findViewById(R.id.ads_default).setVisibility(View.GONE);
+                if(recyclerView.getAdapter() != null)
                     ((MainAdapter) recyclerView.getAdapter()).change(newList);
-                }
             }
         }
         else
-            if(recyclerView.getAdapter() != null) {
-                if(allAds.size()==0)
-                    view.findViewById(R.id.ads_default).setVisibility(View.VISIBLE);
+            if(recyclerView.getAdapter() != null)
                 ((MainAdapter) recyclerView.getAdapter()).change(allAds);
-            }
     }
 
     private void getAllAds() {
@@ -144,21 +132,12 @@ public class Frag_Ads extends Fragment {
         networkMethods.getAllAds( MAX_Ads ,new getAllAdsListener() {
             @Override
             public void onSuccess(ArrayList<AdData> list) {
-                everything = list;
-                filterList();
+                allAds = list;
                 if(recyclerView!=null) {
                     if (recyclerView.getAdapter() == null)
                         setUpRecyclerView();
-                    else {
-
-                        if(allAds.size()!=0)
-                            view.findViewById(R.id.ads_default).setVisibility(View.GONE);
-
-                        if(adType.equals(TYPE_TEACH))
-                            ((teachingAdAdapter) recyclerView.getAdapter()).change(allAds);
-                        else
-                            ((MainAdapter) recyclerView.getAdapter()).change(allAds);
-                    }
+                    else
+                        ((MainAdapter) recyclerView.getAdapter()).change(allAds);
                 }
                 else
                     setUpRecyclerView();
@@ -173,39 +152,16 @@ public class Frag_Ads extends Fragment {
         });
     }
 
-    private void filterList() {
-
-        allAds = new ArrayList<>();
-        if(everything!=null){
-            if(everything.size()!=0){
-                for (AdData ad : everything) {
-                    if(ad.getType().equals(adType))
-                        allAds.add(ad);
-                }
-            }
-        }
-
-    }
-
     private void setUpRecyclerView() {
 
-        if(allAds.size()!=0)
-            view.findViewById(R.id.ads_default).setVisibility(View.GONE);
-
         switch (adType){
-            case TYPE_SELL:
-                setUp1();
-                break;
-            case TYPE_LOSTFOUND:
-                setUp1();
-                break;
-            case TYPE_TEACH:
-                setUp2();
-                break;
+            case TYPE_EVENT:
+
+
         }
     }
 
-    private void setUp1() {
+    private void setUp() {
 
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
 
@@ -216,6 +172,7 @@ public class Frag_Ads extends Fragment {
 
                 Frag_ViewAd fragViewAd = Frag_ViewAd.newInstance(allAds.get(position));
                 current = main;
+//                ((MainActivity)context).launchOtherFragment(fragViewAd,VIEW_AD_TAG);
 
                 fragViewAd.setSharedElementEnterTransition(new adViewTransition());
                 fragViewAd.setEnterTransition(new Fade());
@@ -225,35 +182,6 @@ public class Frag_Ads extends Fragment {
                 getActivity().getFragmentManager().beginTransaction()
                         .addSharedElement(holder.getMajorImage(), "adImage0")
                         .replace(R.id.frame_layout, fragViewAd, MainActivity.VIEW_AD_TAG)
-                        .addToBackStack(null)
-                        .commit();
-
-
-            }
-        });
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void setUp2() {
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
-
-        final teachingAdAdapter adapter = new teachingAdAdapter(context,allAds, new teachingAdAdapter.ImageClickListener() {
-
-            @Override
-            public void onClick(teachingAdAdapter.adItemViewHolder holder, int position, AdData currentAd) {
-
-
-                Frag_ViewAd fragViewAd = Frag_ViewAd.newInstance(allAds.get(position));
-
-//                ((MainActivity)context).launchOtherFragment(fragViewAd,VIEW_AD_TAG);
-                Bundle args = new Bundle();
-                args.putString(ARGS_AdType, TYPE_TEACH);
-                fragViewAd.setArguments(args);
-
-                getActivity().getFragmentManager().beginTransaction()
-                        .replace(R.id.frame_layout, fragViewAd, MainActivity.VIEW_AD_TAG)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .addToBackStack(null)
                         .commit();
 

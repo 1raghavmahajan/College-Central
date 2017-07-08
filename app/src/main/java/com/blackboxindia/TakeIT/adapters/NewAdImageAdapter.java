@@ -27,7 +27,7 @@ public class NewAdImageAdapter extends RecyclerView.Adapter<NewAdImageAdapter.im
 
     @Override
     public imgViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.newad_img_card, parent, false);
+        View view = inflater.inflate(R.layout.card_newad_img, parent, false);
         return new imgViewHolder(view);
     }
 
@@ -46,7 +46,7 @@ public class NewAdImageAdapter extends RecyclerView.Adapter<NewAdImageAdapter.im
         notifyItemInserted(images.size()-1);
     }
 
-    void removeImage(int position){
+    private void removeImage(int position){
         images.remove(position);
         notifyItemRemoved(position);
         //notifyItemRangeChanged(position,images.size());

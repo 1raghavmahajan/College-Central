@@ -162,11 +162,10 @@ public class Frag_newEvent extends Fragment {
 
             AdData adData = new AdData();
 
-            adData.setCreatedBy(userInfo.getuID());
+            adData.setCreatedBy(userInfo);
             adData.setTitle(etTitle.getText().toString().trim());
             adData.setPrice(Integer.valueOf(etDate.getText().toString()));
             adData.setDescription(etDescription.getText().toString().trim());
-            adData.setCollegeName(userInfo.getCollegeName());
 
             adData.setNumberOfImages(imgURIs.size());
 

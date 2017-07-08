@@ -4,11 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/ads_recycler"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="false"
-        />
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/ads_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            />
+
+        <ImageView
+            android:id="@+id/ads_default"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/nothingnew"
+            android:alpha="0.4"
+            />
+
+
+    </FrameLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

@@ -16,12 +16,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
-import com.blackboxindia.TakeIT.Network.NetworkMethods;
+import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
+import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
-import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
@@ -91,35 +90,42 @@ public class Frag_ViewAd extends Fragment {
             tv_Title.setText(adData.getTitle());
             tv_Description.setText(adData.getDescription());
 
-            NetworkMethods networkMethods = new NetworkMethods(context);
-            networkMethods.getUserDetails(adData.getCreatedBy(), new onLoginListener() {
+            UserInfo userInfo = adData.getCreatedBy();
+            tv_Name.setText(userInfo.getName());
+            tv_Address.setText(userInfo.getRoomNumber());
+            tv_Phone.setText(userInfo.getPhone());
+            tv_College.setText(userInfo.getCollegeName());
+            tv_Phone.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onSuccess(UserInfo userInfo) {
-                    tv_Name.setText(userInfo.getName());
-                    tv_Address.setText(userInfo.getRoomNumber());
-                    tv_Phone.setText(userInfo.getPhone());
-                    tv_College.setText(userInfo.getCollegeName());
-                    tv_Phone.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                            intent.setData(Uri.parse("tel:"+tv_Phone.getText()));
-                            startActivity(intent);
-                        }
-                    });
-                    if(userInfo.getProfileIMG()!= null) {
-                        if (!userInfo.getProfileIMG().equals("null")) {
-                            imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getProfileIMG()));
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    Log.e(TAG,"getUserDetails failed",e);
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:"+tv_Phone.getText()));
+                    startActivity(intent);
                 }
             });
+            if(userInfo.getHasProfileIMG()) {
 
+                ((MainActivity)context).imageStorageMethods.getProfileImage(userInfo.getuID(), new BitmapDownloadListener() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        GlideApp.with(context).load(uri).into(imageView);
+//                        imageView.setImageURI(uri);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                    }
+                });
+
+
+
+//                Todo:
+//                if (!userInfo.getHasProfileIMG().equals("null")) {
+//                    imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getHasProfileIMG()));
+//                }
+
+            }
             setUpImgRecycler();
         }
         else

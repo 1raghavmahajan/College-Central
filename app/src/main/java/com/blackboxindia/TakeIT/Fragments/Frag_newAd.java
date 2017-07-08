@@ -29,6 +29,11 @@ import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 import java.util.ArrayList;
 
+import static com.blackboxindia.TakeIT.Fragments.Frag_Ads.ARGS_AdType;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_LOSTFOUND;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_SELL;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_TEACH;
+
 public class Frag_newAd extends Fragment {
 
     //region Variables
@@ -46,6 +51,7 @@ public class Frag_newAd extends Fragment {
     UserInfo userInfo;
     ImageUtils imageUtils;
     ArrayList<Uri> imgURIs;
+    String adType;
     //endregion
 
     //region Initial Setup
@@ -53,13 +59,27 @@ public class Frag_newAd extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frag_newad, container, false);
+
+        Bundle arguments = getArguments();
+        if(arguments!= null)
+            adType = arguments.getString(ARGS_AdType);
+
+        if (adType == null) {
+            adType = TYPE_SELL;
+        }
+
+        if(adType.equals(TYPE_LOSTFOUND))
+            view = inflater.inflate(R.layout.frag_newad_lostfound, container, false);
+        else
+            view = inflater.inflate(R.layout.frag_newad, container, false);
 
         initVariables();
 
         setUpRecycler();
 
         setUpListeners();
+
+        customize();
 
         initCamera();
 
@@ -69,7 +89,8 @@ public class Frag_newAd extends Fragment {
     private void initVariables() {
 
         etTitle = (EditText) view.findViewById(R.id.newAd_etTitle);
-        etPrice = (EditText) view.findViewById(R.id.newAd_etPrice);
+        if(!adType.equals(TYPE_LOSTFOUND))
+            etPrice = (EditText) view.findViewById(R.id.newAd_etPrice);
         etDescription = (EditText) view.findViewById(R.id.newAd_etDescription);
 
         btn_newImg = (Button) view.findViewById(R.id.newAd_btnAddImg);
@@ -77,6 +98,19 @@ public class Frag_newAd extends Fragment {
 
         context = view.getContext();
         imgURIs = new ArrayList<>();
+    }
+
+    private void customize() {
+        switch (adType){
+            case TYPE_SELL:
+                break;
+            case TYPE_LOSTFOUND:
+                etDescription.setHint(R.string.hintDescriptionLostFound);
+                break;
+            case TYPE_TEACH:
+                etDescription.setHint(R.string.hintDescriptionTeach);
+                break;
+        }
     }
 
     private void setUpRecycler() {
@@ -107,11 +141,13 @@ public class Frag_newAd extends Fragment {
 
             AdData adData = new AdData();
 
-            adData.setCreatedBy(userInfo.getuID());
+            adData.setCreatedBy(userInfo);
             adData.setTitle(etTitle.getText().toString().trim());
-            adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
+            if(!adType.equals(TYPE_LOSTFOUND))
+                adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
+            else
+                adData.setPrice(null);
             adData.setDescription(etDescription.getText().toString().trim());
-            adData.setCollegeName(userInfo.getCollegeName());
 
             adData.setNumberOfImages(imgURIs.size());
 
