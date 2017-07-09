@@ -330,7 +330,7 @@ public class Frag_myProfile extends Fragment {
             final ProgressDialog show = ProgressDialog.show(context, "Updating...", "", true, false);
             NetworkMethods methods = new NetworkMethods(context);
 
-            if(userInfoNew.getHasProfileIMG())
+            if(!userInfoNew.getHasProfileIMG())
                 newProfileImage = null;
 
             methods.UpdateUser(userInfo, newProfileImage, new onUpdateListener() {

@@ -19,7 +19,7 @@ public class DateObject {
         minutes = calendar.get(Calendar.MINUTE);
     }
     
-    public Calendar getDate(){
+    public Calendar toCalender(){
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_MONTH,day);
         calendar.set(Calendar.YEAR,year);

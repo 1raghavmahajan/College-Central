@@ -110,6 +110,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.adItemViewHold
                     }
                 });
             }
+            else
+                progressBar.setVisibility(View.GONE);
 
             tv_title.setText(currentAd.getTitle());
 

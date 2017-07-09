@@ -49,7 +49,6 @@ public class NetworkMethods {
     private final static String TAG = NetworkMethods.class.getSimpleName() + " YOYO";
 
     private final static String DIRECTORY_ADS = "ads";
-    private final static String DIRECTORY_EVENTS = "events";
     private final static String DIRECTORY_USERS = "users";
     private final static String DIRECTORY_HOSTELS = "hostels";
     private final static String DIRECTORY_COLLEGES = "colleges";
@@ -325,41 +324,58 @@ public class NetworkMethods {
 
     public void deleteUser(final UserInfo userInfo, final onDeleteUserListener listener) {
         if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+
             deleteUserData(userInfo, new onDeleteUserListener() {
                 @Override
                 public void onSuccess() {
-                    UserCred userCred = new UserCred();
-                    userCred.load_Cred(context);
-                    //noinspection ConstantConditions
-                    FirebaseAuth.getInstance().getCurrentUser()
-                            .reauthenticate(EmailAuthProvider.getCredential(mAuth.getCurrentUser().getEmail(), userCred.getpwd()))
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
 
-                                        FirebaseAuth.getInstance().getCurrentUser().delete()
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void aVoid) {
-                                                        listener.onSuccess();
-                                                        ((MainActivity) context).UpdateUIonLogout();
-                                                        UserCred.clear_cred(context);
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        listener.onFailure(e);
-                                                    }
-                                                });
+                    mDatabase.child(DIRECTORY_USERS).child(userInfo.getuID()).removeValue()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
 
+                                    UserCred userCred = new UserCred();
+                                    userCred.load_Cred(context);
+                                    //noinspection ConstantConditions
+                                    FirebaseAuth.getInstance().getCurrentUser()
+                                            .reauthenticate(EmailAuthProvider.getCredential(mAuth.getCurrentUser().getEmail(), userCred.getpwd()))
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+
+                                                    //noinspection ConstantConditions
+                                                    FirebaseAuth.getInstance().getCurrentUser().delete()
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    listener.onSuccess();
+                                                                    ((MainActivity) context).UpdateUIonLogout();
+                                                                    UserCred.clear_cred(context);
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            listener.onFailure(e);
+                                                        }
+                                                    });
+
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    listener.onFailure(e);
+                                                }
+                                            });
+
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.i(TAG, "UpdateUser: failed", e);
+                                    listener.onFailure(e);
                                     }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        listener.onFailure(e);
-                                    }
-                                });
-
+                            });
                 }
                 @Override
                 public void onFailure(Exception e) {
@@ -469,79 +485,120 @@ public class NetworkMethods {
 
             final String key = mDatabase.child(DIRECTORY_ADS).push().getKey();
 
+            Log.i(TAG, "createNewAd: key: "+key);
+
             adData.setAdID(key);
             adData.setCreatedBy(userInfo);
 
             final ImageStorageMethods methods = new ImageStorageMethods(context);
 
-            methods.uploadBitmap(key, major, new BitmapUploadListener() {
-                @Override
-                public void onSuccess() {
+            if(major!=null){
+                methods.uploadBitmap(key, major, new BitmapUploadListener() {
+                    @Override
+                    public void onSuccess() {
 
-                    methods.uploadPics(imgURIs, key,progressDialog, new KeepTrackMain() {
+                        methods.uploadPics(imgURIs, key,progressDialog, new KeepTrackMain() {
 
-                        @Override
-                        public void onSuccess() {
+                            @Override
+                            public void onSuccess() {
 
-                            mDatabase.child(DIRECTORY_ADS).child(key).setValue(adData)
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.i(TAG,"createNewAd: onFailure",e);
-                                            progressDialog.cancel();
-                                            listener.onFailure(e);
-                                        }
-                                    }).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.i(TAG,"createNewAd: onSuccess");
-                                            userInfo.addUserAd(key);
-                                            UpdateUser(userInfo, new onUpdateListener() {
-                                                @Override
-                                                public void onSuccess(UserInfo userInfo) {
+                                mDatabase.child(DIRECTORY_ADS).child(key).setValue(adData)
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.i(TAG,"createNewAd: onFailure",e);
+                                                progressDialog.cancel();
+                                                listener.onFailure(e);
+                                            }
+                                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.i(TAG,"createNewAd: onSuccess");
+                                        userInfo.addUserAd(key);
+                                        UpdateUser(userInfo, new onUpdateListener() {
+                                            @Override
+                                            public void onSuccess(UserInfo userInfo) {
+                                                progressDialog.cancel();
+                                                listener.onSuccess(adData);
+                                            }
+                                            @Override
+                                            public void onFailure(Exception e) {
+                                                if(try_update_NewAd >0) {
+                                                    try_update_NewAd--;
+                                                    Log.i(TAG,"onUpdate Retry #" + (2- try_update_NewAd));
+                                                    UpdateUser(userInfo, this);
+                                                }
+                                                else {
                                                     progressDialog.cancel();
-                                                    listener.onSuccess(adData);
+                                                    listener.onFailure(e);
                                                 }
-                                                @Override
-                                                public void onFailure(Exception e) {
-                                                    if(try_update_NewAd >0) {
-                                                        try_update_NewAd--;
-                                                        Log.i(TAG,"onUpdate Retry #" + (2- try_update_NewAd));
-                                                        UpdateUser(userInfo, this);
-                                                    }
-                                                    else {
-                                                        progressDialog.cancel();
-                                                        listener.onFailure(e);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                     });
+                                            }
+                                        });
+                                    }
+                                });
 
-                        }
-                        @Override
-                        public void onFailure(Exception e) {
-                            FirebaseStorage storage = FirebaseStorage.getInstance();
-                            storage.getReference().child("images/" + key + "/0s").delete();
-                            for(int i=0;i<imgURIs.size();i++)
-                                storage.getReference().child("images/" + key + "/" + i).delete();
-                            if(once_NewAd)
-                            {
-                                once_NewAd =false;
+                            }
+                            @Override
+                            public void onFailure(Exception e) {
+                                FirebaseStorage storage = FirebaseStorage.getInstance();
+                                storage.getReference().child("images/" + key + "/0s").delete();
+                                for(int i=0;i<imgURIs.size();i++)
+                                    storage.getReference().child("images/" + key + "/" + i).delete();
+                                if(once_NewAd)
+                                {
+                                    once_NewAd =false;
+                                    progressDialog.cancel();
+                                    listener.onFailure(e);
+                                }
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        progressDialog.cancel();
+                        listener.onFailure(e);
+                    }
+                });
+            }
+            else {
+                Log.i(TAG, "createNewAd: major null");
+                mDatabase.child(DIRECTORY_ADS).child(key).setValue(adData)
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.i(TAG, "createNewAd: onFailure", e);
                                 progressDialog.cancel();
                                 listener.onFailure(e);
                             }
+                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i(TAG, "createNewAd: onSuccess");
+                        userInfo.addUserAd(key);
+                        UpdateUser(userInfo, new onUpdateListener() {
+                            @Override
+                            public void onSuccess(UserInfo userInfo) {
+                                progressDialog.cancel();
+                                listener.onSuccess(adData);
+                            }
 
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    progressDialog.cancel();
-                    listener.onFailure(e);
-                }
-            });
+                            @Override
+                            public void onFailure(Exception e) {
+                                if (try_update_NewAd > 0) {
+                                    try_update_NewAd--;
+                                    Log.i(TAG, "onUpdate Retry #" + (2 - try_update_NewAd));
+                                    UpdateUser(userInfo, this);
+                                } else {
+                                    progressDialog.cancel();
+                                    listener.onFailure(e);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 
@@ -654,6 +711,43 @@ public class NetworkMethods {
 
     //endregion
 
+    public void deleteEvent(final UserInfo userInfo, final AdData adData) {
+
+        if(adData.getNumberOfImages()>0) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            storage.getReference().child("images/" + adData.getAdID() + "/0s").delete();
+            for (int i = 0; i < adData.getNumberOfImages(); i++)
+                storage.getReference().child("images/" + adData.getAdID() + "/" + i).delete();
+        }
+        mDatabase.child(DIRECTORY_ADS).child(adData.getAdID()).removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+//                        if(adData.getCreatedBy().getuID().equals(userInfo.getuID())) {
+//                            userInfo.removeUserAd(adData.getAdID());
+//                            UpdateUser(userInfo, new onUpdateListener() {
+//                                @Override
+//                                public void onSuccess(UserInfo userInfo) {
+//                                    Log.i(TAG, "onSuccess: updatedUser");
+//                                }
+//
+//                                @Override
+//                                public void onFailure(Exception e) {
+//                                    Log.e(TAG, "onFailure: deleteEvent", e);
+//                                }
+//                            });
+//                        }
+//                        else
+                        Log.i(TAG, "onSuccess: deleteEvent");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: deleteEvent", e);
+            }
+        });
+    }
 
     //region College Data
 

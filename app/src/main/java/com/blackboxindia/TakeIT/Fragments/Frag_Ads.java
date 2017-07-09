@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,9 @@ import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_EVENT;
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_LOSTFOUND;
@@ -74,7 +78,10 @@ public class Frag_Ads extends Fragment {
 
         if (adType == null) {
             adType = TYPE_SELL;
+            Log.i(TAG, "onCreateView: adType null");
         }
+        else
+            Log.i(TAG, "onCreateView: adType: "+adType);
 
         ((MainActivity)context).setUpFab(adType);
 
@@ -138,6 +145,7 @@ public class Frag_Ads extends Fragment {
                     view.findViewById(R.id.ads_default).setVisibility(View.VISIBLE);
                 ((MainAdapter) recyclerView.getAdapter()).change(allAds);
             }
+
     }
 
     private void getAllAds() {
@@ -161,6 +169,7 @@ public class Frag_Ads extends Fragment {
                                 ((teachingAdAdapter) recyclerView.getAdapter()).change(allAds);
                                 break;
                             case TYPE_EVENT:
+                                checkDeleteOrderEvents();
                                 ((EventsAdapter) recyclerView.getAdapter()).change(allAds);
                                 break;
                             default:
@@ -250,7 +259,7 @@ public class Frag_Ads extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
 
-        final teachingAdAdapter adapter = new teachingAdAdapter(context,allAds, new teachingAdAdapter.ImageClickListener() {
+        teachingAdAdapter adapter = new teachingAdAdapter(context,allAds, new teachingAdAdapter.ImageClickListener() {
 
             @Override
             public void onClick(teachingAdAdapter.adItemViewHolder holder, int position, AdData currentAd) {
@@ -305,6 +314,33 @@ public class Frag_Ads extends Fragment {
     public void clearRecycler() {
         if(recyclerView.getAdapter()!=null)
             recyclerView.swapAdapter(null,true);
+    }
+
+    private void checkDeleteOrderEvents() {
+
+        for (int i=0; i<allAds.size();i++) {
+            Calendar calender = allAds.get(i).getDateTime().toCalender();
+            calender.add(Calendar.HOUR_OF_DAY,12);
+            if(calender.before(Calendar.getInstance())) {
+                networkMethods.deleteEvent(userInfo,allAds.get(i));
+                allAds.remove(i);
+            }
+        }
+
+        Collections.sort(allAds, new Comparator<AdData>() {
+            @Override
+            public int compare(AdData o1, AdData o2) {
+                Calendar c1 = o1.getDateTime().toCalender();
+                Calendar c2 = o2.getDateTime().toCalender();
+                if(c1.after(c2))
+                    return 1;
+                else if(c1.before(c2))
+                    return -1;
+                else
+                    return 0;
+            }
+        });
+
     }
 
     @Override

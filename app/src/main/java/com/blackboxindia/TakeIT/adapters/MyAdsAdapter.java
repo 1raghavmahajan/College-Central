@@ -118,10 +118,14 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                     }
                 });
                 tv_title.setText(currentAd.getTitle());
-                if (currentAd.getPrice() == 0)
-                    tv_Price.setText(R.string.free);
+                if(currentAd.getPrice()!=null) {
+                    if (currentAd.getPrice() == 0)
+                        tv_Price.setText(R.string.free);
+                    else
+                        tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
+                }
                 else
-                    tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
+                    tv_Price.setVisibility(View.INVISIBLE);
             }
             else
                 Log.i(TAG,"CurrentAd null");

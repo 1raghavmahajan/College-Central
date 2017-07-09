@@ -11,11 +11,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Network.Interfaces.newAdListener;
@@ -44,6 +46,7 @@ public class Frag_newAd extends Fragment {
     private static Integer ADD_PHOTO_CODE = 154;
 
     EditText etTitle,etPrice,etDescription;
+    TextView tvPrice;
     Button btn_newImg, btn_Create;
     RecyclerView recyclerView;
     NewAdImageAdapter adapter;
@@ -68,12 +71,12 @@ public class Frag_newAd extends Fragment {
 
         if (adType == null) {
             adType = TYPE_SELL;
+            Log.i(TAG, "onCreateView: adType null");
         }
-
-        if(adType.equals(TYPE_LOSTFOUND))
-            view = inflater.inflate(R.layout.frag_newad_lostfound, container, false);
         else
-            view = inflater.inflate(R.layout.frag_newad, container, false);
+            Log.i(TAG, "adType: "+adType);
+
+        view = inflater.inflate(R.layout.frag_newad, container, false);
 
         initVariables();
 
@@ -91,8 +94,8 @@ public class Frag_newAd extends Fragment {
     private void initVariables() {
 
         etTitle = (EditText) view.findViewById(R.id.newAd_etTitle);
-        if(!adType.equals(TYPE_LOSTFOUND))
-            etPrice = (EditText) view.findViewById(R.id.newAd_etPrice);
+        tvPrice = (TextView) view.findViewById(R.id.newAd_tvPrice);
+        etPrice = (EditText) view.findViewById(R.id.newAd_etPrice);
         etDescription = (EditText) view.findViewById(R.id.newAd_etDescription);
 
         btn_newImg = (Button) view.findViewById(R.id.newAd_btnAddImg);
@@ -105,9 +108,12 @@ public class Frag_newAd extends Fragment {
     private void customize() {
         switch (adType){
             case TYPE_SELL:
+                etPrice.setText("0");
                 break;
             case TYPE_LOSTFOUND:
                 etDescription.setHint(R.string.hintDescriptionLostFound);
+                tvPrice.setVisibility(View.INVISIBLE);
+                etPrice.setVisibility(View.INVISIBLE);
                 break;
             case TYPE_TEACH:
                 etDescription.setHint(R.string.hintDescriptionTeach);
@@ -131,11 +137,32 @@ public class Frag_newAd extends Fragment {
         btn_Create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prepareAndCreateAd();
+                if(validateForm())
+                    prepareAndCreateAd();
             }
         });
     }
     //endregion
+
+    private boolean validateForm(){
+        boolean f = true;
+
+        if(adType.equals(TYPE_SELL)){
+            if(etPrice.getText().toString().trim().equals("")){
+                etPrice.setError("Required!");
+            }
+        }
+
+        if(etDescription.getText().toString().trim().equals("")){
+            etDescription.setError("Please give some details");
+            f = false;
+        }
+        if(etTitle.getText().toString().equals("") ||  etTitle.getText().toString().trim().equals(getString(R.string.setTitle))){
+            etTitle.setError("Please give a suitable title");
+            f = false;
+        }
+        return f;
+    }
 
     private void prepareAndCreateAd() {
         userInfo = ((MainActivity)context).userInfo;
@@ -145,15 +172,26 @@ public class Frag_newAd extends Fragment {
 
             adData.setCreatedBy(userInfo);
             adData.setTitle(etTitle.getText().toString().trim());
-            if(!adType.equals(TYPE_LOSTFOUND))
-                adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
-            else
-                adData.setPrice(null);
+
+            switch (adType){
+                case TYPE_LOSTFOUND:
+                    adData.setPrice(null);
+                    break;
+                case TYPE_TEACH:
+                    adData.setPrice(null);
+                    if(!etPrice.getText().toString().trim().equals(""))
+                        adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
+                    break;
+                case TYPE_SELL:
+                    adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
+                    break;
+            }
+
             adData.setDescription(etDescription.getText().toString().trim());
-
             adData.setNumberOfImages(imgURIs.size());
-
             adData.setDateTime(new DateObject(Calendar.getInstance()));
+
+            adData.setType(adType);
 
             NetworkMethods networkMethods = new NetworkMethods(context);
             networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new newAdListener() {

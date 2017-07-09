@@ -113,12 +113,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
                     }
                 });
             }
+            else
+                progressBar.setVisibility(View.GONE);
 
             tv_title.setText(currentEvent.getTitle());
 
             String myFormat = "dd/MM/yy";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-            tv_Date.setText(sdf.format(currentEvent.getDateTime()));
+            tv_Date.setText(sdf.format(currentEvent.getDateTime().toCalender().getTime()));
 
         }
 

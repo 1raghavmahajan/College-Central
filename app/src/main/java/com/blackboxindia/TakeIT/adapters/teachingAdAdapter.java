@@ -89,6 +89,8 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
             tv_createdBy.setText(currentAd.getCreatedBy().getName());
 
             if(currentAd.getCreatedBy().getHasProfileIMG()){
+                creater.setVisibility(View.VISIBLE);
+                GlideApp.with(context).load(R.drawable.avatar).into(creater);
                 ((MainActivity)context).imageStorageMethods.getProfileImage(currentAd.getCreatedBy().getuID(), new BitmapDownloadListener() {
                     @Override
                     public void onSuccess(Uri uri) {

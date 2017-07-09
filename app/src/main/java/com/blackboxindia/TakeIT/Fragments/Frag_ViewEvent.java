@@ -108,7 +108,7 @@ public class Frag_ViewEvent extends Fragment {
 
             String myFormat = "dd/MM/yy";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-            tv_Date.setText(sdf.format(event.getDateTime().getDate().getTime()));
+            tv_Date.setText(sdf.format(event.getDateTime().toCalender().getTime()));
 
 //            tv_Time.setText(event.getTime());
 
@@ -136,10 +136,15 @@ public class Frag_ViewEvent extends Fragment {
     void setUpImgRecycler() {
         //Todo: Correct this
 //        main = ((Frag_Ads)(getFragmentManager().findFragmentByTag(MainActivity.ALL_FRAG_TAG))).current;
-        ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, event, main, view);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        imgRecyclerView.setLayoutManager(linearLayoutManager);
-        imgRecyclerView.setAdapter(adapter);
+
+        if(event.getNumberOfImages()>0) {
+            ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, event, main, view);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            imgRecyclerView.setLayoutManager(linearLayoutManager);
+            imgRecyclerView.setAdapter(adapter);
+        }
+        else
+            imgRecyclerView.setVisibility(View.GONE);
     }
 
     @Override

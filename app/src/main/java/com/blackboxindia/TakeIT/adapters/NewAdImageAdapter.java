@@ -52,7 +52,14 @@ public class NewAdImageAdapter extends RecyclerView.Adapter<NewAdImageAdapter.im
         //notifyItemRangeChanged(position,images.size());
     }
 
-    public Bitmap getMajor(){return images.get(0);}
+    public Bitmap getMajor(){
+        if(images!=null) {
+            if (images.size() > 0) {
+                return images.get(0);
+            }
+        }
+        return null;
+    }
 
     public interface onDeleteClickListener {
         void onDelete(int position);

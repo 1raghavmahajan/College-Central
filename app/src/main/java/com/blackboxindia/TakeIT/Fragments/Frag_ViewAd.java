@@ -82,10 +82,14 @@ public class Frag_ViewAd extends Fragment {
 
         if(adData!=null) {
 
-            if (adData.getPrice() == 0)
-                tv_Price.setText(getString(R.string.free));
+            if(adData.getPrice()!=null) {
+                if (adData.getPrice() == 0)
+                    tv_Price.setText(getString(R.string.free));
+                else
+                    tv_Price.setText(String.format(getString(R.string.currency), adData.getPrice()));
+            }
             else
-                tv_Price.setText(String.format(getString(R.string.currency), adData.getPrice()));
+                tv_Price.setVisibility(View.INVISIBLE);
 
             tv_Title.setText(adData.getTitle());
             tv_Description.setText(adData.getDescription());
@@ -117,14 +121,6 @@ public class Frag_ViewAd extends Fragment {
 
                     }
                 });
-
-
-
-//                Todo:
-//                if (!userInfo.getHasProfileIMG().equals("null")) {
-//                    imageView.setImageBitmap(ImageUtils.StringToBitMap(userInfo.getHasProfileIMG()));
-//                }
-
             }
             setUpImgRecycler();
         }

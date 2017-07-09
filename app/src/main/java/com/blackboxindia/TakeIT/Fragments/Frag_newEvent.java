@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,12 +111,14 @@ public class Frag_newEvent extends Fragment {
         btn_Create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prepareAndCreateAd();
+                if(validateForm())
+                    prepareAndCreateAd();
             }
         });
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((EditText)v).setError(null);
                 Calendar currentDate= Calendar.getInstance();
                 int
                     yy = currentDate.get(Calendar.YEAR),
@@ -146,6 +149,7 @@ public class Frag_newEvent extends Fragment {
         etTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((EditText)v).setError(null);
                 Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
@@ -157,7 +161,9 @@ public class Frag_newEvent extends Fragment {
                         myCalendar.set(Calendar.HOUR_OF_DAY,selectedHour);
                         myCalendar.set(Calendar.MINUTE,selectedMinute);
 
-                        etTime.setText( selectedHour + ":" + selectedMinute);
+                        String myFormat = "hh:mm a";
+                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                        etTime.setText( sdf.format(myCalendar.getTime()));
                     }
                 }, hour, minute, false);
                 mTimePicker.setTitle("Select Time");
@@ -166,6 +172,27 @@ public class Frag_newEvent extends Fragment {
         });
     }
     //endregion
+
+    private boolean validateForm(){
+        boolean f = true;
+        if(etDate.getText().toString().trim().equals("")){
+            etDate.setError("Required!");
+            f = false;
+        }
+        if(etTime.getText().toString().trim().equals("")){
+            etTime.setError("Required!");
+            f = false;
+        }
+        if(etDescription.getText().toString().trim().equals("")){
+            etDescription.setError("Please give some details about the event");
+            f = false;
+        }
+        if(etTitle.getText().toString().equals("") ||  etTitle.getText().toString().trim().equals(getString(R.string.setTitle))){
+            etTitle.setError("Please give a suitable title");
+            f = false;
+        }
+        return f;
+    }
 
     private void prepareAndCreateAd() {
         userInfo = ((MainActivity)context).userInfo;
@@ -184,6 +211,11 @@ public class Frag_newEvent extends Fragment {
             event.setType(AdTypes.TYPE_EVENT);
 
             NetworkMethods networkMethods = new NetworkMethods(context);
+
+            Bitmap major = adapter.getMajor();
+            if(major==null)
+                Log.e(TAG, "prepareAndCreateAd: major null");
+
             networkMethods.createNewAd(userInfo, event, imgURIs, adapter.getMajor(), new newAdListener() {
                 @Override
                 public void onSuccess(AdData event) {

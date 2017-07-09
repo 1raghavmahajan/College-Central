@@ -23,6 +23,7 @@
             android:textAlignment="center"
             android:textSize="@dimen/title_text_size"
             android:textStyle="bold"
+            android:selectAllOnFocus="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             />
@@ -81,9 +82,9 @@
             android:id="@+id/newAd_etDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="4dp"
             android:layout_marginStart="18dp"
-            android:minEms="4"
+            android:minEms="5"
             android:inputType="date"
             android:focusable="false"
             android:longClickable="false"
@@ -106,8 +107,8 @@
             android:id="@+id/newAd_etTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:minEms="4"
+            android:layout_marginTop="4dp"
+            android:minEms="5"
             android:inputType="time"
             android:focusable="false"
             android:longClickable="false"
@@ -139,6 +140,18 @@
             app:layout_constraintLeft_toRightOf="@id/newAd_tvVenue"
             app:layout_constraintBaseline_toBaselineOf="@id/newAd_tvVenue" />-->
 
+        <View
+            android:id="@+id/newAd_line"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/black_trans80"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/newAd_etTime"
+            />
 
         <TextView
             android:id="@+id/newAd_tvDescription"
@@ -149,7 +162,7 @@
             android:textSize="19sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newAd_etTime"
+            app:layout_constraintTop_toBottomOf="@+id/newAd_line"
             />
 
         <EditText
