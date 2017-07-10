@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
@@ -23,6 +22,11 @@ import com.blackboxindia.TakeIT.dataModels.AdData;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_EVENT;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_LOSTFOUND;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_SELL;
+import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_TEACH;
 
 
 public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHolder> {
@@ -45,8 +49,14 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
 
     @Override
     public adItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.card_ad, parent, false);
+        View view = inflater.inflate(R.layout.card_myad, parent, false);
         return new adItemViewHolder(view);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return super.getItemViewType(position);
     }
 
     @Override
@@ -80,19 +90,16 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
     public class adItemViewHolder extends RecyclerView.ViewHolder{
 
         ImageView majorImage;
-        TextView tv_title;
-        TextView tv_Price;
+        TextView tv_Title, tv_Type;
         Context context;
         CardView cardView;
-        ProgressBar progressBar;
 
         adItemViewHolder(View itemView) {
             super(itemView);
             majorImage = (ImageView) itemView.findViewById(R.id.adItem_Image);
-            tv_title = (TextView) itemView.findViewById(R.id.adItem_Title);
-            tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
+            tv_Title = (TextView) itemView.findViewById(R.id.adItem_Title);
+            tv_Type = (TextView) itemView.findViewById(R.id.adItem_Type);
             cardView = (CardView) itemView.findViewById(R.id.adItem);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.adItem_progress);
             context = itemView.getContext();
         }
 
@@ -103,29 +110,46 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
         void setData(final AdData currentAd, final int position) {
             if(currentAd!=null) {
                 setListeners(currentAd, this, position);
-                ((MainActivity)context).imageStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        if (majorImage != null && currentAd.getNumberOfImages() > 0) {
-                            GlideApp.with(context).load(uri).into(majorImage);
-                            progressBar.setVisibility(View.GONE);
+                if(currentAd.getNumberOfImages() > 0) {
+                    ((MainActivity) context).imageStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            if (majorImage != null) {
+                                GlideApp.with(context).load(uri).into(majorImage);
+                            }
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        Log.e(TAG, "onFailure #" + position + " ", e);
-                    }
-                });
-                tv_title.setText(currentAd.getTitle());
-                if(currentAd.getPrice()!=null) {
-                    if (currentAd.getPrice() == 0)
-                        tv_Price.setText(R.string.free);
-                    else
-                        tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
+                        @Override
+                        public void onFailure(Exception e) {
+                            Log.e(TAG, "onFailure #" + position + " ", e);
+                        }
+                    });
                 }
-                else
-                    tv_Price.setVisibility(View.INVISIBLE);
+
+                tv_Title.setText(currentAd.getTitle());
+
+                switch(currentAd.getType()){
+                    case TYPE_SELL:
+//                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorBuySell));
+                        tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorBuySell));
+                        tv_Type.setText("SELL");
+                        break;
+                    case TYPE_LOSTFOUND:
+//                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorLostFound));
+                        tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorLostFound));
+                        tv_Type.setText("LOST");
+                        break;
+                    case TYPE_EVENT:
+//                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorEvents));
+                        tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorEvents));
+                        tv_Type.setText("EVENT");
+                        break;
+                    case TYPE_TEACH:
+//                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorTeaching));
+                        tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorTeaching));
+                        tv_Type.setText("TEACH");
+                        break;
+                }
+
             }
             else
                 Log.i(TAG,"CurrentAd null");

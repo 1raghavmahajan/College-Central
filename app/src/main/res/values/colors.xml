@@ -15,6 +15,11 @@
 
     <color name="RecyclerBackgroundNew">#9c9c9c</color>
 
+    <color name="colorBuySell">#e2ac0c</color>
+    <color name="colorLostFound">#F44336</color>
+    <color name="colorEvents">#607d8b</color>
+    <color name="colorTeaching">#673AB7</color>
+
      <!--<color name="colorPrimary">#37474f</color>-->
     <!--<color name="colorPrimaryDark">#263238</color>-->
     <!--<color name="colorAccent">#a4b220</color>-->
