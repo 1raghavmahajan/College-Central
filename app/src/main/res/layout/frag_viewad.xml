@@ -38,8 +38,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/viewAdImageSize"
                 android:layout_below="@+id/Ad_tvTitle"
-                android:fadingEdgeLength="20dp"
-                android:elevation="50dp"
                 />
 
             <TextView
@@ -68,6 +66,7 @@
                 android:layout_marginEnd="12dp"
                 android:layout_marginStart="16dp"
                 android:text="@string/loremIpsum"
+                android:textIsSelectable="true"
                 android:textSize="15sp"
                 android:maxLength="@integer/Max_Description_Size"/>
             <TextView
@@ -87,7 +86,7 @@
                 android:layout_below="@id/Ad_tv2"
                 android:text="@string/name"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="6dp"
+                android:layout_marginBottom="3dp"
                 android:textSize="15sp"
                 />
             <TextView
@@ -97,7 +96,7 @@
                 android:layout_below="@id/Ad_tvName"
                 android:text="@string/room_number"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="6dp"
+                android:layout_marginBottom="3dp"
                 android:textSize="15sp"
                 />
             <TextView
@@ -107,7 +106,6 @@
                 android:layout_below="@id/Ad_tvRoomNumber"
                 android:text="@string/hostel"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="6dp"
                 android:textSize="15sp"
                 />
             <TextView
@@ -117,7 +115,8 @@
                 android:layout_below="@id/Ad_tvHostel"
                 android:text="@string/phone_number"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="6dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
                 android:textSize="15sp"
                 />
             <TextView

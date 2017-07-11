@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -201,21 +202,54 @@ public class ImageStorageMethods {
         }
     }
 
-
     void uploadProfileImage(String uID, Bitmap bitmap, final BitmapUploadListener listener){
         Log.i(TAG,"bitmap up started");
         uploadBitmapWorker task = new uploadBitmapWorker("user/"+uID+"/profileImage", listener);
         task.execute(bitmap);
     }
 
-    private Map<String,Uri> cachedProfileImages;
+    private Map<String,UriNew> cachedProfileImages;
     public void getProfileImage(final String uID, final BitmapDownloadListener listener) {
 
         if(cachedProfileImages.containsKey(uID)) {
-            Log.i(TAG,"getProfileImage cached");
-            listener.onSuccess(cachedProfileImages.get(uID));
+
+            storage.getReference().child("user/"+uID+"/profileImage").getMetadata()
+                    .addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                        @Override
+                        public void onSuccess(final StorageMetadata storageMetadata) {
+                            if(cachedProfileImages.get(uID).timeStamp< storageMetadata.getUpdatedTimeMillis())
+                            {
+                                final File localFile;
+                                localFile = new File(context.getCacheDir(), uID + "_image.webp");
+                                storage.getReference().child("user/"+uID+"/profileImage").getFile(localFile)
+                                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                                cachedProfileImages.put(uID,new UriNew(Uri.fromFile(localFile),storageMetadata.getUpdatedTimeMillis()));
+                                                listener.onSuccess(Uri.fromFile(localFile));
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                                Log.e(TAG, "onFailure: getNewImage",e);
+                                                listener.onSuccess(cachedProfileImages.get(uID).uri);
+                                            }
+                                        });
+                            }
+                            else {
+                                listener.onSuccess(cachedProfileImages.get(uID).uri);
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "onFailure: getMetaData",e);
+                            listener.onSuccess(cachedProfileImages.get(uID).uri);
+                        }
+                    });
         }
         else {
+
             final File localFile;
 
             localFile = new File(context.getCacheDir(), uID + "_image.webp");
@@ -224,8 +258,12 @@ public class ImageStorageMethods {
                     .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-//                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getPath());
-                            cachedProfileImages.put(uID,Uri.fromFile(localFile));
+                            storage.getReference().child("user/"+uID+"/profileImage").getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                @Override
+                                public void onSuccess(StorageMetadata storageMetadata) {
+                                    cachedProfileImages.put(uID,new UriNew(Uri.fromFile(localFile),storageMetadata.getUpdatedTimeMillis()));
+                                }
+                            });
                             listener.onSuccess(Uri.fromFile(localFile));
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -236,7 +274,6 @@ public class ImageStorageMethods {
             });
         }
     }
-
 
     public void saveCache(){
         Log.i(TAG,"saveCache");
@@ -293,11 +330,10 @@ public class ImageStorageMethods {
 
             cachedProfileImages = new HashMap<>();
             Set<String> profileImages = new HashSet<>();
-            profileImages = cache.getStringSet("icons", profileImages);
+            profileImages = cache.getStringSet("profileImages", profileImages);
             for (String key : profileImages) {
-                String s = "";
-                s = cache.getString(key, s);
-                cachedProfileImages.put(key, Uri.parse(s));
+                String[] strings = cache.getString(key, "").split("#");
+                cachedProfileImages.put(key, new UriNew(Uri.parse(strings[0]),Long.valueOf(strings[1])));
             }
 
         }
@@ -336,12 +372,11 @@ public class ImageStorageMethods {
                             listener.onFailure(exception);
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Log.i(TAG,"uploadBitmap: onSuccess");
-                    listener.onSuccess();
-                }
-            });
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            listener.onSuccess();
+                        }
+                    });
         }
     }
 
@@ -389,6 +424,21 @@ public class ImageStorageMethods {
                     listener.onProgressUpdate(i, (int) p);
                 }
             });
+        }
+    }
+
+    private class UriNew {
+        public Uri uri;
+        long timeStamp;
+
+        UriNew(Uri uri, long t){
+            this.uri = uri;
+            timeStamp = t;
+        }
+
+        @Override
+        public String toString() {
+            return (uri.toString() + "#" + String.valueOf(timeStamp));
         }
     }
 

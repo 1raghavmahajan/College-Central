@@ -16,6 +16,7 @@ import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,11 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
                 ((MainActivity)context).imageStorageMethods.getProfileImage(currentAd.getCreatedBy().getuID(), new BitmapDownloadListener() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        GlideApp.with(context).load(uri).into(creater);
+                        GlideApp.with(context)
+                                .load(uri)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(creater);
                     }
 
                     @Override

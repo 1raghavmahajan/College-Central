@@ -23,6 +23,7 @@ import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -117,7 +118,10 @@ public class Frag_ViewEvent extends Fragment {
                 ((MainActivity)context).imageStorageMethods.getProfileImage(userInfo.getuID(), new BitmapDownloadListener() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        GlideApp.with(context).load(uri).into(imageView);
+                        GlideApp.with(context).load(uri)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(imageView);
 //                        imageView.setImageURI(uri);
                     }
 

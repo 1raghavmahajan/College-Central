@@ -3,6 +3,7 @@ package com.blackboxindia.TakeIT.Fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import com.blackboxindia.TakeIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -59,24 +62,33 @@ public class Frag_VerifyEmail extends Fragment {
         progressBar= (ProgressBar) view.findViewById(R.id.verify_progress);
         textView = (TextView) view.findViewById(R.id.verify_tv3);
 
+        progressBar.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.VISIBLE);
+
         (view.findViewById(R.id.verify_btn_Check)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                user.reload();
+                user.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
 
-                if (user != null) {
-                    if (user.isEmailVerified()) {
-                        Log.i(TAG, "Verified");
-                        Toast.makeText(context, "Email Verified!", Toast.LENGTH_SHORT).show();
-                        //Todo:
-//                        ((MainActivity)context).goToMainFragment(false,true);
-                        ((MainActivity)context).launchOtherFragment(new Frag_Main(),MainActivity.MAIN_SCREEN_TAG);
-                        loginListener.onSuccess(userInfo);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        textView.setVisibility(View.INVISIBLE);
+
+                        if (user != null) {
+                            if (user.isEmailVerified()) {
+                                Log.i(TAG, "Verified");
+                                Toast.makeText(context, "Email Verified!", Toast.LENGTH_SHORT).show();
+                                ((MainActivity)context).launchOtherFragment(new Frag_Main(),MainActivity.MAIN_SCREEN_TAG);
+                                loginListener.onSuccess(userInfo);
+                            }
+                            else {
+                                Toast.makeText(context, "Not Verified. Please Retry.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
                     }
-                    else {
-                        Toast.makeText(context, "Not Verified. Please Retry.", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                });
             }
         });
 

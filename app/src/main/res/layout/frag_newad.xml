@@ -85,7 +85,8 @@
             android:layout_margin="6dp"
             android:layout_marginStart="12dp"
             android:layout_marginTop="12dp"
-            android:ems="6"
+            android:minEms="3"
+            android:maxLength="7"
             android:inputType="number"
             app:layout_constraintLeft_toRightOf="@+id/newAd_tvPrice"
             app:layout_constraintTop_toBottomOf="@+id/newAd_recyclerFrame" />

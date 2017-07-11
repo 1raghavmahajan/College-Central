@@ -19,6 +19,7 @@ import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -115,7 +116,11 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                         @Override
                         public void onSuccess(Uri uri) {
                             if (majorImage != null) {
-                                GlideApp.with(context).load(uri).into(majorImage);
+                                GlideApp.with(context)
+                                        .load(uri)
+                                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                        .skipMemoryCache(true)
+                                        .into(majorImage);
                             }
                         }
                         @Override

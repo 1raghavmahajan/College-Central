@@ -4,15 +4,18 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -37,6 +40,13 @@ import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -61,6 +71,9 @@ public class Frag_myProfile extends Fragment {
 
     ArrayList<String> hostelList;
     Frag_newAccount.ClickListener hostelListener;
+
+    boolean recentlySentMail = false;
+    FirebaseUser currentUser;
     //endregion
 
     //region Initial Setup
@@ -113,7 +126,10 @@ public class Frag_myProfile extends Fragment {
             ((MainActivity)context).imageStorageMethods.getProfileImage(userInfo.getuID(), new BitmapDownloadListener() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    GlideApp.with(context).load(uri).into(imageView);
+                    GlideApp.with(context).load(uri)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(imageView);
                 }
 
                 @Override
@@ -217,6 +233,55 @@ public class Frag_myProfile extends Fragment {
             public void onFailure(Exception e) {
                 Log.e(TAG,"Get hostel list error", e);
                 Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    void checkVerified(final onCheckedListener listener){
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if (currentUser.isEmailVerified()) {
+
+                }
+                else {
+
+                    new AlertDialog.Builder(context)
+                            .setMessage("Account not verified, check your email account for a verification mail.")
+                            .setPositiveButton("OK", null)
+                            .setNeutralButton("Resend Email", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //noinspection ConstantConditions
+                                    currentUser.sendEmailVerification()
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
+                                                    recentlySentMail = true;
+                                                    new Handler().postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            recentlySentMail = false;
+                                                        }
+                                                    }, 5 * 60 * 1000);
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                }
+                            })
+                            .create()
+                            .show();
+                }
+
             }
         });
     }
@@ -330,8 +395,9 @@ public class Frag_myProfile extends Fragment {
             final ProgressDialog show = ProgressDialog.show(context, "Updating...", "", true, false);
             NetworkMethods methods = new NetworkMethods(context);
 
-            if(!userInfoNew.getHasProfileIMG())
+            if(!userInfoNew.getHasProfileIMG()) {
                 newProfileImage = null;
+            }
 
             methods.UpdateUser(userInfo, newProfileImage, new onUpdateListener() {
                 @Override
@@ -429,4 +495,7 @@ public class Frag_myProfile extends Fragment {
 
     //endregion
 
+    interface onCheckedListener {
+        void onCheck(boolean verified);
+    }
 }

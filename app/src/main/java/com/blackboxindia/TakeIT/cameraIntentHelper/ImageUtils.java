@@ -44,7 +44,7 @@ public class ImageUtils {
 
     private static String TAG = ImageUtils.class.getSimpleName()+" YOYO";
     private static int[] MAX_ICON_RES = {420,420};
-    private static int[] MAX_GALLERY_RES = {816, 612};
+    private static int[] MAX_GALLERY_RES = {900, 900};
 
     Context context;
     private Activity current_activity;

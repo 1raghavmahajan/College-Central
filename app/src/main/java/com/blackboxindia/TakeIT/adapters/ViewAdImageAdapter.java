@@ -27,6 +27,7 @@ import com.blackboxindia.TakeIT.Network.Interfaces.ImageDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.imgViewHolder> {
 
@@ -107,7 +108,9 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
 
         // Load the high-resolution "zoomed-in" image.
 //        expandedImageView.setImageURI(uri);
-        GlideApp.with(context).load(uri).into(expandedImageView);
+        GlideApp.with(context).load(uri)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(expandedImageView);
 
         // Calculate the starting and ending bounds for the zoomed-in image. This step
         // involves lots of math. Yay, math.
@@ -261,7 +264,10 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
 
                     progressBar.setVisibility(View.INVISIBLE);
 //                    imageView.setImageURI(uri);
-                    GlideApp.with(context).load(uri).into(imageView);
+                    GlideApp.with(context).load(uri)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
+                            .into(imageView);
                     imageView.setVisibility(View.VISIBLE);
 
                     final Uri finalUri = uri;

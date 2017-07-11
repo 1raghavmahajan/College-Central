@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.blackboxindia.TakeIT.Fragments.Frag_VerifyEmail;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapUploadListener;
@@ -75,6 +76,7 @@ public class NetworkMethods {
 
     public void Create_Account(final UserInfo userInfo, final String password, final Bitmap profileImage, final onLoginListener loginListener) {
 
+        final ProgressDialog progressDialog = ProgressDialog.show(context, "Creating Account", "Please wait...", true, false);
         mAuth.createUserWithEmailAndPassword(userInfo.getEmail(), password)
                 .addOnCompleteListener((Activity)context, new OnCompleteListener<AuthResult>() {
                     @SuppressWarnings("ConstantConditions")
@@ -97,7 +99,7 @@ public class NetworkMethods {
                                                                         addDetailsToDB(userInfo);
                                                                         UserCred userCred = new UserCred(userInfo.getEmail(), password);
                                                                         userCred.save_cred(context);
-
+                                                                        progressDialog.cancel();
                                                                         ((MainActivity) context).launchOtherFragment(
                                                                                 Frag_VerifyEmail.newInstance(loginListener, userInfo),
                                                                                 MainActivity.VERIFY_EMAIL_TAG);
@@ -106,6 +108,9 @@ public class NetworkMethods {
                                                                 }).addOnFailureListener(new OnFailureListener() {
                                                             @Override
                                                             public void onFailure(@NonNull Exception e) {
+                                                                progressDialog.cancel();
+                                                                Toast.makeText(context, "Failed to create account", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                                                                 Log.e(TAG, "Failed to send email.", e);
                                                                 mAuth.getCurrentUser().delete();
                                                             }
@@ -115,6 +120,7 @@ public class NetworkMethods {
 
                                                     @Override
                                                     public void onFailure(Exception e) {
+                                                        progressDialog.cancel();
                                                         Log.e(TAG, "onFailure: profileImageUpload", e);
                                                         loginListener.onFailure(e);
                                                     }
@@ -129,7 +135,7 @@ public class NetworkMethods {
                                                 addDetailsToDB(userInfo);
                                                 UserCred userCred = new UserCred(userInfo.getEmail(), password);
                                                 userCred.save_cred(context);
-
+                                                progressDialog.cancel();
                                                 ((MainActivity) context).launchOtherFragment(
                                                         Frag_VerifyEmail.newInstance(loginListener, userInfo),
                                                         MainActivity.VERIFY_EMAIL_TAG);
@@ -138,6 +144,9 @@ public class NetworkMethods {
                                         }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
+                                        progressDialog.cancel();
+                                        Toast.makeText(context, "Failed to create account", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                                         Log.e(TAG, "Failed to send email.", e);
                                         mAuth.getCurrentUser().delete();
                                     }
@@ -145,6 +154,7 @@ public class NetworkMethods {
                             }
 
                         } else {
+                            progressDialog.cancel();
                             Log.w(TAG, "Create Account Failure: ", task.getException());
                             loginListener.onFailure(task.getException());
                         }

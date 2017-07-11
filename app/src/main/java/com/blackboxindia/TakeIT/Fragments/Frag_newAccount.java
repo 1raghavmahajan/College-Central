@@ -48,8 +48,6 @@ public class Frag_newAccount extends Fragment {
 
     TextInputEditText etName, etPhone, etAddress, etEmail, etPassword, etConfirmPass;
     Spinner collegeSpinner, hostelSpinner;
-//    ImageView hostelError, collegeError;
-//    ProgressBar hostelProgress, collegeProgress;
     Button btnCreate, btn_image;
     View ParentView;
 
