@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
 
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_EVENT;
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_LOSTFOUND;
@@ -61,7 +62,7 @@ public class Frag_Ads extends Fragment {
     Bitmap current;
     ArrayList<AdData> allAds;
     ArrayList<AdData> everything;
-
+    Map<AdData,Integer> priority;
     //endregion
 
     @Nullable
@@ -113,21 +114,43 @@ public class Frag_Ads extends Fragment {
     public void filter(String query) {
 
         //Todo: implement prioritized search, filter by location
-
         query = query.trim().toLowerCase();
-        if(!query.equals("")) {
+        if(!query.equals("") && query.length()>2) {
 
             String[] split = query.split(" ");
-            ArrayList<AdData> newList = new ArrayList<>();
+//            ArrayList<AdData> newList = new ArrayList<>();
 
             for (AdData i:allAds) {
                 for (String aSplit : split) {
-                    if (i.getTitle().toLowerCase().contains(aSplit)) {
-                        newList.add(i);
-                        break;
+                    if(aSplit.length()>2) {
+                        if (i.getTitle().toLowerCase().contains(aSplit)) {
+//                        newList.add(i);
+                            if (priority.containsKey(i))
+                                priority.put(i, priority.get(i) + 1);
+                            else
+                                priority.put(i, 1);
+                        }
+                        if (i.getDescription().toLowerCase().contains(aSplit)) {
+                            if (priority.containsKey(i))
+                                priority.put(i, priority.get(i) + 1);
+                            else
+                                priority.put(i, 1);
+                        }
                     }
                 }
             }
+            ArrayList<AdData> newList = new ArrayList<>(priority.keySet());
+            Collections.sort(newList, new Comparator<AdData>() {
+                @Override
+                public int compare(AdData o1, AdData o2) {
+                    if(priority.get(o1)>priority.get(o2))
+                        return 1;
+                    else if(priority.get(o1)<priority.get(o2))
+                        return -1;
+                    else
+                        return 0;
+                }
+            });
             if(newList.isEmpty()) {
                 view.findViewById(R.id.ads_default).setVisibility(View.VISIBLE);
                 Toast.makeText(context, "No matches found.", Toast.LENGTH_SHORT).show();
@@ -309,11 +332,6 @@ public class Frag_Ads extends Fragment {
             }
         });
         recyclerView.setAdapter(adapter);
-    }
-
-    public void clearRecycler() {
-        if(recyclerView.getAdapter()!=null)
-            recyclerView.swapAdapter(null,true);
     }
 
     private void checkDeleteOrderEvents() {

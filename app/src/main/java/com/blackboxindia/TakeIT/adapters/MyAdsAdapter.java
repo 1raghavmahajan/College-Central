@@ -14,8 +14,6 @@ import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
-import com.blackboxindia.TakeIT.Network.Interfaces.newAdListener;
-import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
@@ -35,15 +33,12 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
     private static String TAG = MyAdsAdapter.class.getSimpleName()+" YOYO";
 
     private final ImageClickListener mListener;
-    private ArrayList<String> userAds;
+    private ArrayList<AdData> userAds;
     private LayoutInflater inflater;
 
-    private NetworkMethods networkMethods;
-
-    public MyAdsAdapter(Context context, ArrayList<String> keys, ImageClickListener listener) {
+    public MyAdsAdapter(Context context, ArrayList<AdData> ads, ImageClickListener listener) {
         inflater = LayoutInflater.from(context);
-        networkMethods = new NetworkMethods(context);
-        userAds = keys;
+        userAds = ads;
         Collections.reverse(userAds);
         mListener = listener;
     }
@@ -55,27 +50,8 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
     }
 
     @Override
-    public int getItemViewType(int position) {
-
-        return super.getItemViewType(position);
-    }
-
-    @Override
     public void onBindViewHolder(final adItemViewHolder holder, int position) {
-
-        networkMethods.getAd(userAds.get(position), new newAdListener() {
-            @Override
-            public void onSuccess(AdData adData) {
-                if(holder!=null){
-                    holder.setData(adData, holder.getAdapterPosition());
-                }
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Log.e(TAG,"getAd #"+holder.getAdapterPosition()+" ",e);
-            }
-        });
+        holder.setData(userAds.get(position), holder.getAdapterPosition());
     }
 
     @Override
@@ -84,7 +60,6 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
     }
 
     public interface ImageClickListener {
-
         void onClick(adItemViewHolder holder, int position, AdData currentAd);
     }
 

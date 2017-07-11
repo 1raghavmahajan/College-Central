@@ -36,6 +36,7 @@
         android:title="@string/refresh"
         android:orderInCategory="1"
         app:showAsAction="always"
+        android:visible="false"
         />
 
 </menu>

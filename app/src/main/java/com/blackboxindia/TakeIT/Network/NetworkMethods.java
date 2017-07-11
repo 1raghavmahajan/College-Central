@@ -623,7 +623,6 @@ public class NetworkMethods {
             listener.onFailure(new Exception("Not Logged In"));
         }
         else {
-
             mDatabase.child(DIRECTORY_ADS).child(adID).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
@@ -719,8 +718,6 @@ public class NetworkMethods {
         });
     }
 
-    //endregion
-
     public void deleteEvent(final UserInfo userInfo, final AdData adData) {
 
         if(adData.getNumberOfImages()>0) {
@@ -758,6 +755,8 @@ public class NetworkMethods {
             }
         });
     }
+
+    //endregion
 
     //region College Data
 
