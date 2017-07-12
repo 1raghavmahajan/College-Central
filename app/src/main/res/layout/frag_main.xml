@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!--<android.support.percent.PercentRelativeLayout
+    <android.support.percent.PercentRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
@@ -17,7 +16,7 @@
             app:layout_aspectRatio="100%"
             app:layout_marginPercent="0.5%"
             android:foreground="?android:attr/selectableItemBackground"
-            app:cardBackgroundColor="@color/amberDark"
+            app:cardBackgroundColor="@color/BlueGrey900"
             android:background="@drawable/ripple2"
             app:cardElevation="@dimen/mainCardElevation"
             app:cardCornerRadius="@dimen/mainCardCornerRadius"
@@ -26,12 +25,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="center|bottom"
+                android:layout_margin="16dp"
                 android:text="@string/buy_sell"
                 android:textSize="@dimen/mainCardTextSize"
                 android:textStyle="bold"
                 android:textColor="@color/white_85"
                 />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="34dp"
+                android:alpha="0.9"
+                android:src="@drawable/ic_icon"/>
 
         </android.support.v7.widget.CardView>
 
@@ -48,7 +58,7 @@
             app:cardElevation="@dimen/mainCardElevation"
             app:cardCornerRadius="@dimen/mainCardCornerRadius"
             >
-            <TextView
+            <!--<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -56,7 +66,14 @@
                 android:textSize="@dimen/mainCardTextSize"
                 android:textStyle="bold"
                 android:textColor="@color/white_85"
-                />
+                />-->
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:alpha="0.9"
+                android:src="@drawable/ic_card_back"/>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -75,12 +92,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:layout_gravity="center|bottom"
                 android:text="@string/events"
                 android:textColor="@color/white_85"
                 android:textSize="@dimen/mainCardTextSize"
                 android:textStyle="bold"
                 />
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="20dp"
+                android:alpha="0.9"
+                android:src="@drawable/ic_lecture_card"/>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -100,12 +128,21 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/skills"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="8dp"
+                android:text="@string/teach"
                 android:textSize="@dimen/mainCardTextSize"
                 android:textStyle="bold"
                 android:textColor="@color/white_85"
                 />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:adjustViewBounds="true"
+                android:alpha="0.9"
+                android:src="@drawable/page2_1"/>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -113,8 +150,7 @@
             android:layout_below="@id/mainCard3"
             app:layout_widthPercent="49%"
             app:layout_aspectRatio="100%"
-            app:layout_marginStartPercent="0.5%"
-            app:layout_marginTopPercent="0.5%"
+            app:layout_marginPercent="0.5%"
             app:cardBackgroundColor="@color/green"
             android:foreground="?android:attr/selectableItemBackground"
             android:clickable="true"
@@ -125,20 +161,66 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="center|bottom"
                 android:gravity="center"
                 android:text="@string/timetables_datesheets_etc"
-                android:textSize="@dimen/mainCardTextSize"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/white_85"
                 />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_calender_new"/>
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/mainCard6"
+            android:layout_below="@id/mainCard3"
+            android:layout_toEndOf="@id/mainCard5"
+            app:layout_widthPercent="49%"
+            app:layout_aspectRatio="100%"
+            app:layout_marginPercent="0.5%"
+            app:cardBackgroundColor="@color/blue"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:background="@drawable/ripple2"
+            app:cardElevation="@dimen/mainCardElevation"
+            app:cardCornerRadius="@dimen/mainCardCornerRadius"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="top|end"
+                android:gravity="center"
+                android:text="Broadcast!"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="@color/white_85"
+                />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="42dp"
+                android:adjustViewBounds="true"
+                android:layout_gravity="bottom|start"
+                android:src="@drawable/ic_loudspeaker"
+                android:alpha="0.9"/>
+
         </android.support.v7.widget.CardView>
 
     </android.support.percent.PercentRelativeLayout>
-    -->
 
-    <LinearLayout
+<!--    <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -191,6 +273,12 @@
                 android:textColor="@color/white_85"
                 android:layout_margin="@dimen/linear_cardMargin"
                 />
+&lt;!&ndash;            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_gravity="end"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_card_back"/>&ndash;&gt;
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -267,6 +355,6 @@
                 />
         </android.support.v7.widget.CardView>
 
-    </LinearLayout>
+    </LinearLayout>-->
 
 </ScrollView>

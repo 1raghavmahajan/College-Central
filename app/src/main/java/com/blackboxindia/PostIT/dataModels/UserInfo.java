@@ -2,6 +2,8 @@ package com.blackboxindia.PostIT.dataModels;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.widget.Toast;
 
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
@@ -11,7 +13,7 @@ import com.blackboxindia.PostIT.activities.MainActivity;
 import java.util.ArrayList;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class UserInfo{
+public class UserInfo implements Parcelable{
 
     //region Variables
 
@@ -35,6 +37,30 @@ public class UserInfo{
         hasProfileIMG = false;
         userAdKeys = new ArrayList<>();
     }
+
+    protected UserInfo(Parcel in) {
+        hasProfileIMG = in.readByte() != 0;
+        uID = in.readString();
+        name = in.readString();
+        email = in.readString();
+        roomNumber = in.readString();
+        phone = in.readString();
+        hostel = in.readString();
+        collegeName = in.readString();
+        userAdKeys = in.createStringArrayList();
+    }
+
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
+        @Override
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        @Override
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
 
     public UserInfo createCopy() {
         UserInfo userInfo = new UserInfo();
@@ -273,6 +299,24 @@ public class UserInfo{
 
     public void setHostel(String hostel) {
         this.hostel = hostel;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (hasProfileIMG ? 1 : 0));
+        dest.writeString(uID);
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(roomNumber);
+        dest.writeString(phone);
+        dest.writeString(hostel);
+        dest.writeString(collegeName);
+        dest.writeStringList(userAdKeys);
     }
 
     //endregion

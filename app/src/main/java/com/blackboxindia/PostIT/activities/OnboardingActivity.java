@@ -3,7 +3,6 @@ package com.blackboxindia.PostIT.activities;
 import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -22,13 +21,13 @@ import android.widget.TextView;
 
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.R;
-import com.blackboxindia.PostIT.cameraIntentHelper.ImageUtils;
 
 public class OnboardingActivity extends AppCompatActivity {
 
     //region Variables
     static final String TAG = OnboardingActivity.class.getSimpleName()+" YOYO";
     public static final String PREFERENCES_FILE = "TakeIT_Settings";
+    private static final Integer LAST_PAGE = 4;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -36,7 +35,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
     ImageButton mNextBtn;
     Button mSkipBtn, mFinishBtn;
-    ImageView zero, one, two, three;
+    ImageView zero, one, two, three, four;
     ImageView[] indicators;
 
     int page =0;
@@ -61,19 +60,20 @@ public class OnboardingActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(page);
         updateIndicators(page);
 
-        final int color1 = ContextCompat.getColor(this, R.color.orange);
-        final int color2 = ContextCompat.getColor(this, R.color.cyan);
-        final int color3 = ContextCompat.getColor(this, R.color.BlueGrey500);
-        final int color4 = ContextCompat.getColor(this, R.color.green);
-
-        final int[] colorList = new int[]{color1, color2, color3, color4};
+        final int colors[] = {
+                ContextCompat.getColor(this, R.color.orange),
+                ContextCompat.getColor(this, R.color.cyan),
+                ContextCompat.getColor(this, R.color.BlueGrey500),
+                ContextCompat.getColor(this, R.color.green),
+                ContextCompat.getColor(this, R.color.blue)
+        };
 
         final ArgbEvaluator evaluator = new ArgbEvaluator();
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                int colorUpdate = (Integer) evaluator.evaluate(positionOffset, colorList[position], colorList[position == 3 ? position : position + 1]);
+                int colorUpdate = (Integer) evaluator.evaluate(positionOffset, colors[position], colors[position == LAST_PAGE ? position : position + 1]);
                 mCoordinator.setBackgroundColor(colorUpdate);
                 mViewPager.setBackgroundColor(colorUpdate);
             }
@@ -82,25 +82,9 @@ public class OnboardingActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 page = position;
                 updateIndicators(page);
-
-                switch (position) {
-                    case 0:
-                        mViewPager.setBackgroundColor(color1);
-                        break;
-                    case 1:
-                        mViewPager.setBackgroundColor(color2);
-                        break;
-                    case 2:
-                        mViewPager.setBackgroundColor(color3);
-                        break;
-                    case 3:
-                        mViewPager.setBackgroundColor(color4);
-                        break;
-                }
-
-                mNextBtn.setVisibility(position == 3 ? View.GONE : View.VISIBLE);
-                mFinishBtn.setVisibility(position == 3 ? View.VISIBLE : View.GONE);
-
+                mViewPager.setBackgroundColor(colors[position]);
+                mNextBtn.setVisibility(position == LAST_PAGE ? View.GONE : View.VISIBLE);
+                mFinishBtn.setVisibility(position == LAST_PAGE ? View.VISIBLE : View.GONE);
             }
 
             @Override
@@ -138,8 +122,8 @@ public class OnboardingActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mNextBtn = (ImageButton) findViewById(R.id.intro_btn_next);
-        mNextBtn.setImageDrawable(
-                ImageUtils.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_right), Color.WHITE));
+//        mNextBtn.setImageDrawable(
+//                ImageUtils.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_right), Color.WHITE));
 
         mSkipBtn = (Button) findViewById(R.id.intro_btn_skip);
         mFinishBtn = (Button) findViewById(R.id.intro_btn_finish);
@@ -148,10 +132,11 @@ public class OnboardingActivity extends AppCompatActivity {
         one = (ImageView) findViewById(R.id.intro_indicator_1);
         two = (ImageView) findViewById(R.id.intro_indicator_2);
         three = (ImageView) findViewById(R.id.intro_indicator_3);
+        four = (ImageView) findViewById(R.id.intro_indicator_4);
 
         mCoordinator = (CoordinatorLayout) findViewById(R.id.main_content);
 
-        indicators = new ImageView[]{zero, one, two, three};
+        indicators = new ImageView[]{zero, one, two, three, four};
 
     }
 

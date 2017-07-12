@@ -71,6 +71,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.blackboxindia.PostIT.activities.OnboardingActivity.PREFERENCES_FILE;
+import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_Error;
+import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_LoggedIn;
+import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_User;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
@@ -160,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
         setUpMainScreen();
 
-        loadData();
+        setUpUser();
 
     }
 
@@ -188,11 +191,12 @@ public class MainActivity extends AppCompatActivity {
                         createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, "Retry", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+                                        final ProgressDialog dialog2 = ProgressDialog.show(context, "Logging you in...", "", true, false);
                                         methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
                                             @Override
                                             public void onSuccess(UserInfo userInfo) {
                                                 UpdateUI(userInfo,false,false);
-                                                dialog.cancel();
+                                                dialog2.cancel();
                                                 createSnackbar("Logged In!");
 //                                                Todo:
 //                                                setUpMainFragment();
@@ -201,10 +205,10 @@ public class MainActivity extends AppCompatActivity {
                                             @Override
                                             public void onFailure(Exception e) {
                                                 if (e.getMessage().contains("network")) {
-                                                    dialog.cancel();
+                                                    dialog2.cancel();
                                                     createSnackbar("Network Error, Please try again later.");
                                                 } else {
-                                                    dialog.cancel();
+                                                    dialog2.cancel();
                                                     createSnackbar("Session Expired. Please login again.");
                                                     UserCred.clear_cred(context);
                                                 }
@@ -232,8 +236,67 @@ public class MainActivity extends AppCompatActivity {
                             launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
                         }
                     });
-            //Todo:
-            //setUpMainFragment();
+        }
+    }
+
+    private void setUpUser(){
+        Bundle extras = getIntent().getExtras();
+        if(extras.getBoolean(ARG_LoggedIn)){
+
+            UserInfo info = extras.getParcelable(ARG_User);
+            UpdateUI(info,false, false);
+            createSnackbar("Logged In!");
+
+        } else {
+
+            Exception e = null;
+            if(extras.getParcelable(ARG_Error)!=null)
+                e = extras.getParcelable(ARG_Error);
+
+            if(e!=null) {
+                if (e.getMessage().contains("network")) {
+                    final UserCred userCred = new UserCred();
+                    userCred.load_Cred(context);
+                    final NetworkMethods methods = new NetworkMethods(context);
+                    createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, "Retry", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
+                            methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
+                                @Override
+                                public void onSuccess(UserInfo userInfo) {
+                                    UpdateUI(userInfo, false, false);
+                                    dialog.cancel();
+                                    createSnackbar("Logged In!");
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    if (e.getMessage().contains("network")) {
+                                        dialog.cancel();
+                                        createSnackbar("Network Error, Please try again later.");
+                                    } else {
+                                        dialog.cancel();
+                                        createSnackbar("Session Expired. Please login again.");
+                                        UserCred.clear_cred(context);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    createSnackbar("Session Expired. Please login again.");
+                    UserCred.clear_cred(context);
+                }
+            }
+            else {
+                createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE,"Login", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                    }
+                });
+            }
         }
     }
 

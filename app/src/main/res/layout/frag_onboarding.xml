@@ -5,15 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_horizontal_margin"
+    android:background="@color/blue"
     tools:context=".activities.OnboardingActivity">
 
     <ImageView
         android:id="@+id/section_img"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:alpha="0.9"
-        android:src="@drawable/page4"
+        android:alpha="0.8"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_lost_found_page"
         android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -28,12 +31,11 @@
         android:layout_gravity="bottom"
         android:gravity="center"
         android:orientation="vertical"
-
         app:layout_constraintTop_toBottomOf="@+id/section_img"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintVertical_bias="0.4"
+        app:layout_constraintVertical_bias="0.2"
         >
 
         <TextView

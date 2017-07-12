@@ -98,9 +98,9 @@
     <string name="finish">Finish</string>
     <string name="lost_found"><![CDATA[Lost & Found]]></string>
     <string name="buy_sell">Buy / Sell</string>
-    <string name="timetables_datesheets_etc">Timetables / Calender etc.</string>
-    <string name="teach">Teaching</string>
-    <string name="events">Events / RPS etc.</string>
+    <string name="timetables_datesheets_etc">Timetable, Datesheet</string>
+    <string name="teach">Teach</string>
+    <string name="events">Events, RPS</string>
     <string name="time">Time:</string>
     <string name="date">Date:</string>
     <string name="hostel">Hostel</string>
