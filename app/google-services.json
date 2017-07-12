@@ -8,20 +8,12 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:805645447847:android:c3553c13aa472f54",
+        "mobilesdk_app_id": "1:805645447847:android:a95f117b6f9ad1f6",
         "android_client_info": {
-          "package_name": "com.blackboxindia.TakeIT"
+          "package_name": "com.blackboxindia.PostIt"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "805645447847-9aimhtkhbuconr3ue70hub37uet3kmfu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.blackboxindia.TakeIT",
-            "certificate_hash": "316627ab9138fa1d8f5db2f0d67162f7e9cbeff1"
-          }
-        },
         {
           "client_id": "805645447847-ba39a0ljm06vosklnqf20qhhg5ei0k6p.apps.googleusercontent.com",
           "client_type": 3
@@ -37,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "805645447847-ba39a0ljm06vosklnqf20qhhg5ei0k6p.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

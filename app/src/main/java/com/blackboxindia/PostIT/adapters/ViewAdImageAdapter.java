@@ -63,13 +63,14 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
         ((MainActivity)context).closeImageListener = new MainActivity.closeImageListener() {
             @Override
             public boolean closeImage() {
+                Log.i(TAG, "closeImage: ");
                 if(opened){
                     opened = false;
                     scrollView.setScrollingEnabled(true);
                     closeAnim();
-                    return false;
-                } else {
                     return true;
+                } else {
+                    return false;
                 }
             }
         };
