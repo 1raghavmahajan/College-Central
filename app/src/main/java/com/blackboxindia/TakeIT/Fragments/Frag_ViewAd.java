@@ -24,6 +24,10 @@ import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+
+import java.util.List;
 
 public class Frag_ViewAd extends Fragment {
 
@@ -118,7 +122,6 @@ public class Frag_ViewAd extends Fragment {
                                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                                 .skipMemoryCache(true)
                                 .into(imageView);
-//                        imageView.setImageURI(uri);
                     }
 
                     @Override
@@ -145,6 +148,12 @@ public class Frag_ViewAd extends Fragment {
     public void onStop() {
         super.onStop();
         ((MainActivity) getActivity()).closeImageListener = null;
+        List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
+        for (FileDownloadTask task :
+                activeDownloadTasks) {
+            task.cancel();
+        }
     }
+
 }
 

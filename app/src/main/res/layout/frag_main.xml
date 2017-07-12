@@ -209,7 +209,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/events"
+                android:text="@string/teach"
                 android:textColor="@color/white_85"
                 android:textSize="@dimen/mainCardTextSize"
                 android:textStyle="bold"
@@ -228,17 +228,17 @@
             android:background="@drawable/ripple2"
             app:cardElevation="@dimen/mainCardElevation"
             app:cardCornerRadius="@dimen/mainCardCornerRadius">
+
             <TextView
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/skills"
-                android:textSize="@dimen/mainCardTextSize"
-                android:textStyle="bold"
-                android:textColor="@color/white_85"
                 android:layout_margin="@dimen/linear_cardMargin"
-
-                />
+                android:text="@string/events"
+                android:textColor="@color/white_85"
+                android:textSize="@dimen/mainCardTextSize"
+                android:textStyle="bold" />
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView

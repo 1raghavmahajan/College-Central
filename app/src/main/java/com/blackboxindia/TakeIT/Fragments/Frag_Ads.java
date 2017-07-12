@@ -28,11 +28,15 @@ import com.blackboxindia.TakeIT.adapters.MainAdapter;
 import com.blackboxindia.TakeIT.adapters.teachingAdAdapter;
 import com.blackboxindia.TakeIT.dataModels.AdData;
 import com.blackboxindia.TakeIT.dataModels.UserInfo;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.blackboxindia.TakeIT.dataModels.AdTypes.TYPE_EVENT;
@@ -79,10 +83,7 @@ public class Frag_Ads extends Fragment {
 
         if (adType == null) {
             adType = TYPE_SELL;
-            Log.i(TAG, "onCreateView: adType null");
         }
-        else
-            Log.i(TAG, "onCreateView: adType: "+adType);
 
         ((MainActivity)context).setUpFab(adType);
 
@@ -104,27 +105,24 @@ public class Frag_Ads extends Fragment {
 
         if(swipeRefreshLayout.isRefreshing())
             swipeRefreshLayout.setRefreshing(false);
-//        if(mAuth.getCurrentUser()!=null){
+
         networkMethods = new NetworkMethods(context);
         getAllAds();
-//        }
 
     }
 
     public void filter(String query) {
 
-        //Todo: implement prioritized search, filter by location
+        priority = new HashMap<>();
         query = query.trim().toLowerCase();
         if(!query.equals("") && query.length()>2) {
 
             String[] split = query.split(" ");
-//            ArrayList<AdData> newList = new ArrayList<>();
 
             for (AdData i:allAds) {
                 for (String aSplit : split) {
                     if(aSplit.length()>2) {
                         if (i.getTitle().toLowerCase().contains(aSplit)) {
-//                        newList.add(i);
                             if (priority.containsKey(i))
                                 priority.put(i, priority.get(i) + 1);
                             else
@@ -158,7 +156,10 @@ public class Frag_Ads extends Fragment {
             else {
                 if(recyclerView.getAdapter() != null) {
                     view.findViewById(R.id.ads_default).setVisibility(View.GONE);
-                    ((MainAdapter) recyclerView.getAdapter()).change(newList);
+                    if(adType.equals(TYPE_EVENT))
+                        ((EventsAdapter) recyclerView.getAdapter()).change(newList);
+                    else
+                        ((MainAdapter) recyclerView.getAdapter()).change(newList);
                 }
             }
         }
@@ -166,7 +167,10 @@ public class Frag_Ads extends Fragment {
             if(recyclerView.getAdapter() != null) {
                 if(allAds.size()==0)
                     view.findViewById(R.id.ads_default).setVisibility(View.VISIBLE);
-                ((MainAdapter) recyclerView.getAdapter()).change(allAds);
+                if(adType.equals(TYPE_EVENT))
+                    ((EventsAdapter) recyclerView.getAdapter()).change(allAds);
+                else
+                    ((MainAdapter) recyclerView.getAdapter()).change(allAds);
             }
 
     }
@@ -180,8 +184,10 @@ public class Frag_Ads extends Fragment {
                 everything = list;
                 filterList();
                 if(recyclerView!=null) {
-                    if (recyclerView.getAdapter() == null)
+                    if (recyclerView.getAdapter() == null) {
+                        checkDeleteOrderEvents();
                         setUpRecyclerView();
+                    }
                     else {
 
                         if(allAds.size()!=0)
@@ -336,10 +342,13 @@ public class Frag_Ads extends Fragment {
 
     private void checkDeleteOrderEvents() {
 
+        Log.i(TAG, "checkDeleteOrderEvents: ");
+
         for (int i=0; i<allAds.size();i++) {
             Calendar calender = allAds.get(i).getDateTime().toCalender();
             calender.add(Calendar.HOUR_OF_DAY,12);
             if(calender.before(Calendar.getInstance())) {
+                Log.i(TAG, "checkDeleteOrderEvents: to delete: "+allAds.get(i).getTitle());
                 networkMethods.deleteEvent(userInfo,allAds.get(i));
                 allAds.remove(i);
             }
@@ -366,9 +375,15 @@ public class Frag_Ads extends Fragment {
         ((MainActivity)context).showIT();
         super.onResume();
     }
+
     @Override
     public void onStop() {
         ((MainActivity)context).hideIT();
+        List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
+        for (FileDownloadTask task :
+                activeDownloadTasks) {
+            task.cancel();
+        }
         super.onStop();
     }
 

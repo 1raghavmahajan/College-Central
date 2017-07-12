@@ -24,6 +24,7 @@
             android:textAlignment="center"
             android:textSize="@dimen/title_text_size"
             android:textStyle="bold"
+            android:nextFocusDown="@id/newAd_etPrice"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             />
@@ -88,6 +89,7 @@
             android:minEms="3"
             android:maxLength="7"
             android:inputType="number"
+            android:nextFocusDown="@id/newAd_etDescription"
             app:layout_constraintLeft_toRightOf="@+id/newAd_tvPrice"
             app:layout_constraintTop_toBottomOf="@+id/newAd_recyclerFrame" />
 

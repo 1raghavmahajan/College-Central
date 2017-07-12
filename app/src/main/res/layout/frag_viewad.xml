@@ -10,7 +10,7 @@
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <RelativeLayout
             android:id="@+id/viewAdContainer"
@@ -69,6 +69,8 @@
                 android:textIsSelectable="true"
                 android:textSize="15sp"
                 android:maxLength="@integer/Max_Description_Size"/>
+
+
             <TextView
                 android:id="@+id/Ad_tv2"
                 android:layout_width="wrap_content"
@@ -146,6 +148,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:zoomage_restrictBounds="false"
+            android:fitsSystemWindows="true"
             app:zoomage_zoomable="true"
             app:zoomage_autoCenter="true"
             app:zoomage_minScale="0.5"
@@ -154,4 +157,5 @@
             />
 
     </FrameLayout>
+
 </com.blackboxindia.TakeIT.CustomViews.LockableScrollView>

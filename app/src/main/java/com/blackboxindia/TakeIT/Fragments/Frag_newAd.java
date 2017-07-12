@@ -57,6 +57,11 @@ public class Frag_newAd extends Fragment {
     ImageUtils imageUtils;
     ArrayList<Uri> imgURIs;
     String adType;
+
+    int count =0;
+    private static final int NUMBER_OF_DUPLICATES = 1;
+
+    NetworkMethods networkMethods;
     //endregion
 
     //region Initial Setup
@@ -190,24 +195,12 @@ public class Frag_newAd extends Fragment {
             adData.setDescription(etDescription.getText().toString().trim());
             adData.setNumberOfImages(imgURIs.size());
             adData.setDateTime(new DateObject(Calendar.getInstance()));
-
             adData.setType(adType);
 
-            NetworkMethods networkMethods = new NetworkMethods(context);
-            networkMethods.createNewAd(userInfo, adData, imgURIs, adapter.getMajor(), new newAdListener() {
-                @Override
-                public void onSuccess(AdData adData) {
-                    //Todo:
-                    //((MainActivity)context).goToMainFragment(false, true);
-                    ((MainActivity)context).launchOtherFragment(new Frag_Main(),MainActivity.MAIN_SCREEN_TAG);
-                    ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
-                }
+            networkMethods = new NetworkMethods(context);
 
-                @Override
-                public void onFailure(Exception e) {
-                    Toast.makeText(context, "Error: "+ e.getMessage() , Toast.LENGTH_SHORT).show();
-                }
-            });
+            create(adData);
+
         }
         else
         {
@@ -231,6 +224,30 @@ public class Frag_newAd extends Fragment {
             @Override
             public void onClick(View v) {
                 imageUtils.imagepicker(ADD_PHOTO_CODE);
+            }
+        });
+    }
+
+    void create(final AdData mAdData){
+        networkMethods.createNewAd(userInfo, mAdData, imgURIs, adapter.getMajor(), new newAdListener() {
+            @Override
+            public void onSuccess(AdData adData) {
+
+                ((MainActivity)context).onBackPressed();
+                ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
+                count++;
+                if(count<NUMBER_OF_DUPLICATES){
+                    mAdData.setTitle(mAdData.getTitle().replace("#"+(count-1),"#"+count));
+                    mAdData.setDescription(mAdData.getDescription()+" #"+count);
+                    if(mAdData.getPrice()!=null)
+                        mAdData.setPrice(mAdData.getPrice()+count);
+                    create(mAdData);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(context, "Error: "+ e.getMessage() , Toast.LENGTH_SHORT).show();
             }
         });
     }

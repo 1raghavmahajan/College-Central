@@ -51,6 +51,24 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.adItemViewHold
         holder.setData(currentAd, position, holder);
     }
 
+    @Override
+    public void onViewAttachedToWindow(adItemViewHolder holder) {
+        Log.i(TAG, "onViewAttachedToWindow: "+holder.tv_title.getText().toString());
+        super.onViewAttachedToWindow(holder);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(adItemViewHolder holder) {
+        Log.i(TAG, "onViewDetachedFromWindow: "+holder.tv_title.getText().toString());
+        super.onViewDetachedFromWindow(holder);
+    }
+
+    @Override
+    public void onViewRecycled(adItemViewHolder holder) {
+        Log.i(TAG, "onViewRecycled: "+holder.tv_title.getText());
+        super.onViewRecycled(holder);
+    }
+
     public void change(ArrayList<AdData> allAds){
         adList = allAds;
         notifyDataSetChanged();

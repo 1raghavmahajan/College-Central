@@ -58,6 +58,10 @@ public class Frag_newEvent extends Fragment {
     ArrayList<Uri> imgURIs;
 
     Calendar myCalendar;
+    NetworkMethods networkMethods;
+
+    int count = 0;
+    private static final int NUMBER_OF_DUPLICATES = 1;
     //endregion
 
     //region Init Setup
@@ -210,30 +214,40 @@ public class Frag_newEvent extends Fragment {
 
             event.setType(AdTypes.TYPE_EVENT);
 
-            NetworkMethods networkMethods = new NetworkMethods(context);
+            networkMethods = new NetworkMethods(context);
 
             Bitmap major = adapter.getMajor();
             if(major==null)
                 Log.e(TAG, "prepareAndCreateAd: major null");
 
-            networkMethods.createNewAd(userInfo, event, imgURIs, adapter.getMajor(), new newAdListener() {
-                @Override
-                public void onSuccess(AdData event) {
-                    //Todo: redirect back and refresh
-                    ((MainActivity)context).createSnackbar("AdData Created Successfully", Snackbar.LENGTH_LONG);
-                }
-
-                @Override
-                public void onFailure(Exception e) {
-                    Toast.makeText(context, "Error: "+ e.getMessage() , Toast.LENGTH_SHORT).show();
-                }
-            });
+            createAd(event);
 
         }
         else
         {
             Toast.makeText(context, "Not Logged in!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    void createAd(AdData event){
+        networkMethods.createNewAd(userInfo, event, imgURIs, adapter.getMajor(), new newAdListener() {
+            @Override
+            public void onSuccess(AdData event) {
+                ((MainActivity)context).onBackPressed();
+                ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
+                count++;
+                if(count<NUMBER_OF_DUPLICATES){
+                    event.setTitle(event.getTitle().replace("#"+(count-1),"#"+count));
+                    event.setDescription(event.getDescription()+" #"+count);
+                    createAd(event);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(context, "Error: "+ e.getMessage() , Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     //region Camera Setup

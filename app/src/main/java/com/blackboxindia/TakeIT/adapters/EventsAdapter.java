@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
@@ -113,8 +114,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
                     }
                 });
             }
-            else
+            else {
+                GlideApp.with(context)
+                        .load(R.drawable.ad_img_placeholder)
+                        .into(majorImage);
                 progressBar.setVisibility(View.GONE);
+            }
 
             tv_title.setText(currentEvent.getTitle());
 

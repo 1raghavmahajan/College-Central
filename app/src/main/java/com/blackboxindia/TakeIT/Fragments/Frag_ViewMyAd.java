@@ -1,33 +1,33 @@
 package com.blackboxindia.TakeIT.Fragments;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+        import android.app.Fragment;
+        import android.app.FragmentManager;
+        import android.app.FragmentTransaction;
+        import android.app.ProgressDialog;
+        import android.content.Context;
+        import android.graphics.Bitmap;
+        import android.os.Bundle;
+        import android.support.annotation.Nullable;
+        import android.support.design.widget.Snackbar;
+        import android.support.v7.widget.LinearLayoutManager;
+        import android.support.v7.widget.RecyclerView;
+        import android.util.Log;
+        import android.view.LayoutInflater;
+        import android.view.MenuItem;
+        import android.view.View;
+        import android.view.ViewGroup;
+        import android.widget.TextView;
 
-import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteListener;
-import com.blackboxindia.TakeIT.Network.NetworkMethods;
-import com.blackboxindia.TakeIT.R;
-import com.blackboxindia.TakeIT.activities.MainActivity;
-import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
-import com.blackboxindia.TakeIT.dataModels.AdData;
-import com.blackboxindia.TakeIT.dataModels.UserInfo;
+        import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteListener;
+        import com.blackboxindia.TakeIT.Network.NetworkMethods;
+        import com.blackboxindia.TakeIT.R;
+        import com.blackboxindia.TakeIT.activities.MainActivity;
+        import com.blackboxindia.TakeIT.adapters.ViewAdImageAdapter;
+        import com.blackboxindia.TakeIT.dataModels.AdData;
+        import com.blackboxindia.TakeIT.dataModels.UserInfo;
 
-import static com.blackboxindia.TakeIT.activities.MainActivity.MY_ADS_TAG;
-import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_MyAD_TAG;
+        import static com.blackboxindia.TakeIT.activities.MainActivity.MY_ADS_TAG;
+        import static com.blackboxindia.TakeIT.activities.MainActivity.VIEW_MyAD_TAG;
 
 public class Frag_ViewMyAd extends Fragment {
 

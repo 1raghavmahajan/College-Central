@@ -350,7 +350,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setUpFab(final String adType) {
-        Log.i(TAG, "setUpFab: adtype: "+adType);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

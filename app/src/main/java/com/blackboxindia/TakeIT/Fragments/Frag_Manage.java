@@ -31,6 +31,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class Frag_Manage extends Fragment {
 
+    //region Variables
+
     private static final int ANIMATION_DURATION = 300;
 
     View view;
@@ -45,6 +47,9 @@ public class Frag_Manage extends Fragment {
 
     Boolean opened;
     int ActualHeight;
+    //endregion
+
+    //region Initial Setup
 
     @Nullable
     @Override
@@ -78,42 +83,6 @@ public class Frag_Manage extends Fragment {
         });
 
         return view;
-    }
-
-    private void deleteAccount() {
-        new AlertDialog.Builder(context)
-                .setIcon(R.drawable.ic_error)
-                .setTitle("Delete Account")
-                .setMessage("All your ads/data will be deleted, are you sure?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialog, int which) {
-                        NetworkMethods networkMethods = new NetworkMethods(context);
-                        final ProgressDialog show = ProgressDialog.show(context, "Deleting Account", "Please wait...", true, false);
-                        networkMethods.deleteUser(((MainActivity) context).userInfo, new onDeleteUserListener() {
-                            @Override
-                            public void onSuccess() {
-                                show.cancel();
-                                dialog.cancel();
-
-                            }
-
-                            @Override
-                            public void onFailure(Exception e) {
-                                show.cancel();
-                                dialog.cancel();
-                                new AlertDialog.Builder(context)
-                                        .setTitle("Error!")
-                                        .setMessage(e.getMessage())
-                                        .setCancelable(true)
-                                        .create().show();
-                            }
-                        });
-                    }
-                })
-                .setNegativeButton("No", null)
-                .setCancelable(true)
-                .create().show();
     }
 
     private void initVariables() {
@@ -182,6 +151,44 @@ public class Frag_Manage extends Fragment {
             anim.start();
             opened = false;
         }
+    }
+
+    //endregion
+
+    private void deleteAccount() {
+        new AlertDialog.Builder(context)
+                .setIcon(R.drawable.ic_error)
+                .setTitle("Delete Account")
+                .setMessage("All your ads/data will be deleted, are you sure?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(final DialogInterface dialog, int which) {
+                        NetworkMethods networkMethods = new NetworkMethods(context);
+                        final ProgressDialog show = ProgressDialog.show(context, "Deleting Account", "Please wait...", true, false);
+                        networkMethods.deleteUser(((MainActivity) context).userInfo, new onDeleteUserListener() {
+                            @Override
+                            public void onSuccess() {
+                                show.cancel();
+                                dialog.cancel();
+
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                show.cancel();
+                                dialog.cancel();
+                                new AlertDialog.Builder(context)
+                                        .setTitle("Error!")
+                                        .setMessage(e.getMessage())
+                                        .setCancelable(true)
+                                        .create().show();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("No", null)
+                .setCancelable(true)
+                .create().show();
     }
 
     void changePass() {

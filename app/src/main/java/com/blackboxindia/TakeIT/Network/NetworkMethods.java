@@ -296,26 +296,6 @@ public class NetworkMethods {
         }
     }
 
-    public void getUserDetails(String uID, final onLoginListener loginListener) {
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mDatabase.child(DIRECTORY_USERS).child(uID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                UserInfo nUserInfo = dataSnapshot.getValue(UserInfo.class);
-                loginListener.onSuccess(nUserInfo);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-                loginListener.onFailure(databaseError.toException());
-            }
-        });
-    }
-
     public static void Logout(final Context context){
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
         FirebaseAuth.AuthStateListener stateListener = new FirebaseAuth.AuthStateListener() {

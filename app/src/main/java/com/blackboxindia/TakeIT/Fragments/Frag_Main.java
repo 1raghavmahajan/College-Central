@@ -71,7 +71,7 @@ public class Frag_Main extends Fragment {
                 Frag_Ads frag_ads = new Frag_Ads();
 
                 Bundle args = new Bundle();
-                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_EVENT);
+                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_TEACH);
                 frag_ads.setArguments(args);
 
                 ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
@@ -85,10 +85,11 @@ public class Frag_Main extends Fragment {
                 Frag_Ads frag_ads = new Frag_Ads();
 
                 Bundle args = new Bundle();
-                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_TEACH);
+                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_EVENT);
                 frag_ads.setArguments(args);
 
                 ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
+
             }
         });
         cardView[4].setOnClickListener(new View.OnClickListener() {
