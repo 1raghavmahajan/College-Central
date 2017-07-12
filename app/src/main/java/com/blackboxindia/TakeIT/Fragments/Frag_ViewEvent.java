@@ -107,11 +107,13 @@ public class Frag_ViewEvent extends Fragment {
                 }
             });
 
-            String myFormat = "dd/MM/yy";
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            String dateFormat = "dd/MM/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
             tv_Date.setText(sdf.format(event.getDateTime().toCalender().getTime()));
 
-//            tv_Time.setText(event.getTime());
+            String timeFormat = "hh:mm a";
+            SimpleDateFormat tf = new SimpleDateFormat(timeFormat, Locale.US);
+            tv_Time.setText(tf.format(event.getDateTime().toCalender().getTime()));
 
             if(userInfo.getHasProfileIMG()) {
 

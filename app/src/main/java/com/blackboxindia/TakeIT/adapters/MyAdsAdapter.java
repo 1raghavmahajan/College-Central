@@ -1,7 +1,9 @@
 package com.blackboxindia.TakeIT.adapters;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +16,12 @@ import android.widget.TextView;
 
 import com.blackboxindia.TakeIT.HelperClasses.GlideApp;
 import com.blackboxindia.TakeIT.Network.Interfaces.BitmapDownloadListener;
+import com.blackboxindia.TakeIT.Network.Interfaces.onDeleteListener;
+import com.blackboxindia.TakeIT.Network.NetworkMethods;
 import com.blackboxindia.TakeIT.R;
 import com.blackboxindia.TakeIT.activities.MainActivity;
 import com.blackboxindia.TakeIT.dataModels.AdData;
+import com.blackboxindia.TakeIT.dataModels.UserInfo;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
@@ -65,7 +70,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
 
     public class adItemViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView majorImage;
+        ImageView majorImage, btn_Delete;
         TextView tv_Title, tv_Type;
         Context context;
         CardView cardView;
@@ -76,10 +81,11 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
             tv_Title = (TextView) itemView.findViewById(R.id.adItem_Title);
             tv_Type = (TextView) itemView.findViewById(R.id.adItem_Type);
             cardView = (CardView) itemView.findViewById(R.id.adItem);
+            btn_Delete = (ImageView) itemView.findViewById(R.id.adItem_Delete);
             context = itemView.getContext();
         }
 
-        ImageView getMajorImage() {
+        public ImageView getMajorImage() {
             return majorImage;
         }
 
@@ -142,6 +148,29 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                 @Override
                 public void onClick(View v) {
                     mListener.onClick(holder, position, currentAd);
+                }
+            });
+            btn_Delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final ProgressDialog dialog = ProgressDialog.show(context, "Deleting...", "", true, false);
+                    NetworkMethods methods = new NetworkMethods(context);
+                    methods.deleteAd(((MainActivity)context).userInfo, currentAd, new onDeleteListener() {
+                        @Override
+                        public void onSuccess(UserInfo userInfo) {
+                            dialog.cancel();
+                            userAds.remove(position);
+                            notifyItemRemoved(position);
+                            ((MainActivity)context).UpdateUI(userInfo,false,false);
+                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully", Snackbar.LENGTH_LONG);
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            dialog.cancel();
+                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_LONG);
+                        }
+                    });
                 }
             });
         }

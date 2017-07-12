@@ -17,14 +17,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
-            android:inputType="textAutoCorrect"
+            android:inputType="textMultiLine"
+            android:maxLines="2"
             android:maxLength="@integer/Max_Title_Length"
             android:selectAllOnFocus="true"
-            android:text="@string/setTitle"
+            android:text="12345678912345678912345678912345678"
             android:textAlignment="center"
             android:textSize="@dimen/title_text_size"
             android:textStyle="bold"
-            android:nextFocusDown="@id/newAd_etPrice"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             />
@@ -89,7 +89,6 @@
             android:minEms="3"
             android:maxLength="7"
             android:inputType="number"
-            android:nextFocusDown="@id/newAd_etDescription"
             app:layout_constraintLeft_toRightOf="@+id/newAd_tvPrice"
             app:layout_constraintTop_toBottomOf="@+id/newAd_recyclerFrame" />
 

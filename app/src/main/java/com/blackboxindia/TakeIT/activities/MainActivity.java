@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String VIEW_AD_TAG = "VIEW_AD";
     public final static String VIEW_EVENT_TAG = "VIEW_EVENT";
     public final static String VIEW_MyAD_TAG = "VIEW_MyAD";
+    public final static String VIEW_MyEVENT_TAG = "VIEW_MyEVENT";
     public final static String VERIFY_EMAIL_TAG = "VERIFY_EMAIL";
 
     public final static String TAG = MainActivity.class.getSimpleName()+" YOYO";
@@ -404,8 +405,7 @@ public class MainActivity extends AppCompatActivity {
     boolean twiceToExit = false;
     @Override
     public void onBackPressed() {
-        // For closing the Drawer if open onBackPress
-        //Todo: getCurrentFrag
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }
@@ -413,63 +413,35 @@ public class MainActivity extends AppCompatActivity {
             toolbar.getMenu().findItem(R.id.toolbar_search).collapseActionView();
         }
         else {
-            switch (currentFragTag) {
-                case VIEW_MyAD_TAG:
-                    if(closeImageListener!=null) {
-                        if (closeImageListener.closeImage()) {
+            if(fragmentManager.findFragmentByTag(VIEW_AD_TAG)!=null
+                    || fragmentManager.findFragmentByTag(VIEW_EVENT_TAG)!=null
+                    || fragmentManager.findFragmentByTag(VIEW_MyAD_TAG)!=null ) {
 
-                            super.onBackPressed();
-/*
-                            fragmentManager.beginTransaction()
-                                    .remove(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG))
-                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
-                                    .commit();
-
-                            currentFragTag = MY_ADS_TAG;
-
-                            fragmentManager.beginTransaction()
-                                    .add(R.id.frame_layout, new Frag_myAds(), MY_ADS_TAG)
-                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                    .commit();*/
-                        }
+                if(closeImageListener!=null) {
+                    if (closeImageListener.closeImage()) {
+                        super.onBackPressed();
                     }
-                    break;
+                }
+            }
 
-                case VERIFY_EMAIL_TAG:
-                    //Todo:
-                    break;
+            else if(fragmentManager.findFragmentByTag(MAIN_SCREEN_TAG)!=null){
+                if (twiceToExit) {
+                    //imageStorageMethods.saveCache();
+                    finish();
+                }
 
-                case MAIN_SCREEN_TAG:
+                this.twiceToExit = true;
+                Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
 
-                    if (twiceToExit) {
-                        //imageStorageMethods.saveCache();
-                        finish();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        twiceToExit = false;
                     }
-
-                    this.twiceToExit = true;
-                    Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            twiceToExit = false;
-                        }
-                    }, 2000);
-                    break;
-
-                case VIEW_AD_TAG:
-                    if(closeImageListener!=null) {
-                        if (closeImageListener.closeImage()) {
-                            //goToMainFragment(false,false);
-                            super.onBackPressed();
-                        }
-                    }
-                    break;
-
-                default:
-                    //goToMainFragment(false, false);
-                    super.onBackPressed();
-                    break;
+                }, 2000);
+            }
+            else {
+                super.onBackPressed();
             }
         }
     }
