@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.blackboxindia.TakeIT">
+    package="com.blackboxindia.PostIT">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -16,7 +16,7 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.blackboxindia.PostIT.activities.MainActivity"
             android:label="@string/title_activity_main"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
@@ -35,7 +35,7 @@
         </activity>
 
         <activity
-            android:name=".activities.OnboardingActivity"
+            android:name="com.blackboxindia.PostIT.activities.OnboardingActivity"
             android:label="@string/title_activity_onboarding"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -45,7 +45,7 @@
         </activity>
 
         <activity
-            android:name=".activities.SplashScreen"
+            android:name="com.blackboxindia.PostIT.activities.SplashScreen"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">

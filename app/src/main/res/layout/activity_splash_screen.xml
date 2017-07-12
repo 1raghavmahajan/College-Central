@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/BlueGrey900"
     android:fitsSystemWindows="true"
-    tools:context="com.blackboxindia.TakeIT.activities.SplashScreen">
+    tools:context="com.blackboxindia.PostIT.activities.SplashScreen">
 
     <ImageView
         android:id="@+id/splash_icon"

@@ -21,7 +21,7 @@
             android:maxLines="2"
             android:maxLength="@integer/Max_Title_Length"
             android:selectAllOnFocus="true"
-            android:text="12345678912345678912345678912345678"
+            android:text="@string/title"
             android:textAlignment="center"
             android:textSize="@dimen/title_text_size"
             android:textStyle="bold"
