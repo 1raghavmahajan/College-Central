@@ -74,11 +74,10 @@
     <string name="title">Title</string>
 
 
-    <string name="page0">Want to get rid of the crap in your room and help others?</string>
-    <string name="page1">Or spread your skills and meet your juniors?</string>
-    <string name="page2">Your ad will we visible to students just from your college.</string>
-    <string name="page3">Contact the person using the phone number and meet up!</string>
-
+    <string name="page0o">Want to get rid of the crap in your room and help others?</string>
+    <string name="page1o">Or spread your skills and meet your juniors?</string>
+    <string name="page2o">Your ad will we visible to students just from your college.</string>
+    <string name="page3o">Contact the person using the phone number and meet up!</string>
 
     <string name="name">Name</string>
     <string name="add_image_hint">Add pictures to make your ad more visible.</string>

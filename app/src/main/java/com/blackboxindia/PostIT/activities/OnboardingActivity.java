@@ -19,7 +19,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.R;
 
 public class OnboardingActivity extends AppCompatActivity {
@@ -27,7 +26,7 @@ public class OnboardingActivity extends AppCompatActivity {
     //region Variables
     static final String TAG = OnboardingActivity.class.getSimpleName()+" YOYO";
     public static final String PREFERENCES_FILE = "TakeIT_Settings";
-    private static final Integer LAST_PAGE = 4;
+    private static final Integer nPages = 5;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -35,12 +34,46 @@ public class OnboardingActivity extends AppCompatActivity {
 
     ImageButton mNextBtn;
     Button mSkipBtn, mFinishBtn;
-    ImageView zero, one, two, three, four;
     ImageView[] indicators;
 
     int page =0;
     //endregion
 
+    //region Design
+
+    static int[] bgs = new int[]{
+            R.drawable.page_sell_new,
+            R.drawable.page_lost_found,
+            R.drawable.page_event,
+            R.drawable.page_teach,
+            R.drawable.page_docs,
+            R.drawable.app_icon };
+
+    int colors[] = {
+            R.color.cyan,
+            R.color.colorAccent,
+            R.color.dark_green,
+            R.color.BlueGrey700,
+            R.color.Black_85,
+            R.color.colorSearch };
+
+    static String title[] = {
+            "Buy / Sell",
+            "Lost and Found",
+            "Events",
+            "Documents",
+            "Teach",
+            "Post It!" };
+
+    static String subtitle[] = {
+            "Post an ad and get rid of the crap in your room",
+            "Lost something? Inform everyone without spamming through mail",
+            "Post information about upcoming events",
+            "See all important documents at one place without going through mail every time",
+            "or spread your skills and meet your juniors",
+            "Create an account to get things started!" };
+
+    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,20 +93,14 @@ public class OnboardingActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(page);
         updateIndicators(page);
 
-        final int colors[] = {
-                ContextCompat.getColor(this, R.color.orange),
-                ContextCompat.getColor(this, R.color.cyan),
-                ContextCompat.getColor(this, R.color.BlueGrey500),
-                ContextCompat.getColor(this, R.color.green),
-                ContextCompat.getColor(this, R.color.blue)
-        };
-
         final ArgbEvaluator evaluator = new ArgbEvaluator();
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                int colorUpdate = (Integer) evaluator.evaluate(positionOffset, colors[position], colors[position == LAST_PAGE ? position : position + 1]);
+                int colorUpdate = (Integer) evaluator.evaluate(positionOffset,
+                        gcolor(colors[position]), gcolor(colors[position == nPages ? position : position + 1]));
+
                 mCoordinator.setBackgroundColor(colorUpdate);
                 mViewPager.setBackgroundColor(colorUpdate);
             }
@@ -82,9 +109,9 @@ public class OnboardingActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 page = position;
                 updateIndicators(page);
-                mViewPager.setBackgroundColor(colors[position]);
-                mNextBtn.setVisibility(position == LAST_PAGE ? View.GONE : View.VISIBLE);
-                mFinishBtn.setVisibility(position == LAST_PAGE ? View.VISIBLE : View.GONE);
+                mViewPager.setBackgroundColor(gcolor(colors[position]));
+                mNextBtn.setVisibility(position == nPages ? View.GONE : View.VISIBLE);
+                mFinishBtn.setVisibility(position == nPages ? View.VISIBLE : View.GONE);
             }
 
             @Override
@@ -118,25 +145,26 @@ public class OnboardingActivity extends AppCompatActivity {
         });
     }
 
+    int gcolor(int c){
+        return ContextCompat.getColor(this,c);
+    }
+
     void initVariables(){
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         mNextBtn = (ImageButton) findViewById(R.id.intro_btn_next);
-//        mNextBtn.setImageDrawable(
-//                ImageUtils.tintMyDrawable(ContextCompat.getDrawable(this, R.drawable.ic_right), Color.WHITE));
-
         mSkipBtn = (Button) findViewById(R.id.intro_btn_skip);
         mFinishBtn = (Button) findViewById(R.id.intro_btn_finish);
 
-        zero = (ImageView) findViewById(R.id.intro_indicator_0);
-        one = (ImageView) findViewById(R.id.intro_indicator_1);
-        two = (ImageView) findViewById(R.id.intro_indicator_2);
-        three = (ImageView) findViewById(R.id.intro_indicator_3);
-        four = (ImageView) findViewById(R.id.intro_indicator_4);
-
         mCoordinator = (CoordinatorLayout) findViewById(R.id.main_content);
 
-        indicators = new ImageView[]{zero, one, two, three, four};
+        indicators = new ImageView[]{
+                (ImageView) findViewById(R.id.intro_indicator_0),
+                (ImageView) findViewById(R.id.intro_indicator_1),
+                (ImageView) findViewById(R.id.intro_indicator_2),
+                (ImageView) findViewById(R.id.intro_indicator_3),
+                (ImageView) findViewById(R.id.intro_indicator_4),
+                (ImageView) findViewById(R.id.intro_indicator_5)};
 
     }
 
@@ -154,15 +182,9 @@ public class OnboardingActivity extends AppCompatActivity {
 
         ImageView img;
 
-        int[] bgs = new int[]{R.drawable.page1, R.drawable.page2, R.drawable.page3, R.drawable.page4};
-
         public PlaceholderFragment() {
         }
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
         public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -176,47 +198,23 @@ public class OnboardingActivity extends AppCompatActivity {
 
             View rootView = inflater.inflate(R.layout.frag_onboarding, container, false);
 
-
             TextView tv_Title = (TextView) rootView.findViewById(R.id.section_Title);
-            String title ="";
-            switch (getArguments().getInt(ARG_SECTION_NUMBER)-1) {
-                case 0:
-                    title = "Sell it";
-                    break;
-                case 1:
-                    title = "Spread it";
-                    break;
-                case 2:
-                    title = "Put it";
-                    break;
-                case 3:
-                    title = "Take it";
-            }
-            tv_Title.setText(title);
+
+            int position = getArguments().getInt(ARG_SECTION_NUMBER);
+            tv_Title.setText(title[position]);
 
 
             TextView tv_Subtitle = (TextView) rootView.findViewById(R.id.section_Subtitle);
-            String subtitle ="";
-            switch (getArguments().getInt(ARG_SECTION_NUMBER) -1){
-                case 0:
-                    subtitle = getString(R.string.page0);
-                    break;
-                case 1:
-                    subtitle = getString(R.string.page1);
-                    break;
-                case 2:
-                    subtitle = getString(R.string.page2);
-                    break;
-                case 3:
-                    subtitle = getString(R.string.page3);
-                    break;
-            }
-            tv_Subtitle.setText(subtitle);
+
+            tv_Subtitle.setText(subtitle[position]);
 
             img = (ImageView) rootView.findViewById(R.id.section_img);
-            GlideApp.with(container.getContext()).load(bgs[getArguments().getInt(ARG_SECTION_NUMBER) - 1]).into(img);
-            //img.setBackgroundResource(bgs[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
+//            GlideApp.with(container.getContext())
+//                    .load(bgs[position])
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .into(img);
 
+            img.setImageResource(bgs[position]);
             return rootView;
         }
     }
@@ -230,30 +228,17 @@ public class OnboardingActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            return PlaceholderFragment.newInstance(position);
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 4;
+            return nPages+1;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Sell it";
-                case 1:
-                    return "Spread it";
-                case 2:
-                    return "Put it";
-                case 3:
-                    return "Take it";
-            }
-            return null;
+            return title[position];
         }
     }
 

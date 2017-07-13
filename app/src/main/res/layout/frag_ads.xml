@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@drawable/nothingnew"
+            android:background="@drawable/back_recycler_placeholder"
             android:alpha="0.4"
             />
 

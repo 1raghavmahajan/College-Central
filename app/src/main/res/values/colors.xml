@@ -43,10 +43,12 @@
     <color name="deep_purple">#673AB7</color>
     <color name="indigo">#3F51B5</color>
     <color name="blue">#2196F3</color>
+    <color name="dark_blue">#01579b</color>
     <color name="light_blue">#03A9F4</color>
     <color name="cyan">#00BCD4</color>
     <color name="teal">#009688</color>
     <color name="green">#4CAF50</color>
+    <color name="dark_green">#2e7d32</color>
     <color name="light_green">#8BC34A</color>
     <color name="lime">#CDDC39</color>
     <color name="yellow">#FFEB3B</color>
