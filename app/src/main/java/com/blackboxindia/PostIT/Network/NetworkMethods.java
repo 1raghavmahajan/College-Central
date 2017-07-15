@@ -41,6 +41,8 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @SuppressWarnings("VisibleForTests")
 public class NetworkMethods {
@@ -53,6 +55,7 @@ public class NetworkMethods {
     private final static String DIRECTORY_USERS = "users";
     private final static String DIRECTORY_HOSTELS = "hostels";
     private final static String DIRECTORY_COLLEGES = "colleges";
+    private final static String DIRECTORY_DATA = "data";
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -186,10 +189,7 @@ public class NetworkMethods {
                             userInfo.setEmail(email);
                             //noinspection ConstantConditions
                             userInfo.setuID(mAuth.getCurrentUser().getUid());
-//                            UserInfo cachedUserDetails = UserInfo.getCachedUserDetails(userInfo.getuID(),context);
-//                            if( cachedUserDetails != null)
-//                                loginListener.onSuccess(cachedUserDetails);
-//                            else
+
                                 getDetailsFromDB(userInfo, loginListener);
                         } else {
                             Log.w(TAG, task.getException());
@@ -746,13 +746,16 @@ public class NetworkMethods {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.i(TAG, "onDataChange: getCollegeOptions");
-
                 ArrayList<String> colleges;
-                colleges = dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<String>>() {});
-
-                if(colleges!= null) {
-                    listener.onSuccess(colleges);
+                colleges = new ArrayList<>();
+                Iterable<DataSnapshot> dataSnapshotChildren = dataSnapshot.getChildren();
+                for (DataSnapshot d:
+                     dataSnapshotChildren) {
+                    colleges.add(d.getKey());
                 }
+//                colleges = dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<String>>() {});
+                if(colleges.size()!=0)
+                    listener.onSuccess(colleges);
                 else
                     listener.onSuccess(null);
             }
@@ -764,19 +767,25 @@ public class NetworkMethods {
         });
     }
 
-    public void addNewCollege(ArrayList<String> colleges, final addCollegeDataListener listener){
-        mDatabase.child(DIRECTORY_COLLEGES).setValue(colleges)
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void aVoid) {
-                    listener.onSuccess();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    listener.onFailure(e);
-                }
-            });
+    public void addNewCollege(String collegeName, final addCollegeDataListener listener){
+
+        Map<String, String> userData = new HashMap<>();
+        //Todo: use this
+        userData.put("Confirmed", "TRUE");
+
+        mDatabase.child(DIRECTORY_COLLEGES).child(collegeName).setValue(userData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        listener.onSuccess();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onFailure(e);
+                    }
+                });
+
     }
 
     public void getHostelOptions(String collegeName, final getCollegeDataListener listener){
@@ -814,6 +823,26 @@ public class NetworkMethods {
             }
         });
     }
+    //endregion
+
+    //region Folder Management
+
+    public void createFile(String name, String path){
+        Map<String, String> file = new HashMap<>();
+        //Todo: use this
+        file.put("Type", "file");
+        mDatabase.child(DIRECTORY_DATA).child(name).setValue(file).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.i(TAG, "onComplete: ");
+            }
+        });
+    }
+    void createFolder(String name, String path) {
+
+    }
+
+
     //endregion
 
 }

@@ -213,7 +213,7 @@ public class OnboardingActivity extends AppCompatActivity {
 //                    .load(bgs[position])
 //                    .diskCacheStrategy(DiskCacheStrategy.NONE)
 //                    .into(img);
-
+            //Todo: async
             img.setImageResource(bgs[position]);
             return rootView;
         }

@@ -252,7 +252,7 @@ public class Frag_newAccount extends Fragment {
                         final ProgressDialog progressDialog = ProgressDialog.show(context, "Adding new college", "Please wait...", true, false);
 
                         collegeList.add(name);
-                        networkMethods.addNewCollege(collegeList, new addCollegeDataListener() {
+                        networkMethods.addNewCollege(name, new addCollegeDataListener() {
                             @Override
                             public void onSuccess() {
                                 progressDialog.cancel();
@@ -397,11 +397,12 @@ public class Frag_newAccount extends Fragment {
         dialog.findViewById(R.id.dialog_Submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String s = ((EditText) v).getText().toString().trim();
+                EditText editText = (EditText) dialog.findViewById(R.id.dialog_text);
+                String s = editText.getText().toString().trim();
                 if (s.equals(""))
                     Toast.makeText(context, "Invalid name", Toast.LENGTH_SHORT).show();
                 else if(s.contains(".") || s.contains("#") || s.contains("$") || s.contains("[") || s.contains("]"))
-                    ((EditText) v).setError("'.', '#', '$', '[', ']' not allowed");
+                    editText.setError("'.', '#', '$', '[', ']' not allowed");
                 else {
                     dialog.cancel();
                     listener.onNewItem(s);
