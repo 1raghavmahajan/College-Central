@@ -27,8 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blackboxindia.PostIT.Network.Interfaces.addCollegeDataListener;
-import com.blackboxindia.PostIT.Network.Interfaces.getCollegeDataListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
@@ -179,7 +178,7 @@ public class Frag_newAccount extends Fragment {
         collegeSpinner.setAdapter(defCollegeAdapter);
 
 
-        networkMethods.getCollegeOptions(new getCollegeDataListener() {
+        networkMethods.getCollegeOptions(new onCompleteListener<ArrayList<String>>() {
             @Override
             public void onSuccess(ArrayList<String> data) {
                 Log.i(TAG, "onSuccess: getCollegeDetails");
@@ -194,7 +193,7 @@ public class Frag_newAccount extends Fragment {
                     @Override
                     public void onItemSelect(String name) {
                         ParentView.findViewById(R.id.create_hostelProgress).setVisibility(View.VISIBLE);
-                        networkMethods.getHostelOptions(name, new getCollegeDataListener() {
+                        networkMethods.getHostelOptions(name, new onCompleteListener<ArrayList<String>>() {
                             @Override
                             public void onSuccess(ArrayList<String> data) {
                                 ParentView.findViewById(R.id.create_hostelProgress).setVisibility(View.INVISIBLE);
@@ -216,9 +215,9 @@ public class Frag_newAccount extends Fragment {
                                         if(position!=0 && position!=collegeList.size()+1) {
                                             networkMethods.addNewHostel(hostelList,
                                                     collegeList.get(position-1),
-                                                    new addCollegeDataListener() {
+                                                    new onCompleteListener<Void>() {
                                                         @Override
-                                                        public void onSuccess() {
+                                                        public void onSuccess(Void a) {
                                                             progressDialog.cancel();
                                                             Toast.makeText(context, "Successfully added!", Toast.LENGTH_SHORT).show();
                                                             configureHostelSpinner(hostelListener);
@@ -252,9 +251,9 @@ public class Frag_newAccount extends Fragment {
                         final ProgressDialog progressDialog = ProgressDialog.show(context, "Adding new college", "Please wait...", true, false);
 
                         collegeList.add(name);
-                        networkMethods.addNewCollege(name, new addCollegeDataListener() {
+                        networkMethods.addNewCollege(name, new onCompleteListener<Void>() {
                             @Override
-                            public void onSuccess() {
+                            public void onSuccess(Void a) {
                                 progressDialog.cancel();
                                 Toast.makeText(context, "Successfully added!", Toast.LENGTH_SHORT).show();
                                 configureCollegeSpinner(collegeListener);

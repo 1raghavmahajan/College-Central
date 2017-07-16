@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
-import com.blackboxindia.PostIT.Network.Interfaces.BitmapDownloadListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.dataModels.AdData;
@@ -92,7 +92,7 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
             if(currentAd.getCreatedBy().getHasProfileIMG()){
                 creater.setVisibility(View.VISIBLE);
                 GlideApp.with(context).load(R.drawable.avatar).into(creater);
-                ((MainActivity)context).imageStorageMethods.getProfileImage(currentAd.getCreatedBy().getuID(), new BitmapDownloadListener() {
+                ((MainActivity)context).imageStorageMethods.getProfileImage(currentAd.getCreatedBy().getuID(), new onCompleteListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         GlideApp.with(context)

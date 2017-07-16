@@ -20,7 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blackboxindia.PostIT.Network.Interfaces.newAdListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
@@ -229,7 +229,7 @@ public class Frag_newAd extends Fragment {
     }
 
     void create(final AdData mAdData){
-        networkMethods.createNewAd(userInfo, mAdData, imgURIs, adapter.getMajor(), new newAdListener() {
+        networkMethods.createNewAd(userInfo, mAdData, imgURIs, adapter.getMajor(), new onCompleteListener<AdData>() {
             @Override
             public void onSuccess(AdData adData) {
 

@@ -58,7 +58,7 @@ import com.blackboxindia.PostIT.Fragments.Frag_newAd;
 import com.blackboxindia.PostIT.Fragments.Frag_newEvent;
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.Network.ImageStorageMethods;
-import com.blackboxindia.PostIT.Network.Interfaces.BitmapDownloadListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
 
             UserInfo info = extras.getParcelable(ARG_User);
             UpdateUI(info,false, false);
-            new NetworkMethods(context).createFile("aaiaiai","");
             createSnackbar("Logged In!");
 
         } else {
@@ -666,7 +665,7 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email)).setText(userInfo.getEmail()+notVerified);
         final ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(userInfo.getHasProfileIMG()) {
-            imageStorageMethods.getProfileImage(userInfo.getuID(), new BitmapDownloadListener() {
+            imageStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
 //                    imageView.setImageURI(uri);

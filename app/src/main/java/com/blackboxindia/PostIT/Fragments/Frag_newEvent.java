@@ -23,7 +23,7 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.blackboxindia.PostIT.Network.Interfaces.newAdListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
@@ -230,7 +230,7 @@ public class Frag_newEvent extends Fragment {
     }
 
     void createAd(AdData event){
-        networkMethods.createNewAd(userInfo, event, imgURIs, adapter.getMajor(), new newAdListener() {
+        networkMethods.createNewAd(userInfo, event, imgURIs, adapter.getMajor(), new onCompleteListener<AdData>() {
             @Override
             public void onSuccess(AdData event) {
                 ((MainActivity)context).onBackPressed();

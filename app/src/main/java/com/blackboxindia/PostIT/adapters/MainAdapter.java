@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.blackboxindia.PostIT.Network.Interfaces.BitmapDownloadListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.dataModels.AdData;
@@ -113,7 +113,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.adItemViewHold
             setListeners(currentAd, holder, position);
 
             if(currentAd.getNumberOfImages()>0) {
-                ((MainActivity)context).imageStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+                ((MainActivity)context).imageStorageMethods.getMajorImage(currentAd.getAdID(), new onCompleteListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         if (majorImage != null){

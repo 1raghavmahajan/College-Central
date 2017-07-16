@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.blackboxindia.PostIT.HelperClasses.adViewTransition;
-import com.blackboxindia.PostIT.Network.Interfaces.newAdListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onUpdateListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
@@ -88,7 +88,7 @@ public class Frag_myAds extends Fragment {
             for (String k :
                     userAdKeys) {
                 final String k2 = k;
-                networkMethods.getAd(k2, new newAdListener() {
+                networkMethods.getAd(k2, new onCompleteListener<AdData>() {
                     @Override
                     public void onSuccess(AdData adData) {
                         if(adData!=null)
@@ -124,7 +124,7 @@ public class Frag_myAds extends Fragment {
 
                     @Override
                     public void onFailure(final Exception e) {
-                        networkMethods.getAd(k2, new newAdListener() {
+                        networkMethods.getAd(k2, new onCompleteListener<AdData>() {
                             @Override
                             public void onSuccess(AdData adData) {
                                 if(adData!=null) {

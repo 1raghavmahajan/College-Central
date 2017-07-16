@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
-import com.blackboxindia.PostIT.Network.Interfaces.BitmapDownloadListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onDeleteListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
@@ -94,11 +94,12 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
             return majorImage;
         }
 
+        @SuppressWarnings("deprecation")
         void setData(final AdData currentAd, final int position) {
             if(currentAd!=null) {
                 setListeners(currentAd, this, position);
                 if(currentAd.getNumberOfImages() > 0) {
-                    ((MainActivity) context).imageStorageMethods.getMajorImage(currentAd.getAdID(), new BitmapDownloadListener() {
+                    ((MainActivity) context).imageStorageMethods.getMajorImage(currentAd.getAdID(), new onCompleteListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             if (majorImage != null) {
@@ -122,22 +123,22 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                     case TYPE_SELL:
 //                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorBuySell));
                         tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorBuySell));
-                        tv_Type.setText("SELL");
+                        tv_Type.setText(R.string.txt_sell);
                         break;
                     case TYPE_LOSTFOUND:
 //                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorLostFound));
                         tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorLostFound));
-                        tv_Type.setText("LOST");
+                        tv_Type.setText(R.string.txt_lost);
                         break;
                     case TYPE_EVENT:
 //                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorEvents));
                         tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorEvents));
-                        tv_Type.setText("EVENT");
+                        tv_Type.setText(R.string.txt_event);
                         break;
                     case TYPE_TEACH:
 //                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorTeaching));
                         tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorTeaching));
-                        tv_Type.setText("TEACH");
+                        tv_Type.setText(R.string.txt_teach);
                         break;
                 }
 

@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.blackboxindia.PostIT.HelperClasses.adViewTransition;
-import com.blackboxindia.PostIT.Network.Interfaces.getAllAdsListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
@@ -196,7 +196,7 @@ public class Frag_Ads extends Fragment {
 
     private void getAllAds() {
 
-        networkMethods.getAllAds( MAX_Ads ,new getAllAdsListener() {
+        networkMethods.getAllAds( MAX_Ads ,new onCompleteListener<ArrayList<AdData>>() {
             @Override
             public void onSuccess(ArrayList<AdData> list) {
                 everything = list;

@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
-import com.blackboxindia.PostIT.Network.Interfaces.BitmapDownloadListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.adapters.ViewAdImageAdapter;
@@ -117,7 +117,7 @@ public class Frag_ViewEvent extends Fragment {
 
             if(userInfo.getHasProfileIMG()) {
 
-                ((MainActivity)context).imageStorageMethods.getProfileImage(userInfo.getuID(), new BitmapDownloadListener() {
+                ((MainActivity)context).imageStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         GlideApp.with(context).load(uri)

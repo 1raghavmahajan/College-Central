@@ -12,11 +12,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.blackboxindia.PostIT.Network.Interfaces.BitmapDownloadListener;
-import com.blackboxindia.PostIT.Network.Interfaces.BitmapUploadListener;
-import com.blackboxindia.PostIT.Network.Interfaces.ImageDownloadListener;
 import com.blackboxindia.PostIT.Network.Interfaces.KeepTrack;
-import com.blackboxindia.PostIT.Network.Interfaces.KeepTrackMain;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.cameraIntentHelper.BitmapHelper;
 import com.blackboxindia.PostIT.cameraIntentHelper.ImageUtils;
@@ -57,7 +54,7 @@ public class ImageStorageMethods {
     private ArrayList<Integer> progress;
     private ArrayList<Boolean> allGood;
     private ArrayList<Integer> retryNo;
-    void uploadPics(final ArrayList<Uri> imgURIs, final String key, final ProgressDialog progressDialog, final KeepTrackMain mainListener) {
+    void uploadPics(final ArrayList<Uri> imgURIs, final String key, final ProgressDialog progressDialog, final onCompleteListener<Void> mainListener) {
         Log.i(TAG,"uploadPics");
         progressDialog.setTitle("Uploading Images..");
         //final ProgressDialog progressDialog = ProgressDialog.show(context, "Uploading Images", "", true, false);
@@ -93,7 +90,7 @@ public class ImageStorageMethods {
                 {
                     progressBar.setVisibility(View.GONE);
                     //progressDialog.cancel();
-                    mainListener.onSuccess();
+                    mainListener.onSuccess(null);
                 }
             }
 
@@ -136,14 +133,14 @@ public class ImageStorageMethods {
         worker.execute(uri);
     }
 
-    void uploadBitmap(String AdID, Bitmap bitmap, final BitmapUploadListener listener){
+    void uploadBitmap(String AdID, Bitmap bitmap, final onCompleteListener<Void> listener){
         Log.i(TAG,"bitmap up started");
         uploadBitmapWorker task = new uploadBitmapWorker("images/"+AdID+"/0s", listener);
         task.execute(bitmap);
     }
 
     private Map<String,Uri> cachedIcons;
-    public void getMajorImage(final String AdID, final BitmapDownloadListener listener) {
+    public void getMajorImage(final String AdID, final onCompleteListener<Uri> listener) {
 
         if(cachedIcons.containsKey(AdID)) {
             Log.i(TAG,"getMajorImage cached");
@@ -172,7 +169,7 @@ public class ImageStorageMethods {
     }
 
     private Map<String,Uri> cachedBigImages;
-    public void getBigImage(final String AdID, final int i, final ImageDownloadListener listener) {
+    public void getBigImage(final String AdID, final int i, final onCompleteListener<Uri> listener) {
 
         if(cachedBigImages.containsKey(AdID + i)) {
             Log.i(TAG,"Getting image from cache "+ AdID + i );
@@ -202,14 +199,14 @@ public class ImageStorageMethods {
         }
     }
 
-    void uploadProfileImage(String uID, Bitmap bitmap, final BitmapUploadListener listener){
+    void uploadProfileImage(String uID, Bitmap bitmap, final onCompleteListener<Void> listener){
         Log.i(TAG,"bitmap up started");
         uploadBitmapWorker task = new uploadBitmapWorker("user/"+uID+"/profileImage", listener);
         task.execute(bitmap);
     }
 
     private Map<String,UriNew> cachedProfileImages;
-    public void getProfileImage(final String uID, final BitmapDownloadListener listener) {
+    public void getProfileImage(final String uID, final onCompleteListener<Uri> listener) {
 
         if(cachedProfileImages.containsKey(uID)) {
 
@@ -342,9 +339,9 @@ public class ImageStorageMethods {
     private class uploadBitmapWorker extends AsyncTask<Bitmap,Void,byte[]> {
 
         String path;
-        BitmapUploadListener listener;
+        onCompleteListener<Void> listener;
 
-        uploadBitmapWorker(String path, BitmapUploadListener listener){
+        uploadBitmapWorker(String path, onCompleteListener<Void> listener){
             this.path = path;
             this.listener = listener;
         }
@@ -374,7 +371,7 @@ public class ImageStorageMethods {
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            listener.onSuccess();
+                            listener.onSuccess(null);
                         }
                     });
         }

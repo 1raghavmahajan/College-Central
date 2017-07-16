@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 import com.blackboxindia.PostIT.CustomViews.LockableScrollView;
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
-import com.blackboxindia.PostIT.Network.Interfaces.ImageDownloadListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.dataModels.AdData;
@@ -259,7 +259,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                     imageView.setVisibility(View.VISIBLE);
                 }
             }
-            ((MainActivity)context).imageStorageMethods.getBigImage(adData.getAdID(), position, new ImageDownloadListener() {
+            ((MainActivity)context).imageStorageMethods.getBigImage(adData.getAdID(), position, new onCompleteListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
 

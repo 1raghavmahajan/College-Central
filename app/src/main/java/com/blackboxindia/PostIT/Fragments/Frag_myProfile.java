@@ -31,9 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
-import com.blackboxindia.PostIT.Network.Interfaces.BitmapDownloadListener;
-import com.blackboxindia.PostIT.Network.Interfaces.addCollegeDataListener;
-import com.blackboxindia.PostIT.Network.Interfaces.getCollegeDataListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onUpdateListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
@@ -126,7 +124,7 @@ public class Frag_myProfile extends Fragment {
 
     void populateViews() {
         if(userInfo.getHasProfileIMG())
-            ((MainActivity)context).imageStorageMethods.getProfileImage(userInfo.getuID(), new BitmapDownloadListener() {
+            ((MainActivity)context).imageStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     GlideApp.with(context).load(uri)
@@ -186,7 +184,7 @@ public class Frag_myProfile extends Fragment {
         MainView.findViewById(R.id.profile_hostelProgress).setVisibility(View.VISIBLE);
         final NetworkMethods networkMethods = new NetworkMethods(context);
 
-        networkMethods.getHostelOptions(userInfo.getCollegeName(), new getCollegeDataListener() {
+        networkMethods.getHostelOptions(userInfo.getCollegeName(), new onCompleteListener<ArrayList<String>>() {
             @Override
             public void onSuccess(ArrayList<String> data) {
 
@@ -208,9 +206,9 @@ public class Frag_myProfile extends Fragment {
                         hostelList.add(name);
                         networkMethods.addNewHostel(hostelList,
                                 userInfo.getCollegeName(),
-                                new addCollegeDataListener() {
+                                new onCompleteListener<Void>() {
                                     @Override
-                                    public void onSuccess() {
+                                    public void onSuccess(Void a) {
                                         progressDialog.cancel();
                                         Toast.makeText(context, "Successfully added!", Toast.LENGTH_SHORT).show();
                                         configureHostelSpinner(hostelListener);

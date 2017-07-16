@@ -10,18 +10,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.blackboxindia.PostIT.Fragments.Frag_VerifyEmail;
-import com.blackboxindia.PostIT.Network.Interfaces.BitmapUploadListener;
-import com.blackboxindia.PostIT.Network.Interfaces.KeepTrackMain;
-import com.blackboxindia.PostIT.Network.Interfaces.addCollegeDataListener;
-import com.blackboxindia.PostIT.Network.Interfaces.getAllAdsListener;
-import com.blackboxindia.PostIT.Network.Interfaces.getCollegeDataListener;
-import com.blackboxindia.PostIT.Network.Interfaces.newAdListener;
+import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onDeleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onDeleteUserListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onUpdateListener;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.dataModels.AdData;
+import com.blackboxindia.PostIT.dataModels.Directory;
 import com.blackboxindia.PostIT.dataModels.UserCred;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -90,9 +86,9 @@ public class NetworkMethods {
                             if(userInfo.getHasProfileIMG()) {
                                 new ImageStorageMethods(context)
                                         .uploadProfileImage(
-                                                FirebaseAuth.getInstance().getCurrentUser().getUid(), profileImage, new BitmapUploadListener() {
+                                                FirebaseAuth.getInstance().getCurrentUser().getUid(), profileImage, new onCompleteListener<Void>() {
                                                     @Override
-                                                    public void onSuccess() {
+                                                    public void onSuccess(Void a) {
 
                                                         mAuth.getCurrentUser().sendEmailVerification()
                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -248,9 +244,9 @@ public class NetworkMethods {
 
             if(profileImage!=null){
                 ImageStorageMethods imageStorageMethods = new ImageStorageMethods(context);
-                imageStorageMethods.uploadProfileImage(userInfo.getuID(), profileImage, new BitmapUploadListener() {
+                imageStorageMethods.uploadProfileImage(userInfo.getuID(), profileImage, new onCompleteListener<Void>() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(Void a) {
                         Log.i(TAG, "onSuccess: Profile Image Upload");
                         mDatabase.child(DIRECTORY_USERS).child(userInfo.getuID()).setValue(userInfo)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -456,7 +452,7 @@ public class NetworkMethods {
 
     private Integer try_update_NewAd;
     private Boolean once_NewAd;
-    public void createNewAd(final UserInfo userInfo, final AdData adData, final ArrayList<Uri> imgURIs, Bitmap major, final newAdListener listener) {
+    public void createNewAd(final UserInfo userInfo, final AdData adData, final ArrayList<Uri> imgURIs, Bitmap major, final onCompleteListener<AdData> listener) {
 
         Log.i(TAG,"createNewAd: begin");
         once_NewAd = true;
@@ -483,14 +479,14 @@ public class NetworkMethods {
             final ImageStorageMethods methods = new ImageStorageMethods(context);
 
             if(major!=null){
-                methods.uploadBitmap(key, major, new BitmapUploadListener() {
+                methods.uploadBitmap(key, major, new onCompleteListener<Void>() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(Void a) {
 
-                        methods.uploadPics(imgURIs, key,progressDialog, new KeepTrackMain() {
+                        methods.uploadPics(imgURIs, key,progressDialog, new onCompleteListener<Void>() {
 
                             @Override
-                            public void onSuccess() {
+                            public void onSuccess(Void a) {
 
                                 mDatabase.child(DIRECTORY_ADS).child(key).setValue(adData)
                                         .addOnFailureListener(new OnFailureListener() {
@@ -592,7 +588,7 @@ public class NetworkMethods {
         }
     }
 
-    public void getAd(String adID, final newAdListener listener) {
+    public void getAd(String adID, final onCompleteListener<AdData> listener) {
 
         if(mAuth==null)
         {
@@ -623,7 +619,7 @@ public class NetworkMethods {
         }
     }
 
-    public void getAllAds(Integer max_limit, final getAllAdsListener listener) {
+    public void getAllAds(Integer max_limit, final onCompleteListener<ArrayList<AdData>> listener) {
 
         if(max_limit!=0) {
             mDatabase.child(DIRECTORY_ADS).limitToLast(max_limit)
@@ -740,7 +736,7 @@ public class NetworkMethods {
 
     //region College Data
 
-    public void getCollegeOptions(final getCollegeDataListener listener){
+    public void getCollegeOptions(final onCompleteListener<ArrayList<String>> listener){
         Log.i(TAG, "getCollegeOptions: called");
         mDatabase.child(DIRECTORY_COLLEGES).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -767,17 +763,17 @@ public class NetworkMethods {
         });
     }
 
-    public void addNewCollege(String collegeName, final addCollegeDataListener listener){
+    public void addNewCollege(String collegeName, final onCompleteListener<Void> listener){
 
-        Map<String, String> userData = new HashMap<>();
+        Map<String, String> college = new HashMap<>();
         //Todo: use this
-        userData.put("Confirmed", "TRUE");
+        college.put("Confirmed", "TRUE");
 
-        mDatabase.child(DIRECTORY_COLLEGES).child(collegeName).setValue(userData)
+        mDatabase.child(DIRECTORY_COLLEGES).child(collegeName).setValue(college)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        listener.onSuccess();
+                        listener.onSuccess(aVoid);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -788,7 +784,7 @@ public class NetworkMethods {
 
     }
 
-    public void getHostelOptions(String collegeName, final getCollegeDataListener listener){
+    public void getHostelOptions(String collegeName, final onCompleteListener<ArrayList<String>> listener){
         mDatabase.child(DIRECTORY_HOSTELS).child(collegeName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -809,12 +805,12 @@ public class NetworkMethods {
         });
     }
 
-    public void addNewHostel(ArrayList<String> hostels, String collegeName, final addCollegeDataListener listener){
+    public void addNewHostel(ArrayList<String> hostels, String collegeName, final onCompleteListener<Void> listener){
         mDatabase.child(DIRECTORY_HOSTELS).child(collegeName).setValue(hostels)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        listener.onSuccess();
+                        listener.onSuccess(aVoid);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -827,21 +823,55 @@ public class NetworkMethods {
 
     //region Folder Management
 
-    public void createFile(String name, String path){
+    public void createFile(String name, String path, OnCompleteListener<Void> listener){
         Map<String, String> file = new HashMap<>();
-        //Todo: use this
-        file.put("Type", "file");
-        mDatabase.child(DIRECTORY_DATA).child(name).setValue(file).addOnCompleteListener(new OnCompleteListener<Void>() {
+        file.put("Type", "File");
+        if(path.equals(""))
+            mDatabase.child(DIRECTORY_DATA).child(name).setValue(file).addOnCompleteListener(listener);
+        else
+            mDatabase.child(DIRECTORY_DATA).child(path).child(name).setValue(file).addOnCompleteListener(listener);
+    }
+
+    public void createFolder(String name, String path, OnCompleteListener<Void> listener) {
+        Map<String, String> file = new HashMap<>();
+        file.put("Type", "Folder");
+        if(path.equals(""))
+            mDatabase.child(DIRECTORY_DATA).child(name).setValue(file).addOnCompleteListener(listener);
+        else
+            mDatabase.child(DIRECTORY_DATA).child(path).child(name).setValue(file).addOnCompleteListener(listener);
+    }
+
+    public void getAllFiles(final onCompleteListener<DataSnapshot> listener) {
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.i(TAG, "onComplete: ");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Directory root = new Directory("root");
+                getDet(dataSnapshot,root);
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailure(databaseError.toException());
             }
         });
     }
-    void createFolder(String name, String path) {
 
+    private void getDet(DataSnapshot data, Directory current){
+        for (DataSnapshot snapshot : data.getChildren()) {
+            String s = (String) snapshot.child("Type").getValue();
+            if(s!=null){
+                if(s.equals("File")){
+                    current.files.add(snapshot.getKey());
+                }
+                else if(s.equals("Folder")){
+                    Directory dir = new Directory(snapshot.getKey());
+                    getDet(snapshot,dir);
+                    current.folders.add(dir);
+                }
+            }
+        }
     }
-
 
     //endregion
 
