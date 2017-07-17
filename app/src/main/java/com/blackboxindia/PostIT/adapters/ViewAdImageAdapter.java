@@ -60,10 +60,10 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
         this.view = view;
 
         opened = false;
-        ((MainActivity)context).closeImageListener = new MainActivity.closeImageListener() {
+        ((MainActivity)context).onBackPressedListener = new MainActivity.onBackPressedListener() {
             @Override
-            public boolean closeImage() {
-                Log.i(TAG, "closeImage: ");
+            public boolean doneSomething() {
+                Log.i(TAG, "doneSomething: ");
                 if(opened){
                     opened = false;
                     scrollView.setScrollingEnabled(true);
@@ -259,7 +259,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                     imageView.setVisibility(View.VISIBLE);
                 }
             }
-            ((MainActivity)context).imageStorageMethods.getBigImage(adData.getAdID(), position, new onCompleteListener<Uri>() {
+            ((MainActivity)context).cloudStorageMethods.getBigImage(adData.getAdID(), position, new onCompleteListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
 

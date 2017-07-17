@@ -99,7 +99,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
             setListeners(currentEvent, holder, position);
 
             if(currentEvent.getNumberOfImages()>0) {
-                ((MainActivity)context).imageStorageMethods.getMajorImage(currentEvent.getAdID(), new onCompleteListener<Uri>() {
+                ((MainActivity)context).cloudStorageMethods.getMajorImage(currentEvent.getAdID(), new onCompleteListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         if (majorImage != null){

@@ -57,7 +57,7 @@ import com.blackboxindia.PostIT.Fragments.Frag_newAccount;
 import com.blackboxindia.PostIT.Fragments.Frag_newAd;
 import com.blackboxindia.PostIT.Fragments.Frag_newEvent;
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
-import com.blackboxindia.PostIT.Network.ImageStorageMethods;
+import com.blackboxindia.PostIT.Network.CloudStorageMethods;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String ALL_FRAG_TAG = "ALL_ADS";
     public final static String MAIN_SCREEN_TAG = "MAIN_SCREEN";
     public final static String LOGIN_PAGE_TAG = "LOGIN_PAGE";
+    public final static String DOCS_TAG = "DOCS_PAGE";
     public final static String MY_PROFILE_TAG = "MY_PROFILE";
     public final static String MANAGE_FRAG_TAG = "MANAGE_ACCOUNT";
     public final static String NEW_ACCOUNT_TAG = "NEW_ACCOUNT";
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String VIEW_MyEVENT_TAG = "VIEW_MyEVENT";
     public final static String VERIFY_EMAIL_TAG = "VERIFY_EMAIL";
 
-    public final static String TAG = MainActivity.class.getSimpleName()+" YOYO";
+    private final static String TAG = MainActivity.class.getSimpleName()+" YOYO";
     public static final String PREF_USER_FIRST_TIME = "user_first_time";
     //endregion
 
@@ -115,13 +116,12 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawer;
     public FloatingActionButton fab;
     NavigationView navigationView;
-    TextView header_Name, header_Email;
     Menu navigationViewMenu;
 
     public UserInfo userInfo;
-    public ImageStorageMethods imageStorageMethods;
+    public CloudStorageMethods cloudStorageMethods;
 
-    public closeImageListener closeImageListener;
+    public MainActivity.onBackPressedListener onBackPressedListener;
 
     //endregion
 
@@ -236,8 +236,8 @@ public class MainActivity extends AppCompatActivity {
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fragmentManager = getFragmentManager();
         context = this;
-        imageStorageMethods = new ImageStorageMethods(context);
-        imageStorageMethods.getCache();
+        cloudStorageMethods = new CloudStorageMethods(context);
+        cloudStorageMethods.getCache();
     }
 
     private void setUpToolbar() {
@@ -379,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        imageStorageMethods.saveCache();
+        cloudStorageMethods.saveCache();
     }
     //endregion
 
@@ -407,64 +407,71 @@ public class MainActivity extends AppCompatActivity {
         else {
 
             boolean f = true;
-            //region Viewing Ad
-            if(fragmentManager.findFragmentByTag(VIEW_AD_TAG)!=null)
-            {
-                if(fragmentManager.findFragmentByTag(VIEW_AD_TAG).isVisible()){
+//             region Viewing Ad
+//            if(fragmentManager.findFragmentByTag(VIEW_AD_TAG)!=null)
+//            {
+//                if(fragmentManager.findFragmentByTag(VIEW_AD_TAG).isVisible()){
+//                    f = false;
+//                    if(onBackPressedListener!=null) {
+//                        Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
+//                        if (onBackPressedListener.doneSomething()) {
+//                            Log.i(TAG, "onBackPressed: Image already closed");
+//                            super.onBackPressed();
+//                        }
+//                    }else
+//                        super.onBackPressed();
+//                }
+//            }
+//            if(fragmentManager.findFragmentByTag(VIEW_EVENT_TAG)!=null)
+//            {
+//                if(fragmentManager.findFragmentByTag(VIEW_EVENT_TAG).isVisible()){
+//                    f = false;
+//                    if(onBackPressedListener!=null) {
+//                        Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
+//                        if (onBackPressedListener.doneSomething()) {
+//                            Log.i(TAG, "onBackPressed: Image already closed");
+//                            super.onBackPressed();
+//                        }
+//                    }else
+//                        super.onBackPressed();
+//                }
+//            }
+//            if(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG)!=null)
+//            {
+//                if(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG).isVisible()){
+//                    f = false;
+//                    if(onBackPressedListener!=null) {
+//                        Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
+//                        if (onBackPressedListener.doneSomething()) {
+//                            Log.i(TAG, "onBackPressed: Image already closed");
+//                            super.onBackPressed();
+//                        }
+//                    }else
+//                        super.onBackPressed();
+//                }
+//            }
+//            if(fragmentManager.findFragmentByTag(VIEW_MyEVENT_TAG)!=null)
+//            {
+//                if(fragmentManager.findFragmentByTag(VIEW_MyEVENT_TAG).isVisible()){
+//                    f = false;
+//                    if(onBackPressedListener!=null) {
+//                        Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
+//                        if (onBackPressedListener.doneSomething()) {
+//                            Log.i(TAG, "onBackPressed: Image already closed");
+//                            super.onBackPressed();
+//                        }
+//                    }else
+//                        super.onBackPressed();
+//                }
+//            }
+//
+            if(onBackPressedListener!=null) {
+                Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
+                if (onBackPressedListener.doneSomething()) {
+                    Log.i(TAG, "onBackPressed: did something");
                     f = false;
-                    if(closeImageListener!=null) {
-                        Log.i(TAG, "onBackPressed: closeImageListener!=null");
-                        if (closeImageListener.closeImage()) {
-                            Log.i(TAG, "onBackPressed: Image already closed");
-                            super.onBackPressed();
-                        }
-                    }else
-                        super.onBackPressed();
                 }
             }
-            if(fragmentManager.findFragmentByTag(VIEW_EVENT_TAG)!=null)
-            {
-                if(fragmentManager.findFragmentByTag(VIEW_EVENT_TAG).isVisible()){
-                    f = false;
-                    if(closeImageListener!=null) {
-                        Log.i(TAG, "onBackPressed: closeImageListener!=null");
-                        if (closeImageListener.closeImage()) {
-                            Log.i(TAG, "onBackPressed: Image already closed");
-                            super.onBackPressed();
-                        }
-                    }else
-                        super.onBackPressed();
-                }
-            }
-            if(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG)!=null)
-            {
-                if(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG).isVisible()){
-                    f = false;
-                    if(closeImageListener!=null) {
-                        Log.i(TAG, "onBackPressed: closeImageListener!=null");
-                        if (closeImageListener.closeImage()) {
-                            Log.i(TAG, "onBackPressed: Image already closed");
-                            super.onBackPressed();
-                        }
-                    }else
-                        super.onBackPressed();
-                }
-            }
-            if(fragmentManager.findFragmentByTag(VIEW_MyEVENT_TAG)!=null)
-            {
-                if(fragmentManager.findFragmentByTag(VIEW_MyEVENT_TAG).isVisible()){
-                    f = false;
-                    if(closeImageListener!=null) {
-                        Log.i(TAG, "onBackPressed: closeImageListener!=null");
-                        if (closeImageListener.closeImage()) {
-                            Log.i(TAG, "onBackPressed: Image already closed");
-                            super.onBackPressed();
-                        }
-                    }else
-                        super.onBackPressed();
-                }
-            }
-            //endregion
 
             if(fragmentManager.findFragmentByTag(MAIN_SCREEN_TAG)!=null){
                 if(fragmentManager.findFragmentByTag(MAIN_SCREEN_TAG).isVisible()) {
@@ -491,8 +498,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public interface closeImageListener {
-        boolean closeImage();
+    public interface onBackPressedListener {
+        boolean doneSomething();
     }
 
     //endregion
@@ -665,7 +672,7 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email)).setText(userInfo.getEmail()+notVerified);
         final ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(userInfo.getHasProfileIMG()) {
-            imageStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
+            cloudStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
 //                    imageView.setImageURI(uri);

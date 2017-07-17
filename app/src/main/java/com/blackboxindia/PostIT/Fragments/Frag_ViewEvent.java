@@ -117,7 +117,7 @@ public class Frag_ViewEvent extends Fragment {
 
             if(userInfo.getHasProfileIMG()) {
 
-                ((MainActivity)context).imageStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
+                ((MainActivity)context).cloudStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         GlideApp.with(context).load(uri)
@@ -155,7 +155,7 @@ public class Frag_ViewEvent extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        ((MainActivity) getActivity()).closeImageListener = null;
+        ((MainActivity) getActivity()).onBackPressedListener = null;
     }
 }
 

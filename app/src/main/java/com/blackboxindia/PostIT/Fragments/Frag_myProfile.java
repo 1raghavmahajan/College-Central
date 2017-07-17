@@ -124,7 +124,7 @@ public class Frag_myProfile extends Fragment {
 
     void populateViews() {
         if(userInfo.getHasProfileIMG())
-            ((MainActivity)context).imageStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
+            ((MainActivity)context).cloudStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     GlideApp.with(context).load(uri)

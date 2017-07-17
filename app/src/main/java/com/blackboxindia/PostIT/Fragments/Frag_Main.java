@@ -40,7 +40,7 @@ public class Frag_Main extends Fragment {
         cardView[0].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"onClick: card0");
+                Log.i(TAG,"onClick: sell");
 
                 Frag_Ads frag_ads = new Frag_Ads();
 
@@ -54,7 +54,7 @@ public class Frag_Main extends Fragment {
         cardView[1].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"onClick: card1");
+                Log.i(TAG,"onClick: lost");
                 Frag_Ads frag_ads = new Frag_Ads();
 
                 Bundle args = new Bundle();
@@ -67,7 +67,21 @@ public class Frag_Main extends Fragment {
         cardView[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"onClick: card2");
+                Log.i(TAG,"onClick: event");
+                Frag_Ads frag_ads = new Frag_Ads();
+
+                Bundle args = new Bundle();
+                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_EVENT);
+                frag_ads.setArguments(args);
+
+                ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
+            }
+        });
+        cardView[3].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.i(TAG,"onClick: teach");
                 Frag_Ads frag_ads = new Frag_Ads();
 
                 Bundle args = new Bundle();
@@ -76,45 +90,29 @@ public class Frag_Main extends Fragment {
 
                 ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
 
-            }
-        });
-        cardView[3].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i(TAG,"onClick: card3");
-                Frag_Ads frag_ads = new Frag_Ads();
-
-                Bundle args = new Bundle();
-                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_EVENT);
-                frag_ads.setArguments(args);
-
-                ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
 
             }
         });
         cardView[4].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"onClick: card4");
-//                Frag_Ads frag_ads = new Frag_Ads();
-//
-//                Bundle args = new Bundle();
-//                args.putString(Frag_Ads.ARGS_AdType, AdTypes.TYPE_INFO);
-//                frag_ads.setArguments(args);
-//
-//                ((MainActivity)context).launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
+                Log.i(TAG,"onClick: data");
+
+                ((MainActivity)context).launchOtherFragment(new Frag_Docs(),MainActivity.DOCS_TAG);
+
             }
         });
     }
 
     private void initVariables() {
 
-        cardView = new CardView[5];
-        cardView[0] = (CardView) view.findViewById(R.id.mainCard1);
-        cardView[1] = (CardView) view.findViewById(R.id.mainCard2);
-        cardView[2] = (CardView) view.findViewById(R.id.mainCard3);
-        cardView[3] = (CardView) view.findViewById(R.id.mainCard4);
-        cardView[4] = (CardView) view.findViewById(R.id.mainCard5);
+        cardView = new CardView[6];
+        cardView[0] = (CardView) view.findViewById(R.id.mainCard0);
+        cardView[1] = (CardView) view.findViewById(R.id.mainCard1);
+        cardView[2] = (CardView) view.findViewById(R.id.mainCard2);
+        cardView[3] = (CardView) view.findViewById(R.id.mainCard3);
+        cardView[4] = (CardView) view.findViewById(R.id.mainCard4);
+        cardView[5] = (CardView) view.findViewById(R.id.mainCard5);
     }
     
     

@@ -51,7 +51,10 @@ public class NetworkMethods {
     private final static String DIRECTORY_USERS = "users";
     private final static String DIRECTORY_HOSTELS = "hostels";
     private final static String DIRECTORY_COLLEGES = "colleges";
-    private final static String DIRECTORY_DATA = "data";
+    final static String DIRECTORY_DATA = "data";
+
+    public final static String TYPE_FOLDER = "TYPE_Folder";
+        public final static String TYPE_PDF = "TYPE_PDF";
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -84,7 +87,7 @@ public class NetworkMethods {
                         if (task.isSuccessful()) {
 
                             if(userInfo.getHasProfileIMG()) {
-                                new ImageStorageMethods(context)
+                                new CloudStorageMethods(context)
                                         .uploadProfileImage(
                                                 FirebaseAuth.getInstance().getCurrentUser().getUid(), profileImage, new onCompleteListener<Void>() {
                                                     @Override
@@ -243,8 +246,8 @@ public class NetworkMethods {
         else {
 
             if(profileImage!=null){
-                ImageStorageMethods imageStorageMethods = new ImageStorageMethods(context);
-                imageStorageMethods.uploadProfileImage(userInfo.getuID(), profileImage, new onCompleteListener<Void>() {
+                CloudStorageMethods cloudStorageMethods = new CloudStorageMethods(context);
+                cloudStorageMethods.uploadProfileImage(userInfo.getuID(), profileImage, new onCompleteListener<Void>() {
                     @Override
                     public void onSuccess(Void a) {
                         Log.i(TAG, "onSuccess: Profile Image Upload");
@@ -476,7 +479,7 @@ public class NetworkMethods {
             adData.setAdID(key);
             adData.setCreatedBy(userInfo);
 
-            final ImageStorageMethods methods = new ImageStorageMethods(context);
+            final CloudStorageMethods methods = new CloudStorageMethods(context);
 
             if(major!=null){
                 methods.uploadBitmap(key, major, new onCompleteListener<Void>() {
@@ -823,31 +826,31 @@ public class NetworkMethods {
 
     //region Folder Management
 
-    public void createFile(String name, String path, OnCompleteListener<Void> listener){
+    public void createFile(String name, String path, String college, OnCompleteListener<Void> listener){
         Map<String, String> file = new HashMap<>();
-        file.put("Type", "File");
+        file.put("Type", TYPE_PDF);
         if(path.equals(""))
-            mDatabase.child(DIRECTORY_DATA).child(name).setValue(file).addOnCompleteListener(listener);
+            mDatabase.child(DIRECTORY_DATA).child(college).child(name).setValue(file).addOnCompleteListener(listener);
         else
-            mDatabase.child(DIRECTORY_DATA).child(path).child(name).setValue(file).addOnCompleteListener(listener);
+            mDatabase.child(DIRECTORY_DATA).child(college).child(path).child(name).setValue(file).addOnCompleteListener(listener);
     }
 
-    public void createFolder(String name, String path, OnCompleteListener<Void> listener) {
+    public void createFolder(String name, String path, String college, OnCompleteListener<Void> listener) {
         Map<String, String> file = new HashMap<>();
-        file.put("Type", "Folder");
+        file.put("Type", TYPE_FOLDER);
         if(path.equals(""))
-            mDatabase.child(DIRECTORY_DATA).child(name).setValue(file).addOnCompleteListener(listener);
+            mDatabase.child(DIRECTORY_DATA).child(college).child(name).setValue(file).addOnCompleteListener(listener);
         else
-            mDatabase.child(DIRECTORY_DATA).child(path).child(name).setValue(file).addOnCompleteListener(listener);
+            mDatabase.child(DIRECTORY_DATA).child(college).child(path).child(name).setValue(file).addOnCompleteListener(listener);
     }
 
-    public void getAllFiles(final onCompleteListener<DataSnapshot> listener) {
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getAllFiles(String college, final onCompleteListener<Directory> listener) {
+        mDatabase.child(DIRECTORY_DATA).child(college).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Directory root = new Directory("root");
                 getDet(dataSnapshot,root);
-                listener.onSuccess(dataSnapshot);
+                listener.onSuccess(root);
             }
 
             @Override
@@ -861,10 +864,10 @@ public class NetworkMethods {
         for (DataSnapshot snapshot : data.getChildren()) {
             String s = (String) snapshot.child("Type").getValue();
             if(s!=null){
-                if(s.equals("File")){
+                if(s.equals(TYPE_PDF)){
                     current.files.add(snapshot.getKey());
                 }
-                else if(s.equals("Folder")){
+                else if(s.equals(TYPE_FOLDER)){
                     Directory dir = new Directory(snapshot.getKey());
                     getDet(snapshot,dir);
                     current.folders.add(dir);

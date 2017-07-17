@@ -17,8 +17,10 @@ import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.cameraIntentHelper.BitmapHelper;
 import com.blackboxindia.PostIT.cameraIntentHelper.ImageUtils;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -34,16 +36,19 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@SuppressWarnings("VisibleForTests")
-public class ImageStorageMethods {
+import static android.os.Environment.DIRECTORY_DOCUMENTS;
+import static com.blackboxindia.PostIT.Network.NetworkMethods.DIRECTORY_DATA;
 
-    private static String TAG = ImageStorageMethods.class.getSimpleName() + " YOYO";
+@SuppressWarnings("VisibleForTests")
+public class CloudStorageMethods {
+
+    private static String TAG = CloudStorageMethods.class.getSimpleName() + " YOYO";
     private static Integer MAX_UPLOAD_RES[] = {900,900};
 
     private Context context;
     private FirebaseStorage storage;
 
-    public ImageStorageMethods(Context context) {
+    public CloudStorageMethods(Context context) {
         this.context = context;
         storage = FirebaseStorage.getInstance();
         cachedBigImages = new HashMap<>();
@@ -438,6 +443,31 @@ public class ImageStorageMethods {
         public String toString() {
             return (uri.toString() + "#" + String.valueOf(timeStamp));
         }
+    }
+
+    public void downloadFile(String name, String college, final onCompleteListener<File> listener) {
+//        final File file = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS),name+".pdf");
+        final File file = new File(context.getExternalFilesDir(DIRECTORY_DOCUMENTS),name+".pdf");
+        FirebaseStorage.getInstance().getReference().child(DIRECTORY_DATA).child(college).child(name+".pdf")
+                .getFile(file)
+                .addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                        if(task.isSuccessful()){
+                            listener.onSuccess(file);
+                        }else {
+                            Log.e(TAG, "onComplete: failure", task.getException());
+                            listener.onFailure(task.getException());
+                        }
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        float p = (taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount()) * 100;
+                        Log.i(TAG, "onProgress downloadFile percentage: "+p);
+                    }
+                });
     }
 
 }

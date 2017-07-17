@@ -92,7 +92,7 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
             if(currentAd.getCreatedBy().getHasProfileIMG()){
                 creater.setVisibility(View.VISIBLE);
                 GlideApp.with(context).load(R.drawable.avatar).into(creater);
-                ((MainActivity)context).imageStorageMethods.getProfileImage(currentAd.getCreatedBy().getuID(), new onCompleteListener<Uri>() {
+                ((MainActivity)context).cloudStorageMethods.getProfileImage(currentAd.getCreatedBy().getuID(), new onCompleteListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         GlideApp.with(context)

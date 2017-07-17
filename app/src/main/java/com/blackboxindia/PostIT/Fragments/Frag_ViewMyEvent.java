@@ -112,7 +112,7 @@ public class Frag_ViewMyEvent extends Fragment {
     public void onStop() {
         super.onStop();
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete).setVisible(false);
-        ((MainActivity) getActivity()).closeImageListener = null;
+        ((MainActivity) getActivity()).onBackPressedListener = null;
     }
     //endregion
 
