@@ -37,10 +37,9 @@
                 android:adjustViewBounds="true"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="34dp"
+                android:layout_marginTop="20dp"
                 android:alpha="0.9"
-                android:src="@drawable/card_sell"/>
+                android:src="@drawable/card1_sell"/>
 
         </android.support.v7.widget.CardView>
 
@@ -60,10 +59,12 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:alpha="0.9"
-                android:src="@drawable/card_lost_found"/>
+                android:src="@drawable/card2_lost"/>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -97,7 +98,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="20dp"
                 android:alpha="0.9"
-                android:src="@drawable/card_event"/>
+                android:src="@drawable/card3_event"/>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -163,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:layout_marginTop="16dp"
-                android:src="@drawable/card_timetable"/>
+                android:src="@drawable/card5_docs"/>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -201,7 +202,7 @@
                 android:layout_marginTop="42dp"
                 android:adjustViewBounds="true"
                 android:layout_gravity="bottom|start"
-                android:src="@drawable/card_broadcast"
+                android:src="@drawable/card6_broadcast"
                 android:alpha="0.9"/>
 
         </android.support.v7.widget.CardView>

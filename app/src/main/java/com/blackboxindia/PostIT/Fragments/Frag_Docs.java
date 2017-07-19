@@ -18,6 +18,7 @@ import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.adapters.DocumentAdapter;
 import com.blackboxindia.PostIT.dataModels.Directory;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class Frag_Docs extends Fragment {
 
@@ -38,35 +39,49 @@ public class Frag_Docs extends Fragment {
         swipeRefreshLayout = (SwipeRefreshLayout) mainView.findViewById(R.id.docs_swipe_refresh_layout);
         recyclerView = (RecyclerView) mainView.findViewById(R.id.docs_recycler);
 
-        swipeRefreshLayout.setRefreshing(true);
-        getData();
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getData();
+                if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+                    getData();
+                }
             }
         });
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+            swipeRefreshLayout.setRefreshing(true);
+            getData();
+            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    getData();
+                }
+            });
+        }else{
+            ((MainActivity)context).createSnackbar("Not Logged In!");
+        }
+
 
         return mainView;
     }
 
     private void setUpRecycler() {
-
         recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(new DocumentAdapter(context,directory));
-
     }
 
     public void getData() {
+
         new NetworkMethods(context).getAllFiles("IIT Indore", new onCompleteListener<Directory>() {
+
             @Override
             public void onSuccess(Directory dir) {
                 directory = dir;
                 if(swipeRefreshLayout.isRefreshing())
                     swipeRefreshLayout.setRefreshing(false);
-                if(recyclerView.getAdapter()!=null){
+
+                if(recyclerView.getAdapter()!=null)
                     ((DocumentAdapter)recyclerView.getAdapter()).change(dir);
-                }else
+                else
                     setUpRecycler();
             }
 
@@ -74,12 +89,15 @@ public class Frag_Docs extends Fragment {
             public void onFailure(Exception e) {
                 Log.e(TAG, "onFailure: getDir", e);
             }
+
         });
+
     }
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
         ((MainActivity)context).onBackPressedListener = null;
-        super.onStop();
+        super.onDestroy();
     }
+
 }

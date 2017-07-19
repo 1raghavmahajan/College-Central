@@ -19,7 +19,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.R;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class OnboardingActivity extends AppCompatActivity {
 
@@ -42,11 +44,11 @@ public class OnboardingActivity extends AppCompatActivity {
     //region Design
 
     static int[] bgs = new int[]{
-            R.drawable.page_sell_new,
-            R.drawable.page_lost_found,
-            R.drawable.page_event,
-            R.drawable.page_teach,
-            R.drawable.page_docs,
+            R.drawable.page1_black,
+            R.drawable.page2_lost_found,
+            R.drawable.page3_event,
+            R.drawable.page4_teach,
+            R.drawable.page5_docs,
             R.drawable.app_icon };
 
     int colors[] = {
@@ -203,18 +205,16 @@ public class OnboardingActivity extends AppCompatActivity {
             int position = getArguments().getInt(ARG_SECTION_NUMBER);
             tv_Title.setText(title[position]);
 
-
             TextView tv_Subtitle = (TextView) rootView.findViewById(R.id.section_Subtitle);
 
             tv_Subtitle.setText(subtitle[position]);
 
             img = (ImageView) rootView.findViewById(R.id.section_img);
-//            GlideApp.with(container.getContext())
-//                    .load(bgs[position])
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .into(img);
-            //Todo: async
-            img.setImageResource(bgs[position]);
+            GlideApp.with(container.getContext())
+                    .load(bgs[position])
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .into(img);
+
             return rootView;
         }
     }

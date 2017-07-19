@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -397,7 +398,10 @@ public class CloudStorageMethods {
         @Override
         protected byte[] doInBackground(Uri... params) {
             //Todo: change this
-            Bitmap bmp = ImageUtils.compressImage(params[0].toString(), MAX_UPLOAD_RES[0],MAX_UPLOAD_RES[1], context );
+
+//            Bitmap bmp = ImageUtils.compressImage(params[0].toString(), MAX_UPLOAD_RES[0],MAX_UPLOAD_RES[1], context );
+            Bitmap bmp = scale(params[0],MAX_UPLOAD_RES[0],MAX_UPLOAD_RES[1]);
+            resize(params[0],MAX_UPLOAD_RES[0],MAX_UPLOAD_RES[1]);
             return BitmapHelper.bitmapToByteArray(bmp);
         }
 
@@ -447,27 +451,94 @@ public class CloudStorageMethods {
 
     public void downloadFile(String name, String college, final onCompleteListener<File> listener) {
 //        final File file = new File(Environment.getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS),name+".pdf");
-        final File file = new File(context.getExternalFilesDir(DIRECTORY_DOCUMENTS),name+".pdf");
-        FirebaseStorage.getInstance().getReference().child(DIRECTORY_DATA).child(college).child(name+".pdf")
-                .getFile(file)
-                .addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
-                        if(task.isSuccessful()){
-                            listener.onSuccess(file);
-                        }else {
-                            Log.e(TAG, "onComplete: failure", task.getException());
-                            listener.onFailure(task.getException());
+        final File file = new File(context.getExternalFilesDir(DIRECTORY_DOCUMENTS), name + ".pdf");
+        if (!file.exists()) {
+            FirebaseStorage.getInstance().getReference().child(DIRECTORY_DATA).child(college).child(name + ".pdf")
+                    .getFile(file)
+                    .addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
+                                listener.onSuccess(file);
+                            } else {
+                                Log.e(TAG, "onComplete: failure", task.getException());
+                                listener.onFailure(task.getException());
+                            }
                         }
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        float p = (taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount()) * 100;
-                        Log.i(TAG, "onProgress downloadFile percentage: "+p);
-                    }
-                });
+                    })
+                    .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            float p = (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100;
+                            Log.i(TAG, "onProgress downloadFile percentage: " + p);
+                        }
+                    });
+        }else {
+            listener.onSuccess(file);
+        }
+    }
+
+    public void uploadFile(String name, String college, final onCompleteListener<Uri> listener) {
+
+    }
+
+    private Bitmap resize(Uri uri,  int maxWidth, int maxHeight) {
+
+        String filePath = ImageUtils.getRealPathFromURI(uri.toString(), context);
+        Bitmap image;
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+//        options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
+
+        options.inJustDecodeBounds = false;
+
+        options.inTempStorage = new byte[16 * 1024];
+
+        image = BitmapFactory.decodeFile(filePath, options);
+        Log.i(TAG, "resize: h:"+image.getHeight()+" w:"+image.getWidth());
+
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
+
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > 1) {
+                finalWidth = (int) ((float)maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float)maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            Log.i(TAG, "final resize: h:"+image.getHeight()+" w:"+image.getWidth());
+            return image;
+        } else {
+            return image;
+        }
+    }
+
+    private Bitmap scale(Uri uri, int maxHeight, int maxWidth) {
+
+        String filePath = ImageUtils.getRealPathFromURI(uri.toString(), context);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+
+        options.inJustDecodeBounds = true;
+        Bitmap bmp = BitmapFactory.decodeFile(filePath, options);
+
+        Log.i(TAG, "scale: h:"+options.outHeight+" w:"+options.outWidth);
+
+        options.inSampleSize = ImageUtils.calculateInSampleSize(options, maxWidth, maxHeight);
+
+        //  inJustDecodeBounds set to false to load the actual bitmap
+        options.inJustDecodeBounds = false;
+
+        bmp = BitmapFactory.decodeFile(filePath, options);
+
+        Log.i(TAG, "scale: final h:"+bmp.getHeight()+" w:"+bmp.getWidth());
+        return bmp;
     }
 
 }

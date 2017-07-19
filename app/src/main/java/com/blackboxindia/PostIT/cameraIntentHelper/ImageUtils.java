@@ -226,9 +226,6 @@ public class ImageUtils {
         int actualHeight = options.outHeight;
         int actualWidth = options.outWidth;
 
-        Log.i(TAG, "actualHeight: "+actualHeight);
-        Log.i(TAG, "actualWidth: "+actualWidth);
-
         // max Height and width values of the compressed image is taken as 816x612
 
         float imgRatio = actualWidth / actualHeight;
@@ -329,7 +326,7 @@ public class ImageUtils {
      * @param context
      * @return
      */
-    private static String getRealPathFromURI(String contentURI, Context context) {
+    public static String getRealPathFromURI(String contentURI, Context context) {
         Uri contentUri = Uri.parse(contentURI);
         Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
         if (cursor == null) {

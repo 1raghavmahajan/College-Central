@@ -23,8 +23,12 @@ import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.PostIT.dataModels.AdData;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
+        import com.google.firebase.storage.FileDownloadTask;
+        import com.google.firebase.storage.FirebaseStorage;
 
-import static com.blackboxindia.PostIT.activities.MainActivity.MY_ADS_TAG;
+        import java.util.List;
+
+        import static com.blackboxindia.PostIT.activities.MainActivity.MY_ADS_TAG;
 
 public class Frag_ViewMyAd extends Fragment {
 
@@ -103,6 +107,16 @@ public class Frag_ViewMyAd extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
+        for (FileDownloadTask task :
+                activeDownloadTasks) {
+            task.cancel();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete).setVisible(false);
         ((MainActivity) getActivity()).onBackPressedListener = null;
     }

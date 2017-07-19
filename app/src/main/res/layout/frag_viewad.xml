@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     >
 
     <FrameLayout
@@ -145,14 +146,15 @@
 
         <com.jsibbold.zoomage.ZoomageView
             android:id="@+id/expanded_image"
+            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:zoomage_restrictBounds="false"
-            android:fitsSystemWindows="true"
             app:zoomage_zoomable="true"
             app:zoomage_autoCenter="true"
-            app:zoomage_minScale="0.5"
+            app:zoomage_minScale="1"
             app:zoomage_maxScale="8"
+            app:zoomage_translatable="false"
             android:visibility="gone"
             />
 

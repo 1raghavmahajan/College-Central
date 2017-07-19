@@ -81,6 +81,21 @@ public class Frag_ViewAd extends Fragment {
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
+        for (FileDownloadTask task :
+                activeDownloadTasks) {
+            task.cancel();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((MainActivity) getActivity()).onBackPressedListener = null;
+    }
     //endregion
 
     void PopulateViews() {
@@ -146,17 +161,6 @@ public class Frag_ViewAd extends Fragment {
         }
         else
             imgRecyclerView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((MainActivity) getActivity()).onBackPressedListener = null;
-        List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
-        for (FileDownloadTask task :
-                activeDownloadTasks) {
-            task.cancel();
-        }
     }
 
 }

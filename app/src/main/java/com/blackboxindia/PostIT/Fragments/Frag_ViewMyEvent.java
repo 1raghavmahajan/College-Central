@@ -23,8 +23,11 @@ import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.PostIT.dataModels.AdData;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class Frag_ViewMyEvent extends Fragment {
@@ -111,6 +114,16 @@ public class Frag_ViewMyEvent extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
+        for (FileDownloadTask task :
+                activeDownloadTasks) {
+            task.cancel();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete).setVisible(false);
         ((MainActivity) getActivity()).onBackPressedListener = null;
     }

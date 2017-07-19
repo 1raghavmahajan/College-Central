@@ -155,9 +155,9 @@ public class Frag_LoginPage extends Fragment {
             etPassword.setError(String.format(getString(R.string.pass_min_size),Min_Password_Size));
             return false;
         }
-        else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))
+        else if (password.contains("\"") || password.contains("\'"))
         {
-            etPassword.setError("Password can\'t contain \", \\, \', or ;");
+            etPassword.setError(getString(R.string.pass_illegal_char));
             return false;
         }
         else

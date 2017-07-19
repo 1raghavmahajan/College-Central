@@ -24,8 +24,11 @@ import com.blackboxindia.PostIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.PostIT.dataModels.AdData;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 
 public class Frag_ViewEvent extends Fragment {
@@ -82,6 +85,22 @@ public class Frag_ViewEvent extends Fragment {
         tv_College = (TextView) view.findViewById(R.id.Ad_tvCollege);
         imageView = (ImageView) view.findViewById(R.id.Ad_Profile);
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
+        for (FileDownloadTask task :
+                activeDownloadTasks) {
+            task.cancel();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((MainActivity) getActivity()).onBackPressedListener = null;
     }
 
     //endregion
@@ -152,10 +171,5 @@ public class Frag_ViewEvent extends Fragment {
             imgRecyclerView.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((MainActivity) getActivity()).onBackPressedListener = null;
-    }
 }
 

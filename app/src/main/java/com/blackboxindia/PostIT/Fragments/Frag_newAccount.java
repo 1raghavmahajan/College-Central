@@ -129,6 +129,27 @@ public class Frag_newAccount extends Fragment {
         return ParentView;
     }
 
+    private void initVariables() {
+
+        userInfo = new UserInfo();
+
+        etName = (TextInputEditText) ParentView.findViewById(R.id.create_etName);
+        etPhone = (TextInputEditText) ParentView.findViewById(R.id.create_etPhone);
+        etAddress = (TextInputEditText) ParentView.findViewById(R.id.create_etAddress);
+        etEmail = (TextInputEditText) ParentView.findViewById(R.id.create_etEmail);
+        etPassword = (TextInputEditText) ParentView.findViewById(R.id.create_etPassword);
+        etConfirmPass= (TextInputEditText) ParentView.findViewById(R.id.create_etPasswordConfirm);
+
+        imageView = (ImageView) ParentView.findViewById(R.id.create_img);
+
+        btnCreate = (Button) ParentView.findViewById(R.id.create_btnCreate);
+        btn_image = (Button) ParentView.findViewById(R.id.create_btnImageChange);
+
+        collegeSpinner = (Spinner) ParentView.findViewById(R.id.create_etCollege);
+        hostelSpinner = (Spinner) ParentView.findViewById(R.id.create_etHostels);
+
+    }
+
     private void populateSpinners() {
 
         ArrayList<String> defHostel = new ArrayList<>();
@@ -281,6 +302,10 @@ public class Frag_newAccount extends Fragment {
 
     }
 
+    //endregion
+
+    //region Spinner related
+
     //0-collegeSpinner 1-hostelSpinner
     private ArrayList<String> addStuff(ArrayList<String> strings, int i){
         String[] mama = new String[]{
@@ -368,7 +393,6 @@ public class Frag_newAccount extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                Log.i(TAG, "onItemSelected of " + id + " " + position );
                 if(hostelList!=null)
                     Log.i(TAG, "hostel no: "+hostelList.size());
                 int size=0;
@@ -388,57 +412,6 @@ public class Frag_newAccount extends Fragment {
 
             }
         });
-    }
-
-    void createCustomDialog(String title, final ClickListener listener){
-        final Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.dialog_text);
-        dialog.findViewById(R.id.dialog_Submit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText editText = (EditText) dialog.findViewById(R.id.dialog_text);
-                String s = editText.getText().toString().trim();
-                if (s.equals(""))
-                    Toast.makeText(context, "Invalid name", Toast.LENGTH_SHORT).show();
-                else if(s.contains(".") || s.contains("#") || s.contains("$") || s.contains("[") || s.contains("]"))
-                    editText.setError("'.', '#', '$', '[', ']' not allowed");
-                else {
-                    dialog.cancel();
-                    listener.onNewItem(s);
-                }
-            }
-        });
-        dialog.findViewById(R.id.dialog_Cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        ((TextView)dialog.findViewById(R.id.dialog_Title)).setText(title);
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
-    }
-
-    private void initVariables() {
-
-        userInfo = new UserInfo();
-
-        etName = (TextInputEditText) ParentView.findViewById(R.id.create_etName);
-        etPhone = (TextInputEditText) ParentView.findViewById(R.id.create_etPhone);
-        etAddress = (TextInputEditText) ParentView.findViewById(R.id.create_etAddress);
-        etEmail = (TextInputEditText) ParentView.findViewById(R.id.create_etEmail);
-        etPassword = (TextInputEditText) ParentView.findViewById(R.id.create_etPassword);
-        etConfirmPass= (TextInputEditText) ParentView.findViewById(R.id.create_etPasswordConfirm);
-
-        imageView = (ImageView) ParentView.findViewById(R.id.create_img);
-
-        btnCreate = (Button) ParentView.findViewById(R.id.create_btnCreate);
-        btn_image = (Button) ParentView.findViewById(R.id.create_btnImageChange);
-
-        collegeSpinner = (Spinner) ParentView.findViewById(R.id.create_etCollege);
-        hostelSpinner = (Spinner) ParentView.findViewById(R.id.create_etHostels);
-
     }
 
     //endregion
@@ -491,7 +464,7 @@ public class Frag_newAccount extends Fragment {
             etPassword.setError(String.format(getString(R.string.pass_min_size),getResources().getInteger(R.integer.Min_Password_Size)));
             return false;
         }
-        else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))
+        else if (password.contains("\"") || password.contains("\'"))
         {
             etPassword.setError(getString(R.string.pass_illegal_char));
             return false;
@@ -536,6 +509,36 @@ public class Frag_newAccount extends Fragment {
         imageUtils.onActivityResult(requestCode, resultCode, data);
     }
     //endregion
+
+    void createCustomDialog(String title, final ClickListener listener){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_text);
+        dialog.findViewById(R.id.dialog_Submit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editText = (EditText) dialog.findViewById(R.id.dialog_text);
+                String s = editText.getText().toString().trim();
+                if (s.equals(""))
+                    Toast.makeText(context, "Invalid name", Toast.LENGTH_SHORT).show();
+                else if(s.contains(".") || s.contains("#") || s.contains("$") || s.contains("[") || s.contains("]") || s.contains("/"))
+                    editText.setError("'.', '#', '$', '[', ']', '/'  not allowed");
+                else {
+                    dialog.cancel();
+                    listener.onNewItem(s);
+                }
+            }
+        });
+        dialog.findViewById(R.id.dialog_Cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+        ((TextView)dialog.findViewById(R.id.dialog_Title)).setText(title);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
 
     interface ClickListener {
         void onItemSelect(String name);

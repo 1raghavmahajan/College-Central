@@ -75,6 +75,7 @@ import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_Error;
 import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_LoggedIn;
 import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_User;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_INFO;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_TEACH;
@@ -370,6 +371,9 @@ public class MainActivity extends AppCompatActivity {
                         case TYPE_EVENT:
                             launchOtherFragment(new Frag_newEvent(), NEW_EVENT_TAG);
                             break;
+
+                        case TYPE_INFO:
+
                     }
                 }
             }

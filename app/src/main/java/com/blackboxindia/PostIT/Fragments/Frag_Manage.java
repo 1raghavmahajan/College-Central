@@ -251,7 +251,7 @@ public class Frag_Manage extends Fragment {
             et_New.setError(String.format(getString(R.string.pass_min_size),getResources().getInteger(R.integer.Min_Password_Size)));
             return false;
         }
-        else if (password.contains("\"") || password.contains("\\") || password.contains("\'") || password.contains(";"))
+        else if (password.contains("\"") || password.contains("\'"))
         {
             et_New.setError(getString(R.string.pass_illegal_char));
             return false;
