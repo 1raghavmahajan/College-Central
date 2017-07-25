@@ -9,16 +9,16 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@drawable/app_icon_round"
+        android:icon="@drawable/new_icon_back"
+        android:roundIcon="@drawable/new_icon_round"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/app_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
         <activity
             android:name="com.blackboxindia.PostIT.activities.MainActivity"
-            android:label="@string/title_activity_main"
+            android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"

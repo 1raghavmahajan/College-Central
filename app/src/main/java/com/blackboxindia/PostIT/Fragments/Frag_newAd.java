@@ -233,10 +233,9 @@ public class Frag_newAd extends Fragment {
             @Override
             public void onSuccess(AdData adData) {
 
-                ((MainActivity)context).onBackPressed();
-                ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
                 count++;
                 if(count<NUMBER_OF_DUPLICATES){
+                    Toast.makeText(context, "In Progress #"+count, Toast.LENGTH_SHORT).show();
                     if(mAdData.getTitle().contains("#"))
                         mAdData.setTitle(mAdData.getTitle().replace("#"+(count-1),"#"+count));
                     else
@@ -246,7 +245,11 @@ public class Frag_newAd extends Fragment {
                     if(mAdData.getPrice()!=null)
                         mAdData.setPrice(mAdData.getPrice()+count);
                     create(mAdData);
+                }else{
+                    ((MainActivity)context).onBackPressed();
+                    ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
                 }
+
             }
 
             @Override

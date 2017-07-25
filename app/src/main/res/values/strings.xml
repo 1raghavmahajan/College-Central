@@ -1,15 +1,12 @@
 <resources>
-    <string name="app_name">PostIt</string>
+    <string name="app_name">College Central</string>
     <string name="LOGIN_PAGE">Login Page</string>
     <string name="MY_PROFILE">My Profile</string>
     <string name="NEW_ACCOUNT">New Account</string>
     <string name="MY_ADS">My Ads</string>
     <string name="NEW_AD">New Ad</string>
-    <string name="VIEW_AD">PostIt</string>
-    <string name="VIEW_MyAD">PostIt</string>
 
     <string name="btn_search">Search</string>
-    <string name="title_activity_main">PostIt</string>
 
     <string name="navDrawer_open">Open drawer</string>
     <string name="navDrawer_close">Close drawer</string>

@@ -1,6 +1,5 @@
 package com.blackboxindia.PostIT.Fragments;
 
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,12 +20,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blackboxindia.PostIT.HelperClasses.CustomDialog;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
@@ -59,8 +58,8 @@ public class Frag_newAccount extends Fragment {
 
     ArrayList<String> collegeList;
     ArrayList<String> hostelList;
-    ClickListener collegeListener;
-    ClickListener hostelListener;
+    CustomDialog.ClickListener collegeListener;
+    CustomDialog.ClickListener hostelListener;
     NetworkMethods networkMethods;
 
     //endregion
@@ -209,7 +208,7 @@ public class Frag_newAccount extends Fragment {
                 else
                     collegeList = new ArrayList<>();
 
-                collegeListener = new ClickListener() {
+                collegeListener = new CustomDialog.ClickListener() {
 
                     @Override
                     public void onItemSelect(String name) {
@@ -223,7 +222,7 @@ public class Frag_newAccount extends Fragment {
                                 else
                                     hostelList = new ArrayList<>();
 
-                                hostelListener = new ClickListener() {
+                                hostelListener = new CustomDialog.ClickListener() {
                                     @Override
                                     public void onItemSelect(String name) {
 
@@ -321,7 +320,7 @@ public class Frag_newAccount extends Fragment {
         return strings1;
     }
 
-    private void configureCollegeSpinner(final ClickListener listener){
+    private void configureCollegeSpinner(final CustomDialog.ClickListener listener){
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,addStuff(collegeList,0)){
             @Override
@@ -352,7 +351,8 @@ public class Frag_newAccount extends Fragment {
                     size = collegeList.size();
 
                 if (position == size+1) {
-                    createCustomDialog("College Name:", listener);
+                    CustomDialog.using(context).create("College Name:", listener);
+//                    createCustomDialog("College Name:", listener);
                 }
                 else if(position != 0) {
                     ParentView.findViewById(R.id.create_collegeError).setVisibility(View.INVISIBLE);
@@ -366,7 +366,7 @@ public class Frag_newAccount extends Fragment {
         });
     }
 
-    private void configureHostelSpinner(final ClickListener listener){
+    private void configureHostelSpinner(final CustomDialog.ClickListener listener){
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,addStuff(hostelList,1)){
             @Override
@@ -400,7 +400,7 @@ public class Frag_newAccount extends Fragment {
                     size = hostelList.size();
                 }
                 if (position == size+1) {
-                    createCustomDialog("Hostel Name:",listener);
+                    CustomDialog.using(context).create("Hostel Name:",listener);
                 }
                 else if(position != 0) {
                     ParentView.findViewById(R.id.create_hostelError).setVisibility(View.INVISIBLE);
@@ -509,41 +509,6 @@ public class Frag_newAccount extends Fragment {
         imageUtils.onActivityResult(requestCode, resultCode, data);
     }
     //endregion
-
-    void createCustomDialog(String title, final ClickListener listener){
-        final Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.dialog_text);
-        dialog.findViewById(R.id.dialog_Submit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText editText = (EditText) dialog.findViewById(R.id.dialog_text);
-                String s = editText.getText().toString().trim();
-                if (s.equals(""))
-                    Toast.makeText(context, "Invalid name", Toast.LENGTH_SHORT).show();
-                else if(s.contains(".") || s.contains("#") || s.contains("$") || s.contains("[") || s.contains("]") || s.contains("/"))
-                    editText.setError("'.', '#', '$', '[', ']', '/'  not allowed");
-                else {
-                    dialog.cancel();
-                    listener.onNewItem(s);
-                }
-            }
-        });
-        dialog.findViewById(R.id.dialog_Cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        ((TextView)dialog.findViewById(R.id.dialog_Title)).setText(title);
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
-    }
-
-    interface ClickListener {
-        void onItemSelect(String name);
-        void onNewItem(String name);
-    }
 
 }
 

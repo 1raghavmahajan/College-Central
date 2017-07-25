@@ -119,6 +119,16 @@ public class Frag_Main extends Fragment {
 
             }
         });
+
+        cardView[5].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG,"onClick: broadcast");
+
+                mainActivity.createSnackbar("Feature Coming Soon!");
+
+            }
+        });
     }
 
 }

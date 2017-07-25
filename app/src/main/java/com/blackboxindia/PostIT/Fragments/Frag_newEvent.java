@@ -233,13 +233,22 @@ public class Frag_newEvent extends Fragment {
         networkMethods.createNewAd(userInfo, event, imgURIs, adapter.getMajor(), new onCompleteListener<AdData>() {
             @Override
             public void onSuccess(AdData event) {
-                ((MainActivity)context).onBackPressed();
-                ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
+
                 count++;
                 if(count<NUMBER_OF_DUPLICATES){
-                    event.setTitle(event.getTitle().replace("#"+(count-1),"#"+count));
+                    Toast.makeText(context, "In Progress #"+count, Toast.LENGTH_SHORT).show();
+                    if(event.getTitle().contains("#"))
+                        event.setTitle(event.getTitle().replace("#"+(count-1),"#"+count));
+                    else
+                        event.setTitle(event.getTitle()+ " #1");
+
                     event.setDescription(event.getDescription()+" #"+count);
+                    if(event.getPrice()!=null)
+                        event.setPrice(event.getPrice()+count);
                     createAd(event);
+                }else{
+                    ((MainActivity)context).onBackPressed();
+                    ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
                 }
             }
 

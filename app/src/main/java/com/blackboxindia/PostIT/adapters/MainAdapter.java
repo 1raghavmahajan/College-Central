@@ -128,8 +128,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.adItemViewHold
                     }
                 });
             }
-            else
+            else {
+                majorImage.setImageResource(R.drawable.ad_img_placeholder);
                 progressBar.setVisibility(View.GONE);
+            }
 
             tv_title.setText(currentAd.getTitle());
 

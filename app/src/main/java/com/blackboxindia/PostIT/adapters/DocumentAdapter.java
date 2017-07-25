@@ -71,8 +71,13 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
         return (directory.files.size()+directory.folders.size());
     }
 
-    public void change(Directory dir) {
-        directory = dir;
+    public void changeRoot(Directory dir) {
+        root = dir;
+        Directory d = root;
+        for (Integer integer : path) {
+            d = d.folders.get(integer);
+        }
+        directory = d;
         notifyDataSetChanged();
     }
 

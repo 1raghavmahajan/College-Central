@@ -80,7 +80,7 @@ public class Frag_Docs extends Fragment {
                     swipeRefreshLayout.setRefreshing(false);
 
                 if(recyclerView.getAdapter()!=null)
-                    ((DocumentAdapter)recyclerView.getAdapter()).change(dir);
+                    ((DocumentAdapter)recyclerView.getAdapter()).changeRoot(directory);
                 else
                     setUpRecycler();
             }

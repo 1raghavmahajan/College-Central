@@ -1,6 +1,5 @@
 package com.blackboxindia.PostIT.Fragments;
 
-import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,12 +23,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blackboxindia.PostIT.HelperClasses.CustomDialog;
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onUpdateListener;
@@ -69,7 +68,7 @@ public class Frag_myProfile extends Fragment {
     Bitmap newProfileImage;
 
     ArrayList<String> hostelList;
-    Frag_newAccount.ClickListener hostelListener;
+    CustomDialog.ClickListener hostelListener;
 
     boolean recentlySentMail = false;
     FirebaseUser currentUser;
@@ -148,13 +147,13 @@ public class Frag_myProfile extends Fragment {
         etEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Sorry, you can't change this.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Sorry, you can't changeRoot this.", Toast.LENGTH_SHORT).show();
             }
         });
         etCollege.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "Sorry, you can't change this.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Sorry, you can't changeRoot this.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -194,7 +193,7 @@ public class Frag_myProfile extends Fragment {
                 else
                     hostelList = new ArrayList<>();
 
-                hostelListener = new Frag_newAccount.ClickListener() {
+                hostelListener = new CustomDialog.ClickListener() {
                     @Override
                     public void onItemSelect(String name) {
 
@@ -313,7 +312,7 @@ public class Frag_myProfile extends Fragment {
         });
     }
 
-    private void configureHostelSpinner(final Frag_newAccount.ClickListener listener){
+    private void configureHostelSpinner(final CustomDialog.ClickListener listener){
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,addStuff(hostelList)){
             @Override
@@ -348,7 +347,7 @@ public class Frag_myProfile extends Fragment {
                     size = hostelList.size();
                 }
                 if (position == size+1) {
-                    createCustomDialog("Hostel Name:",listener);
+                    CustomDialog.using(context).create("Hostel Name:",listener);
                 }
                 else if(position != 0) {
                     MainView.findViewById(R.id.profile_hostelError).setVisibility(View.INVISIBLE);
@@ -360,35 +359,6 @@ public class Frag_myProfile extends Fragment {
 
             }
         });
-    }
-
-    void createCustomDialog(String title, final Frag_newAccount.ClickListener listener){
-        final Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.dialog_text);
-        dialog.findViewById(R.id.dialog_Submit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = ((EditText) v).getText().toString().trim();
-                if (s.equals(""))
-                    Toast.makeText(context, "Invalid name", Toast.LENGTH_SHORT).show();
-                else if(s.contains(".") || s.contains("#") || s.contains("$") || s.contains("[") || s.contains("]"))
-                    ((EditText) v).setError("'.', '#', '$', '[', ']' not allowed");
-                else {
-                    dialog.cancel();
-                    listener.onNewItem(s);
-                }
-            }
-        });
-        dialog.findViewById(R.id.dialog_Cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        ((TextView)dialog.findViewById(R.id.dialog_Title)).setText(title);
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
     }
 
     private ArrayList<String> addStuff(ArrayList<String> strings){
