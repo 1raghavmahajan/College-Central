@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:alpha="0.9"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:scaleType="fitCenter"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -42,18 +42,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:text="@string/title"/>
+            android:text="@string/title"
+            android:textSize="23sp"/>
 
         <TextView
             android:id="@+id/section_Subtitle"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="16dp"
+            android:paddingTop="8dp"
             android:gravity="center|top"
-
             android:alpha="0.8"
             android:text="@string/lbl_subtitle"
+            android:textSize="13sp"
             android:textColor="@android:color/white" />
 
 

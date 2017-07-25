@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,23 +19,30 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.blackboxindia.PostIT.BuildConfig;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 @SuppressWarnings({"WeakerAccess", "JavaDoc", "unused"})
 @SuppressLint("SdCardPath")
@@ -386,7 +392,7 @@ public class ImageUtils {
     public void launchCamera(int from) {
         this.from = from;
 
-        if (Build.VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             permission_check(1);
         } else {
             camera_call();
@@ -454,6 +460,7 @@ public class ImageUtils {
      * @param code
      */
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void permission_check(final int code) {
 
         int hasWriteContactsPermission = ContextCompat.checkSelfPermission(current_activity,
@@ -466,15 +473,29 @@ public class ImageUtils {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                ActivityCompat.requestPermissions(current_activity,
-                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        code);
+                                if(isFragment){
+                                    current_fragment.requestPermissions(
+                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            code);
+                                }else {
+                                    ActivityCompat.requestPermissions(current_activity,
+                                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            code);
+                                }
                             }
                         });
             } else {
-                ActivityCompat.requestPermissions(current_activity,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        code);
+
+                if(isFragment){
+                    current_fragment.requestPermissions(
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            code);
+                }else {
+                    ActivityCompat.requestPermissions(current_activity,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            code);
+                }
+
             }
         }
         else {
@@ -496,16 +517,39 @@ public class ImageUtils {
     }
 
 
-    /**
-     * Capture image from camera
-     */
+
+    protected File getPhotoDirectory() {
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "AdPhotos");
+
+        if (! mediaStorageDir.exists()){
+            if (! mediaStorageDir.mkdirs()){
+                Log.d(TAG, "failed to create directory");
+                return null;
+            }
+        }
+
+        return mediaStorageDir;
+    }
 
     public void camera_call() {
-        ContentValues values = new ContentValues();
-        imageUri = current_activity.getContentResolver().insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_.jpg";
+
         Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent1.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+        File file = new File(getPhotoDirectory(),timeStamp);
+        imageUri = Uri.fromFile(file);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file));
+        }else {
+            intent1.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        }
+
+        intent1.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent1.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
         if (isFragment)
             current_fragment.startActivityForResult(intent1, 0);
@@ -601,7 +645,8 @@ public class ImageUtils {
                 if (resultCode == Activity.RESULT_OK) {
 
                     try {
-                        bitmap = compressImage(imageUri.toString(), MAX_ICON_RES[0], MAX_ICON_RES[1]);
+                        bitmap = resize(imageUri,MAX_ICON_RES[0],context);
+//                        bitmap = compressImage(imageUri.toString(), MAX_ICON_RES[0], MAX_ICON_RES[1]);
 
                         Log.i(TAG, "now height: "+bitmap.getHeight());
                         Log.i(TAG, "now Width: "+bitmap.getWidth());
@@ -620,7 +665,9 @@ public class ImageUtils {
                     try {
                         selected_path = getPath(selectedImage);
                         file_name = selected_path.substring(selected_path.lastIndexOf("/") + 1);
-                        bitmap = compressImage(selectedImage.toString(), MAX_GALLERY_RES[0], MAX_GALLERY_RES[1]);
+
+                        bitmap = resize(selectedImage,MAX_GALLERY_RES[0],context);
+//                        bitmap = compressImage(selectedImage.toString(), MAX_GALLERY_RES[0], MAX_GALLERY_RES[1]);
 
                         Log.i(TAG, "gallery now height: "+bitmap.getHeight());
                         Log.i(TAG, "gallery now Width: "+bitmap.getWidth());
@@ -785,6 +832,80 @@ public class ImageUtils {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    public static Bitmap resize(Uri uri,  int maxDim, Context context) {
+
+        String filePath = ImageUtils.getRealPathFromURI(uri.toString(), context);
+        Bitmap image;
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap bmp = BitmapFactory.decodeFile(filePath, options);
+
+        int orgHeight = options.outHeight;
+        int orgWidth = options.outWidth;
+
+        int inSampleSize =1;
+        if(orgHeight > orgWidth){
+            if(orgHeight >maxDim){
+                while(orgHeight/inSampleSize>maxDim){
+                    inSampleSize++;
+                }
+                inSampleSize--;
+            }
+        }else{
+            if(orgWidth>maxDim){
+                while(orgWidth/inSampleSize>maxDim){
+                    inSampleSize++;
+                }
+                inSampleSize--;
+            }
+        }
+
+        options.inSampleSize = inSampleSize;
+        options.inJustDecodeBounds = false;
+        image = BitmapFactory.decodeFile(filePath, options);
+
+        if (maxDim> 0) {
+
+            int width = image.getWidth();
+            int height = image.getHeight();
+
+//            float ratioMax = (float) maxWidth / (float) maxHeight;
+//
+//            int finalWidth = maxWidth;
+//            int finalHeight = maxHeight;
+//
+//            if (ratioMax > 1) {
+//                finalWidth = (int) ((float)maxHeight * ratioBitmap);
+//            } else {
+//                finalHeight = (int) ((float)maxWidth / ratioBitmap);
+//            }
+
+            float ratioBitmap = (float) width / (float) height;
+            int finalWidth = width;
+            int finalHeight = height;
+
+            if(width>height){
+                if(width>maxDim){
+                    finalWidth = maxDim;
+                    finalHeight = (int)((float)maxDim/ratioBitmap);
+                }
+            }
+            else {
+                if(height>maxDim){
+                    finalHeight = maxDim;
+                    finalWidth = (int)((float)maxDim*ratioBitmap);
+                }
+            }
+
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            return image;
+        } else {
+            return image;
         }
     }
 

@@ -3,6 +3,9 @@ package com.blackboxindia.PostIT.HelperClasses;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
+
+import com.blackboxindia.PostIT.BuildConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +24,11 @@ public class FileOpener {
 
     public void openFile(File url) throws IOException {
 
-        Uri uri = Uri.fromFile(url);
+        Uri uri = FileProvider.getUriForFile(context,
+                BuildConfig.APPLICATION_ID + ".provider", url);
+
         Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         // Word document
         if (url.toString().contains(".doc") || url.toString().contains(".docx"))

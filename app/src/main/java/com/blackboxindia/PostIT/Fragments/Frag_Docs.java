@@ -71,7 +71,7 @@ public class Frag_Docs extends Fragment {
 
     public void getData() {
 
-        new NetworkMethods(context).getAllFiles("IIT Indore", new onCompleteListener<Directory>() {
+        new NetworkMethods(context).getAllFiles(((MainActivity)context).userInfo.getCollegeName(), new onCompleteListener<Directory>() {
 
             @Override
             public void onSuccess(Directory dir) {

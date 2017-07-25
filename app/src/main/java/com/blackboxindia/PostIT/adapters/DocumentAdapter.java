@@ -131,7 +131,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
                                     }
                                 }
                             });
-                            new CloudStorageMethods(context).downloadFile(name, "IIT Indore", new onCompleteListener<File>() {
+                            new CloudStorageMethods(context).downloadFile(name, ((MainActivity)context).userInfo.getCollegeName(), new onCompleteListener<File>() {
                                 @Override
                                 public void onSuccess(File file) {
                                     dialog.cancel();

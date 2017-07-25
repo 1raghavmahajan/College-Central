@@ -49,7 +49,7 @@ public class OnboardingActivity extends AppCompatActivity {
             R.drawable.page3_event,
             R.drawable.page4_teach,
             R.drawable.page5_docs,
-            R.drawable.app_icon };
+            R.drawable.icon_without_back };
 
     int colors[] = {
             R.color.cyan,
@@ -63,16 +63,16 @@ public class OnboardingActivity extends AppCompatActivity {
             "Buy / Sell",
             "Lost and Found",
             "Events",
-            "Documents",
             "Teach",
+            "Documents",
             "Post It!" };
 
     static String subtitle[] = {
             "Post an ad and get rid of the crap in your room",
             "Lost something? Inform everyone without spamming through mail",
             "Post information about upcoming events",
-            "See all important documents at one place without going through mail every time",
             "or spread your skills and meet your juniors",
+            "See all important documents at one place without going through mail every time",
             "Create an account to get things started!" };
 
     //endregion

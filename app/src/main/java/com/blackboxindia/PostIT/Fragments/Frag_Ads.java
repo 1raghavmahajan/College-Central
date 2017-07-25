@@ -51,7 +51,6 @@ public class Frag_Ads extends Fragment {
 
 
     @SuppressWarnings("FieldCanBeLocal")
-    //Todo: load rest after 40
     private static Integer MAX_Ads = 0;
     private String adType;
 

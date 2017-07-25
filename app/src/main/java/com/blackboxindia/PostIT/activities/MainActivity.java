@@ -297,8 +297,6 @@ public class MainActivity extends AppCompatActivity {
                 drawer.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.nav_allAds:
-                        //Todo:
-                        //goToMainFragment(false,false);
                         launchOtherFragment(new Frag_Main(), MAIN_SCREEN_TAG);
                         break;
                     case R.id.nav_manage:
@@ -709,8 +707,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(redirect)
             launchOtherFragment(new Frag_Main(),MAIN_SCREEN_TAG);
-            //Todo:
-            //goToMainFragment(false,toRefresh);
         else if (toRefresh){
             if(fragmentManager.findFragmentByTag(ALL_FRAG_TAG)!=null)
                 ((Frag_Ads) (fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).refresh();
@@ -729,7 +725,6 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.nav_email)).setText(R.string.sample_email);
         ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(imageView.getDrawable() !=null) {
-//            ((BitmapDrawable) imageView.getDrawable()).getBitmap().recycle();
             GlideApp.with(context).load(R.drawable.avatar).into(imageView);
         }
 
@@ -741,8 +736,6 @@ public class MainActivity extends AppCompatActivity {
         navigationViewMenu.findItem(R.id.nav_logout).setVisible(false);
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(true);
 
-        //Todo:
-        //goToMainFragment(true, false);
         launchOtherFragment(new Frag_Main(),MAIN_SCREEN_TAG);
         createSnackbar("Logged out!");
     }

@@ -59,7 +59,7 @@ public class Frag_newAd extends Fragment {
     String adType;
 
     int count =0;
-    private static final int NUMBER_OF_DUPLICATES = 1;
+    private static final int NUMBER_OF_DUPLICATES = 7;
 
     NetworkMethods networkMethods;
     //endregion
@@ -237,7 +237,11 @@ public class Frag_newAd extends Fragment {
                 ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
                 count++;
                 if(count<NUMBER_OF_DUPLICATES){
-                    mAdData.setTitle(mAdData.getTitle().replace("#"+(count-1),"#"+count));
+                    if(mAdData.getTitle().contains("#"))
+                        mAdData.setTitle(mAdData.getTitle().replace("#"+(count-1),"#"+count));
+                    else
+                        mAdData.setTitle(mAdData.getTitle()+ " #1");
+
                     mAdData.setDescription(mAdData.getDescription()+" #"+count);
                     if(mAdData.getPrice()!=null)
                         mAdData.setPrice(mAdData.getPrice()+count);
@@ -254,6 +258,7 @@ public class Frag_newAd extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.i(TAG, "onRequestPermissionsResult: ");
         imageUtils.request_permission_result(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
