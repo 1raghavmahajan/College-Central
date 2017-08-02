@@ -71,8 +71,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.blackboxindia.PostIT.activities.OnboardingActivity.PREFERENCES_FILE;
-import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_Error;
-import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_LoggedIn;
+import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_IsCached;
 import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_User;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_INFO;
@@ -90,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String MY_PROFILE_TAG = "MY_PROFILE";
     public final static String MANAGE_FRAG_TAG = "MANAGE_ACCOUNT";
     public final static String NEW_ACCOUNT_TAG = "NEW_ACCOUNT";
+    public final static String VERIFY_EMAIL_TAG = "VERIFY_EMAIL";
     public final static String MY_ADS_TAG = "MY_ADS";
     public final static String NEW_AD_TAG = "NEW_AD";
     public final static String NEW_EVENT_TAG = "NEW_EVENT";
@@ -97,7 +97,20 @@ public class MainActivity extends AppCompatActivity {
     public final static String VIEW_EVENT_TAG = "VIEW_EVENT";
     public final static String VIEW_MyAD_TAG = "VIEW_MyAD";
     public final static String VIEW_MyEVENT_TAG = "VIEW_MyEVENT";
-    public final static String VERIFY_EMAIL_TAG = "VERIFY_EMAIL";
+
+    public final static String TITLE_AllAds = "All Ads";
+    public final static String TITLE_MainScreen = "College Central";
+    public final static String TITLE_LoginPage = "Login";
+    public final static String TITLE_Documents = "Documents";
+    public final static String TITLE_MyProfile = "My Profile";
+    public final static String TITLE_ManageProfile = "Manage Account";
+    public final static String TITLE_NewAccount = "New Account";
+    public final static String TITLE_VerifyEmail = "Verify Email";
+    public final static String TITLE_MyAds = "My Ads";
+    public final static String TITLE_NewAd = "Create New Ad";
+    public final static String TITLE_NewEvent = "New Event";
+    public final static String TITLE_ViewAd = "College Central";
+    public final static String TITLE_ViewEvent = "College Central";
 
     private final static String TAG = MainActivity.class.getSimpleName()+" YOYO";
     public static final String PREF_USER_FIRST_TIME = "user_first_time";
@@ -110,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
 
     Context context;
     boolean isUserFirstTime;
-    public String currentFragTag;
+    public boolean offlineMode;
 
     AppBarLayout appBarLayout;
     FragmentManager fragmentManager;
@@ -120,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
     Menu navigationViewMenu;
 
     public UserInfo userInfo;
+    public NetworkMethods networkMethods;
     public CloudStorageMethods cloudStorageMethods;
 
     public MainActivity.onBackPressedListener onBackPressedListener;
@@ -171,79 +185,96 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpUser(){
         Bundle extras = getIntent().getExtras();
-        if(extras.getBoolean(ARG_LoggedIn)){
-
+        boolean isCached = extras.getBoolean(ARG_IsCached);
+        if(isCached){
             UserInfo info = extras.getParcelable(ARG_User);
             UpdateUI(info,false, false);
-            createSnackbar("Logged In!");
+            offlineMode = true;
+        }
 
-        } else {
-
-            Exception e = null;
-            if(extras.getParcelable(ARG_Error)!=null)
-                e = extras.getParcelable(ARG_Error);
-
-            if(e!=null) {
-                if (e.getMessage().contains("network")) {
-                    final UserCred userCred = new UserCred();
-                    userCred.load_Cred(context);
-                    final NetworkMethods methods = new NetworkMethods(context);
-                    createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, "Retry", new View.OnClickListener() {
+        final UserCred userCred = new UserCred();
+        if(userCred.load_Cred(context)) {
+            networkMethods.Login(userCred.getEmail(), userCred.getpwd(),
+                    new onLoginListener() {
                         @Override
-                        public void onClick(View v) {
-                            final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
-                            methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
-                                @Override
-                                public void onSuccess(UserInfo userInfo) {
-                                    UpdateUI(userInfo, false, false);
-                                    dialog.cancel();
-                                    createSnackbar("Logged In!");
-                                }
+                        public void onSuccess(UserInfo userInfo) {
+                            UpdateUI(userInfo,false, false);
+                            Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                            userInfo.cacheUserDetails(context);
+                        }
 
-                                @Override
-                                public void onFailure(Exception e) {
-                                    if (e.getMessage().contains("network")) {
-                                        dialog.cancel();
-                                        createSnackbar("Network Error, Please try again later.");
-                                    } else {
-                                        dialog.cancel();
-                                        createSnackbar("Session Expired. Please login again.");
-                                        UserCred.clear_cred(context);
-                                    }
+                        @Override
+                        public void onFailure(Exception e) {
+                            if(e!=null) {
+                                if (e.getMessage().contains("network")) {
+                                    createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, "Retry", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
+                                            networkMethods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
+                                                @Override
+                                                public void onSuccess(UserInfo userInfo) {
+                                                    UpdateUI(userInfo, false, false);
+                                                    userInfo.cacheUserDetails(context);
+                                                    dialog.cancel();
+                                                    Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                                                }
+
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    if (e.getMessage().contains("network")) {
+                                                        dialog.cancel();
+                                                        createSnackbar("Network Error, Please try again later.");
+                                                    } else {
+                                                        dialog.cancel();
+                                                        createSnackbar("Session Expired. Please login again.");
+                                                        UserCred.clear_cred(context);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    createSnackbar("Session Expired. Please login again.");
+                                    UserCred.clear_cred(context);
                                 }
-                            });
+                            }
+                            else {
+                                createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE,"Login", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                                    }
+                                });
+                            }
                         }
                     });
-                } else {
-                    createSnackbar("Session Expired. Please login again.");
-                    UserCred.clear_cred(context);
-                }
+        } else {
+
+            if(isCached) {
+                UserInfo.clearCache(context);
+                UpdateUIonLogout(false);
             }
-            else {
-                createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE,"Login", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
-                    }
-                });
-            }
+
         }
+
     }
 
     private void initVariables() {
-        appBarLayout = (AppBarLayout) findViewById(R.id.appbarLayout);
-        progressBar = (ProgressBar) findViewById(R.id.progressBarTop);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator_layout);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        appBarLayout = findViewById(R.id.appbarLayout);
+        progressBar = findViewById(R.id.progressBarTop);
+        coordinatorLayout = findViewById(R.id.coordinator_layout);
+        fab = findViewById(R.id.fab);
         fragmentManager = getFragmentManager();
         context = this;
         cloudStorageMethods = new CloudStorageMethods(context);
         cloudStorageMethods.getCache();
+        networkMethods = new NetworkMethods(context);
     }
 
     private void setUpToolbar() {
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
         toolbar.inflateMenu(R.menu.toolbar_menu);
 
@@ -272,15 +303,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpDrawer() {
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navDrawer_open, R.string.navDrawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationViewMenu = navigationView.getMenu();
 
-        Button btn_nav = (Button) navigationView.getHeaderView(0).findViewById(R.id.nav_btnLogin);
+        Button btn_nav = navigationView.getHeaderView(0).findViewById(R.id.nav_btnLogin);
         btn_nav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -327,9 +358,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpMainScreen() {
 
         hideIT();
-
-        currentFragTag = MAIN_SCREEN_TAG;
-
+        
         Frag_Main frag_main = new Frag_Main();
         //mc.setRetainInstance(true);
 
@@ -388,13 +417,12 @@ public class MainActivity extends AppCompatActivity {
     //region Movement
 
     public void launchOtherFragment(Fragment frag, String tag) {
-//        if(!currentFragTag.equals(tag)) {
-            currentFragTag = tag;
-            fragmentManager.beginTransaction()
-                    .replace(R.id.frame_layout, frag, tag)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .addToBackStack(null).commit();
-            }
+        
+        fragmentManager.beginTransaction()
+                .replace(R.id.frame_layout, frag, tag)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack(null).commit();
+    }
 
     boolean twiceToExit = false;
     @Override
@@ -512,12 +540,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
-
-            if(currentFragTag.equals(ALL_FRAG_TAG)) {
-                if (fragmentManager.findFragmentByTag(ALL_FRAG_TAG) != null)
+            
+            if (fragmentManager.findFragmentByTag(ALL_FRAG_TAG) != null) {
+                if(fragmentManager.findFragmentByTag(ALL_FRAG_TAG).isVisible())
                     ((Frag_Ads) (fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter(query);
             }
-
+            
         }
     }
 
@@ -672,7 +700,7 @@ public class MainActivity extends AppCompatActivity {
         if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified())
             notVerified = "";
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email)).setText(userInfo.getEmail()+notVerified);
-        final ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
+        final ImageView imageView = navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(userInfo.getHasProfileIMG()) {
             cloudStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                 @Override
@@ -717,13 +745,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void UpdateUIonLogout() {
+        UpdateUIonLogout(true);
+    }
+
+    public void UpdateUIonLogout(boolean createSnack) {
 
         this.userInfo = null;
 
         //Drawer
         ((TextView) findViewById(R.id.nav_Name)).setText(R.string.sample_ID);
         ((TextView) findViewById(R.id.nav_email)).setText(R.string.sample_email);
-        ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
+        ImageView imageView = navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(imageView.getDrawable() !=null) {
             GlideApp.with(context).load(R.drawable.avatar).into(imageView);
         }
@@ -737,7 +769,9 @@ public class MainActivity extends AppCompatActivity {
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(true);
 
         launchOtherFragment(new Frag_Main(),MAIN_SCREEN_TAG);
-        createSnackbar("Logged out!");
+
+        if(createSnack)
+            createSnackbar("Logged out!");
     }
 
     public void createSnackbar(String msg) {

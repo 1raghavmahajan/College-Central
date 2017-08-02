@@ -30,6 +30,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import static com.blackboxindia.PostIT.activities.MainActivity.TITLE_ViewEvent;
+
 public class Frag_ViewMyEvent extends Fragment {
 
     //region Variables
@@ -50,6 +52,7 @@ public class Frag_ViewMyEvent extends Fragment {
     @Override
     public void onResume() {
         MenuItem item = ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete);
+        ((MainActivity)context).toolbar.setTitle(TITLE_ViewEvent);
         item.setVisible(true);
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -102,12 +105,12 @@ public class Frag_ViewMyEvent extends Fragment {
 
     private void initVariables() {
 
-        tv_Title = (TextView) view.findViewById(R.id.Ad_tvTitle);
-        tv_Description = (TextView) view.findViewById(R.id.Ad_tvDescription);
-        imgRecyclerView = (RecyclerView) view.findViewById(R.id.Ad_imgRecycler);
+        tv_Title = view.findViewById(R.id.Ad_tvTitle);
+        tv_Description = view.findViewById(R.id.Ad_tvDescription);
+        imgRecyclerView = view.findViewById(R.id.Ad_imgRecycler);
 
-        tv_Date = (TextView) view.findViewById(R.id.Ad_etDate);
-        tv_Time = (TextView) view.findViewById(R.id.Ad_etTime);
+        tv_Date = view.findViewById(R.id.Ad_etDate);
+        tv_Time = view.findViewById(R.id.Ad_etTime);
 
     }
 
@@ -150,8 +153,6 @@ public class Frag_ViewMyEvent extends Fragment {
     }
 
     void setUpImgRecycler() {
-        //Todo: Correct this
-//        main = ((Frag_Ads)(getFragmentManager().findFragmentByTag(MainActivity.ALL_FRAG_TAG))).current;
 
         if(event.getNumberOfImages()>0) {
             ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, event, main, view);

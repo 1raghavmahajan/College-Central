@@ -50,6 +50,7 @@ public class Frag_VerifyEmail extends Fragment {
     @Override
     public void onResume() {
         verified = false;
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_VerifyEmail);
         super.onResume();
     }
 
@@ -61,8 +62,8 @@ public class Frag_VerifyEmail extends Fragment {
         context = view.getContext();
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        progressBar= (ProgressBar) view.findViewById(R.id.verify_progress);
-        textView = (TextView) view.findViewById(R.id.verify_tv3);
+        progressBar= view.findViewById(R.id.verify_progress);
+        textView = view.findViewById(R.id.verify_tv3);
 
         (view.findViewById(R.id.verify_btn_Check)).setOnClickListener(new View.OnClickListener() {
             @Override

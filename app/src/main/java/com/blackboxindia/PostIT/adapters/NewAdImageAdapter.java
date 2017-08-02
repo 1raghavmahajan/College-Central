@@ -72,8 +72,8 @@ public class NewAdImageAdapter extends RecyclerView.Adapter<NewAdImageAdapter.im
 
         imgViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.imgCard_img);
-            btn_delete = (ImageButton) itemView.findViewById(R.id.imgCard_delete);
+            imageView = itemView.findViewById(R.id.imgCard_img);
+            btn_delete = itemView.findViewById(R.id.imgCard_delete);
         }
 
         void setData(final Integer position) {

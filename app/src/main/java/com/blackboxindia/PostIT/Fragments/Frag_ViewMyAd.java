@@ -23,12 +23,13 @@ import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.PostIT.dataModels.AdData;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
-        import com.google.firebase.storage.FileDownloadTask;
-        import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
 
-        import java.util.List;
+import java.util.List;
 
-        import static com.blackboxindia.PostIT.activities.MainActivity.MY_ADS_TAG;
+import static com.blackboxindia.PostIT.activities.MainActivity.MY_ADS_TAG;
+import static com.blackboxindia.PostIT.activities.MainActivity.TITLE_ViewAd;
 
 public class Frag_ViewMyAd extends Fragment {
 
@@ -53,6 +54,7 @@ public class Frag_ViewMyAd extends Fragment {
     @Override
     public void onResume() {
         MenuItem item = ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete);
+        ((MainActivity)context).toolbar.setTitle(TITLE_ViewAd);
         item.setVisible(true);
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -98,10 +100,10 @@ public class Frag_ViewMyAd extends Fragment {
 
     private void initVariables() {
 
-        tv_Title = (TextView) view.findViewById(R.id.Ad_tvTitle);
-        tv_Price = (TextView) view.findViewById(R.id.Ad_tvPrice);
-        tv_Description = (TextView) view.findViewById(R.id.Ad_tvDescription);
-        imgRecyclerView = (RecyclerView) view.findViewById(R.id.Ad_imgRecycler);
+        tv_Title = view.findViewById(R.id.Ad_tvTitle);
+        tv_Price = view.findViewById(R.id.Ad_tvPrice);
+        tv_Description = view.findViewById(R.id.Ad_tvDescription);
+        imgRecyclerView = view.findViewById(R.id.Ad_imgRecycler);
     }
 
     @Override

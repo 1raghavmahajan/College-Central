@@ -53,14 +53,20 @@ public class Frag_myAds extends Fragment {
 
     //endregion
 
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_MyAds);
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.frag_myads, container, false);
         context = view.getContext();
-        ads_default = (ImageView) view.findViewById(R.id.ads_default);
-        swipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_layout);
-        recyclerView = (RecyclerView) view.findViewById(R.id.myads_recycler);
+        ads_default = view.findViewById(R.id.ads_default);
+        swipe = view.findViewById(R.id.swipe_refresh_layout);
+        recyclerView = view.findViewById(R.id.myads_recycler);
 
         if(((MainActivity)context).userInfo!=null) {
             swipe.setRefreshing(true);

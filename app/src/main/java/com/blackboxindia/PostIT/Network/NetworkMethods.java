@@ -184,12 +184,13 @@ public class NetworkMethods {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            ((MainActivity)context).offlineMode = false;
                             UserInfo userInfo = new UserInfo();
                             userInfo.setEmail(email);
                             //noinspection ConstantConditions
                             userInfo.setuID(mAuth.getCurrentUser().getUid());
+                            getDetailsFromDB(userInfo, loginListener);
 
-                                getDetailsFromDB(userInfo, loginListener);
                         } else {
                             Log.w(TAG, task.getException());
                             loginListener.onFailure(task.getException());

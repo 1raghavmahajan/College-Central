@@ -5,7 +5,7 @@
         <item
             android:id="@+id/nav_allAds"
             android:icon="@drawable/ic_all"
-            android:title="@string/all_ads" />
+            android:title="@string/main_screen" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_profile"

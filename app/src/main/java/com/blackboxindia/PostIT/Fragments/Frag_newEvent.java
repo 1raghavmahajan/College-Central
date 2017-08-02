@@ -64,7 +64,13 @@ public class Frag_newEvent extends Fragment {
     private static final int NUMBER_OF_DUPLICATES = 1;
     //endregion
 
-    //region Init Setup
+    //region Initial Setup
+
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_NewEvent);
+        super.onResume();
+    }
 
     @Nullable
     @Override
@@ -85,21 +91,21 @@ public class Frag_newEvent extends Fragment {
     private void initVariables() {
         myCalendar = Calendar.getInstance();
 
-        etTitle = (EditText) view.findViewById(R.id.newAd_etTitle);
-        etDate = (EditText) view.findViewById(R.id.newAd_etDate);
-        etTime = (EditText) view.findViewById(R.id.newAd_etTime);
+        etTitle = view.findViewById(R.id.newAd_etTitle);
+        etDate = view.findViewById(R.id.newAd_etDate);
+        etTime = view.findViewById(R.id.newAd_etTime);
 
-        etDescription = (EditText) view.findViewById(R.id.newAd_etDescription);
+        etDescription = view.findViewById(R.id.newAd_etDescription);
 
-        btn_newImg = (Button) view.findViewById(R.id.newAd_btnAddImg);
-        btn_Create = (Button) view.findViewById(R.id.newAd_btnCreate);
+        btn_newImg = view.findViewById(R.id.newAd_btnAddImg);
+        btn_Create = view.findViewById(R.id.newAd_btnCreate);
 
         context = view.getContext();
         imgURIs = new ArrayList<>();
     }
 
     private void setUpRecycler() {
-        recyclerView = (RecyclerView) view.findViewById(R.id.newAd_imgRecycler);
+        recyclerView = view.findViewById(R.id.newAd_imgRecycler);
         adapter = new NewAdImageAdapter(context, new NewAdImageAdapter.onDeleteClickListener() {
             @Override
             public void onDelete(int position) {

@@ -25,7 +25,7 @@ public class CustomDialog {
         dialog.findViewById(R.id.dialog_Submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText editText = (EditText) dialog.findViewById(R.id.dialog_text);
+                EditText editText = dialog.findViewById(R.id.dialog_text);
                 String s = editText.getText().toString().trim();
                 if (s.equals(""))
                     Toast.makeText(context, "Invalid name", Toast.LENGTH_SHORT).show();

@@ -52,6 +52,12 @@ public class Frag_Manage extends Fragment {
 
     //region Initial Setup
 
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_ManageProfile);
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -87,18 +93,18 @@ public class Frag_Manage extends Fragment {
     }
 
     private void initVariables() {
-        Open_ChangePass = (TextView) view.findViewById(R.id.btn_OpenChangePass);
-        ic_right = (ImageView) view.findViewById(R.id.card_open_icon);
-        linearLayout = (LinearLayout) view.findViewById(R.id.other_stuff);
-        btn_ChangePass = (Button) view.findViewById(R.id.btn_ChangePass);
-        btn_delete = (TextView) view.findViewById(R.id.btn_DeleteAccount);
+        Open_ChangePass = view.findViewById(R.id.btn_OpenChangePass);
+        ic_right = view.findViewById(R.id.card_open_icon);
+        linearLayout = view.findViewById(R.id.other_stuff);
+        btn_ChangePass = view.findViewById(R.id.btn_ChangePass);
+        btn_delete = view.findViewById(R.id.btn_DeleteAccount);
 
         linearLayout.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         ActualHeight = linearLayout.getMeasuredHeight();
 
-        et_Current = (TextInputEditText) view.findViewById(R.id.currentPassword);
-        et_New = (TextInputEditText) view.findViewById(R.id.newPassword);
-        et_New2 = (TextInputEditText) view.findViewById(R.id.conf_newPassword);
+        et_Current = view.findViewById(R.id.currentPassword);
+        et_New = view.findViewById(R.id.newPassword);
+        et_New2 = view.findViewById(R.id.conf_newPassword);
     }
 
     private void openIt() {

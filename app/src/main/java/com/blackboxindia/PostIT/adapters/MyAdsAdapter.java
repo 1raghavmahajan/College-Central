@@ -82,11 +82,11 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
 
         adItemViewHolder(View itemView) {
             super(itemView);
-            majorImage = (ImageView) itemView.findViewById(R.id.adItem_Image);
-            tv_Title = (TextView) itemView.findViewById(R.id.adItem_Title);
-            tv_Type = (TextView) itemView.findViewById(R.id.adItem_Type);
-            cardView = (CardView) itemView.findViewById(R.id.adItem);
-            btn_Delete = (ImageView) itemView.findViewById(R.id.adItem_Delete);
+            majorImage = itemView.findViewById(R.id.adItem_Image);
+            tv_Title = itemView.findViewById(R.id.adItem_Title);
+            tv_Type = itemView.findViewById(R.id.adItem_Type);
+            cardView = itemView.findViewById(R.id.adItem);
+            btn_Delete = itemView.findViewById(R.id.adItem_Delete);
             context = itemView.getContext();
         }
 

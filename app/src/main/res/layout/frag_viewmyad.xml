@@ -83,7 +83,7 @@
             app:zoomage_autoCenter="true"
             app:zoomage_minScale="1"
             app:zoomage_maxScale="8"
-            app:zoomage_translatable="false"
+            app:zoomage_translatable="true"
             android:visibility="gone"
             />
 

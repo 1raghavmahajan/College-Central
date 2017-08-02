@@ -36,8 +36,8 @@ public class Frag_Docs extends Fragment {
         mainView = inflater.inflate(R.layout.frag_docs, container, false);
         context = mainView.getContext();
 
-        swipeRefreshLayout = (SwipeRefreshLayout) mainView.findViewById(R.id.docs_swipe_refresh_layout);
-        recyclerView = (RecyclerView) mainView.findViewById(R.id.docs_recycler);
+        swipeRefreshLayout = mainView.findViewById(R.id.docs_swipe_refresh_layout);
+        recyclerView = mainView.findViewById(R.id.docs_recycler);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -92,6 +92,12 @@ public class Frag_Docs extends Fragment {
 
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_Documents);
+        super.onResume();
     }
 
     @Override

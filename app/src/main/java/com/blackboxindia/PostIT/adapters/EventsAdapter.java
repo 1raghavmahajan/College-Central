@@ -81,12 +81,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
 
         adItemViewHolder(View itemView) {
             super(itemView);
-            majorImage = (ImageView) itemView.findViewById(R.id.adItem_Image);
-            tv_title = (TextView) itemView.findViewById(R.id.adItem_Title);
+            majorImage = itemView.findViewById(R.id.adItem_Image);
+            tv_title = itemView.findViewById(R.id.adItem_Title);
 //            tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
-            tv_Date = (TextView) itemView.findViewById(R.id.adItem_Date);
-            cardView = (CardView) itemView.findViewById(R.id.adItem);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.adItem_progress);
+            tv_Date = itemView.findViewById(R.id.adItem_Date);
+            cardView = itemView.findViewById(R.id.adItem);
+            progressBar = itemView.findViewById(R.id.adItem_progress);
             context = itemView.getContext();
         }
 

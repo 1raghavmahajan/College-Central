@@ -74,12 +74,12 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
 
         adItemViewHolder(View itemView) {
             super(itemView);
-            tv_title = (TextView) itemView.findViewById(R.id.adItem_Title);
-            tv_createdBy = (TextView) itemView.findViewById(R.id.adItem_CreatedBy);
+            tv_title = itemView.findViewById(R.id.adItem_Title);
+            tv_createdBy = itemView.findViewById(R.id.adItem_CreatedBy);
 //            tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
-            cardView = (CardView) itemView.findViewById(R.id.adItem);
+            cardView = itemView.findViewById(R.id.adItem);
             context = itemView.getContext();
-            creater = (ImageView) itemView.findViewById(R.id.adItem_CreatedByImage);
+            creater = itemView.findViewById(R.id.adItem_CreatedByImage);
         }
 
         void setData(final AdData currentAd, final int position, adItemViewHolder holder) {

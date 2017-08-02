@@ -76,6 +76,12 @@ public class Frag_myProfile extends Fragment {
 
     //region Initial Setup
 
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_MyProfile);
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
@@ -105,19 +111,19 @@ public class Frag_myProfile extends Fragment {
     }
 
     private void initVariables() {
-        etName = (TextInputEditText) MainView.findViewById(R.id.profile_etName);
-        etEmail = (TextInputEditText) MainView.findViewById(R.id.profile_etEmail);
-        etAddress = (TextInputEditText) MainView.findViewById(R.id.profile_etAddress);
-        etPhone = (TextInputEditText) MainView.findViewById(R.id.profile_etPhone);
-        etCollege = (TextInputEditText) MainView.findViewById(R.id.profile_etCollege);
+        etName = MainView.findViewById(R.id.profile_etName);
+        etEmail = MainView.findViewById(R.id.profile_etEmail);
+        etAddress = MainView.findViewById(R.id.profile_etAddress);
+        etPhone = MainView.findViewById(R.id.profile_etPhone);
+        etCollege = MainView.findViewById(R.id.profile_etCollege);
 
-        hostelSpinner = (Spinner) MainView.findViewById(R.id.profile_hostelSpinner);
+        hostelSpinner = MainView.findViewById(R.id.profile_hostelSpinner);
 
-        btn_update = (Button) MainView.findViewById(R.id.profile_btnUpdate);
-        btn_ImageChange = (Button) MainView.findViewById(R.id.profile_btnImageChange);
+        btn_update = MainView.findViewById(R.id.profile_btnUpdate);
+        btn_ImageChange = MainView.findViewById(R.id.profile_btnImageChange);
 
-        imageView = (ImageView) MainView.findViewById(R.id.profile_img);
-        ic_notVerified = (ImageView) MainView.findViewById(R.id.profile_verifiedIcon);
+        imageView = MainView.findViewById(R.id.profile_img);
+        ic_notVerified = MainView.findViewById(R.id.profile_verifiedIcon);
     }
     //endregion
 

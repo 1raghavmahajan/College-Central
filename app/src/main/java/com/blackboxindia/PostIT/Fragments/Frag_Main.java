@@ -25,6 +25,12 @@ public class Frag_Main extends Fragment {
     
     CardView[] cardView;
 
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_MainScreen);
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -41,12 +47,12 @@ public class Frag_Main extends Fragment {
 
     private void initVariables() {
         cardView = new CardView[6];
-        cardView[0] = (CardView) view.findViewById(R.id.mainCard0);
-        cardView[1] = (CardView) view.findViewById(R.id.mainCard1);
-        cardView[2] = (CardView) view.findViewById(R.id.mainCard2);
-        cardView[3] = (CardView) view.findViewById(R.id.mainCard3);
-        cardView[4] = (CardView) view.findViewById(R.id.mainCard4);
-        cardView[5] = (CardView) view.findViewById(R.id.mainCard5);
+        cardView[0] = view.findViewById(R.id.mainCard0);
+        cardView[1] = view.findViewById(R.id.mainCard1);
+        cardView[2] = view.findViewById(R.id.mainCard2);
+        cardView[3] = view.findViewById(R.id.mainCard3);
+        cardView[4] = view.findViewById(R.id.mainCard4);
+        cardView[5] = view.findViewById(R.id.mainCard5);
     }
 
     private void setListeners() {
@@ -102,7 +108,6 @@ public class Frag_Main extends Fragment {
 
                 mainActivity.launchOtherFragment(frag_ads,MainActivity.ALL_FRAG_TAG);
 
-
             }
         });
         cardView[4].setOnClickListener(new View.OnClickListener() {
@@ -114,7 +119,12 @@ public class Frag_Main extends Fragment {
                     mainActivity.launchOtherFragment(new Frag_Docs(),MainActivity.DOCS_TAG);
                 }
                 else {
-                    mainActivity.createSnackbar("Please Login to view Documents", Snackbar.LENGTH_LONG);
+                    mainActivity.createSnackbar("Please Login to view Documents", Snackbar.LENGTH_LONG, "Login", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ((MainActivity)context).launchOtherFragment(new Frag_LoginPage(),MainActivity.LOGIN_PAGE_TAG);
+                        }
+                    });
                 }
 
             }

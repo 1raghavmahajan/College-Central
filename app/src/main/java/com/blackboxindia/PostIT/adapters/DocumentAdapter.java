@@ -104,9 +104,9 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
 
         mViewHolder(View itemView) {
             super(itemView);
-            icon = (ImageView) itemView.findViewById(R.id.file_icon);
-            tvTitle = (TextView) itemView.findViewById(R.id.title);
-            card = (CardView) itemView.findViewById(R.id.card_doc);
+            icon = itemView.findViewById(R.id.file_icon);
+            tvTitle = itemView.findViewById(R.id.title);
+            card = itemView.findViewById(R.id.card_doc);
         }
 
         public void setData(final String name, String type, final int position){

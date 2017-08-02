@@ -40,6 +40,13 @@ public class Frag_LoginPage extends Fragment {
 
     //region Initial setup
 
+
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_LoginPage);
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -55,12 +62,12 @@ public class Frag_LoginPage extends Fragment {
 
     private void initVariables() {
 
-        etID = (TextInputEditText) view.findViewById(R.id.login_etID);
-        etPassword = (TextInputEditText) view.findViewById(R.id.login_etPassword);
-        btn_login = (Button) view.findViewById(R.id.login_btnLogin);
+        etID = view.findViewById(R.id.login_etID);
+        etPassword = view.findViewById(R.id.login_etPassword);
+        btn_login = view.findViewById(R.id.login_btnLogin);
 
-        btn_forgot = (TextView) view.findViewById(R.id.login_forgotPassword);
-        tvCreateNew = (TextView) view.findViewById(R.id.login_tvCreate);
+        btn_forgot = view.findViewById(R.id.login_forgotPassword);
+        tvCreateNew = view.findViewById(R.id.login_tvCreate);
 
 //        etID.requestFocus();
     }

@@ -96,11 +96,11 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.adItemViewHold
 
         adItemViewHolder(View itemView) {
             super(itemView);
-            majorImage = (ImageView) itemView.findViewById(R.id.adItem_Image);
-            tv_title = (TextView) itemView.findViewById(R.id.adItem_Title);
-            tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
-            cardView = (CardView) itemView.findViewById(R.id.adItem);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.adItem_progress);
+            majorImage = itemView.findViewById(R.id.adItem_Image);
+            tv_title = itemView.findViewById(R.id.adItem_Title);
+            tv_Price = itemView.findViewById(R.id.adItem_Price);
+            cardView = itemView.findViewById(R.id.adItem);
+            progressBar = itemView.findViewById(R.id.adItem_progress);
             context = itemView.getContext();
         }
 

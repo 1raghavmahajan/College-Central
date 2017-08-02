@@ -74,9 +74,9 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                 }
             }
         };
-        expandedImageView = (ImageView) view.findViewById(R.id.expanded_image);
-        scrollView = (LockableScrollView) view.findViewById(R.id.lockableScrollView);
-        relativeLayout = (RelativeLayout) view.findViewById(R.id.viewAdContainer);
+        expandedImageView = view.findViewById(R.id.expanded_image);
+        scrollView = view.findViewById(R.id.lockableScrollView);
+        relativeLayout = view.findViewById(R.id.viewAdContainer);
     }
 
     @Override
@@ -246,9 +246,9 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
 
         imgViewHolder(View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.imgCard_img);
-            imgButton = (ImageButton) itemView.findViewById(R.id.imgCard_button);
-            progressBar = (ProgressBar) itemView.findViewById(R.id.img_progress);
+            imageView = itemView.findViewById(R.id.imgCard_img);
+            imgButton = itemView.findViewById(R.id.imgCard_button);
+            progressBar = itemView.findViewById(R.id.img_progress);
         }
 
         void setData(final Integer position) {

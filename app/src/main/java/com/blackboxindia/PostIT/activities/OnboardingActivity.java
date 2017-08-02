@@ -65,15 +65,15 @@ public class OnboardingActivity extends AppCompatActivity {
             "Events",
             "Teach",
             "Documents",
-            "Post It!" };
+            "College Central" };
 
     static String subtitle[] = {
             "Post an ad and get rid of the crap in your room",
             "Lost something? Inform everyone without spamming through mail",
-            "Post information about upcoming events",
-            "or spread your skills and meet your juniors",
+            "See all upcoming events at one place and never miss a thing.",
+            "Spread your skills and meet your juniors",
             "See all important documents at one place without going through mail every time",
-            "Create an account to get things started!" };
+            "Welcome to College Central, create an account or login to get things started!" };
 
     //endregion
 
@@ -89,7 +89,7 @@ public class OnboardingActivity extends AppCompatActivity {
     }
 
     void setUpViewPager(){
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mViewPager.setCurrentItem(page);
@@ -154,19 +154,19 @@ public class OnboardingActivity extends AppCompatActivity {
     void initVariables(){
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        mNextBtn = (ImageButton) findViewById(R.id.intro_btn_next);
-        mSkipBtn = (Button) findViewById(R.id.intro_btn_skip);
-        mFinishBtn = (Button) findViewById(R.id.intro_btn_finish);
+        mNextBtn = findViewById(R.id.intro_btn_next);
+        mSkipBtn = findViewById(R.id.intro_btn_skip);
+        mFinishBtn = findViewById(R.id.intro_btn_finish);
 
-        mCoordinator = (CoordinatorLayout) findViewById(R.id.main_content);
+        mCoordinator = findViewById(R.id.main_content);
 
         indicators = new ImageView[]{
-                (ImageView) findViewById(R.id.intro_indicator_0),
-                (ImageView) findViewById(R.id.intro_indicator_1),
-                (ImageView) findViewById(R.id.intro_indicator_2),
-                (ImageView) findViewById(R.id.intro_indicator_3),
-                (ImageView) findViewById(R.id.intro_indicator_4),
-                (ImageView) findViewById(R.id.intro_indicator_5)};
+                findViewById(R.id.intro_indicator_0),
+                findViewById(R.id.intro_indicator_1),
+                findViewById(R.id.intro_indicator_2),
+                findViewById(R.id.intro_indicator_3),
+                findViewById(R.id.intro_indicator_4),
+                findViewById(R.id.intro_indicator_5)};
 
     }
 
@@ -200,16 +200,16 @@ public class OnboardingActivity extends AppCompatActivity {
 
             View rootView = inflater.inflate(R.layout.frag_onboarding, container, false);
 
-            TextView tv_Title = (TextView) rootView.findViewById(R.id.section_Title);
+            TextView tv_Title = rootView.findViewById(R.id.section_Title);
 
             int position = getArguments().getInt(ARG_SECTION_NUMBER);
             tv_Title.setText(title[position]);
 
-            TextView tv_Subtitle = (TextView) rootView.findViewById(R.id.section_Subtitle);
+            TextView tv_Subtitle = rootView.findViewById(R.id.section_Subtitle);
 
             tv_Subtitle.setText(subtitle[position]);
 
-            img = (ImageView) rootView.findViewById(R.id.section_img);
+            img = rootView.findViewById(R.id.section_img);
             GlideApp.with(container.getContext())
                     .load(bgs[position])
                     .diskCacheStrategy(DiskCacheStrategy.NONE)

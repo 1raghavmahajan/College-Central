@@ -2,6 +2,7 @@ package com.blackboxindia.PostIT.dataModels;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.widget.Toast;
@@ -11,6 +12,8 @@ import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.activities.MainActivity;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class UserInfo implements Parcelable{
@@ -139,48 +142,29 @@ public class UserInfo implements Parcelable{
     }
 
     //region Cache User Details
-    /*
-        public static void cacheUserDetails(UserInfo userInfo, Context context) {
-            final String FILENAME = "profile_Img";
 
-            SharedPreferences cache = context.getSharedPreferences("user", Context.MODE_PRIVATE);
-            SharedPreferences.Editor edit = cache.edit();
+    public void cacheUserDetails(Context context) {
 
-            String profileIMG = userInfo.getHasProfileIMG();
-            if(profileIMG !=null) {
-                Log.i("YOYO","write: "+profileIMG);
+        SharedPreferences cache = context.getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = cache.edit();
 
-                FileOutputStream fos;
-                try {
-                    fos = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
-                    byte[] bytes = profileIMG.getBytes("UTF-8");
-                    Log.i("YOYO",new String(bytes,"UTF-8"));
-                    fos.write(bytes);
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        edit.putBoolean("hasProfileIMG", hasProfileIMG);
+        edit.putString("uID", uID);
+        edit.putString("name", name);
+        edit.putString("email", email);
+        edit.putString("roomNumber", roomNumber);
+        edit.putString("phone", phone);
+        edit.putString("hostel", hostel);
+        edit.putString("collegeName", collegeName);
 
-            //edit.putString("hasProfileIMG", userInfo.getHasProfileIMG());
-            edit.putString("uID", userInfo.getuID());
-            edit.putString("name", userInfo.getName());
-            edit.putString("email", userInfo.getEmail());
-            edit.putString("roomNumber", userInfo.getRoomNumber());
-            edit.putString("phone", userInfo.getPhone());
+        Set<String> UserAdKeys = new HashSet<>(userAdKeys);
+        edit.putStringSet("userAdKeys", UserAdKeys );
 
-            Set<String> UserAdKeys = new HashSet<>(userInfo.getUserAdKeys());
+        edit.apply();
 
-            edit.putStringSet("userAdKeys", UserAdKeys );
+    }
 
-            if(userInfo.getCollegeName()!=null)
-                edit.putString("collegeName", userInfo.getCollegeName());
-
-            edit.apply();
-        }
-
-        public static UserInfo getCachedUserDetails(String uID, Context context) {
-        final String FILENAME = "profile_Img";
+    public static UserInfo readCachedUserDetails(Context context) {
 
         UserInfo userInfo = new UserInfo();
 
@@ -188,25 +172,13 @@ public class UserInfo implements Parcelable{
         String id = cache.getString("uID", null);
         if(id != null) {
 
-            if(id.equals(uID)) {
-
-                try {
-                    FileInputStream fileInputStream = context.openFileInput(FILENAME);
-                    byte[] bytes = new byte[1024*200];
-                    //noinspection ResultOfMethodCallIgnored
-                    fileInputStream.read(bytes);
-                    String s = new String(bytes,"UTF-8");
-                    Log.i("YOYO","read: "+s);
-                    userInfo.setHasProfileIMG(s);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
                 userInfo.setuID(id);
                 userInfo.setName(cache.getString("name", null));
                 userInfo.setEmail(cache.getString("email", null));
                 userInfo.setRoomNumber(cache.getString("roomNumber", null));
                 userInfo.setPhone(cache.getString("phone", null));
+                userInfo.setHostel(cache.getString("hostel", null));
+                userInfo.setCollegeName(cache.getString("collegeName","IIT Indore"));
 
                 Set<String> userAdKeys = cache.getStringSet("userAdKeys", null);
                 ArrayList<String> keys;
@@ -217,14 +189,23 @@ public class UserInfo implements Parcelable{
 
                 userInfo.setUserAdKeys(keys);
 
-                userInfo.setHasProfileIMG(cache.getString("collegeName", "IIT Indore"));
-
                 return userInfo;
-            }
+
+        }else {
+            SharedPreferences.Editor edit = cache.edit();
+            edit.clear();
+            edit.apply();
         }
         return null;
     }
-    */
+
+    public static void clearCache(Context context){
+        SharedPreferences cache = context.getSharedPreferences("user", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = cache.edit();
+        edit.clear();
+        edit.apply();
+    }
+
     //endregion
 
     //region Getters and Setters

@@ -66,6 +66,12 @@ public class Frag_newAccount extends Fragment {
 
     //region Initial Setup
 
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_NewAccount);
+        super.onResume();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -132,20 +138,20 @@ public class Frag_newAccount extends Fragment {
 
         userInfo = new UserInfo();
 
-        etName = (TextInputEditText) ParentView.findViewById(R.id.create_etName);
-        etPhone = (TextInputEditText) ParentView.findViewById(R.id.create_etPhone);
-        etAddress = (TextInputEditText) ParentView.findViewById(R.id.create_etAddress);
-        etEmail = (TextInputEditText) ParentView.findViewById(R.id.create_etEmail);
-        etPassword = (TextInputEditText) ParentView.findViewById(R.id.create_etPassword);
-        etConfirmPass= (TextInputEditText) ParentView.findViewById(R.id.create_etPasswordConfirm);
+        etName = ParentView.findViewById(R.id.create_etName);
+        etPhone = ParentView.findViewById(R.id.create_etPhone);
+        etAddress = ParentView.findViewById(R.id.create_etAddress);
+        etEmail = ParentView.findViewById(R.id.create_etEmail);
+        etPassword = ParentView.findViewById(R.id.create_etPassword);
+        etConfirmPass= ParentView.findViewById(R.id.create_etPasswordConfirm);
 
-        imageView = (ImageView) ParentView.findViewById(R.id.create_img);
+        imageView = ParentView.findViewById(R.id.create_img);
 
-        btnCreate = (Button) ParentView.findViewById(R.id.create_btnCreate);
-        btn_image = (Button) ParentView.findViewById(R.id.create_btnImageChange);
+        btnCreate = ParentView.findViewById(R.id.create_btnCreate);
+        btn_image = ParentView.findViewById(R.id.create_btnImageChange);
 
-        collegeSpinner = (Spinner) ParentView.findViewById(R.id.create_etCollege);
-        hostelSpinner = (Spinner) ParentView.findViewById(R.id.create_etHostels);
+        collegeSpinner = ParentView.findViewById(R.id.create_etCollege);
+        hostelSpinner = ParentView.findViewById(R.id.create_etHostels);
 
     }
 

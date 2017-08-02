@@ -72,19 +72,25 @@ public class Frag_ViewEvent extends Fragment {
 
     private void initVariables() {
 
-        tv_Title = (TextView) view.findViewById(R.id.Ad_tvTitle);
-        tv_Description = (TextView) view.findViewById(R.id.Ad_tvDescription);
-        imgRecyclerView = (RecyclerView) view.findViewById(R.id.Ad_imgRecycler);
+        tv_Title = view.findViewById(R.id.Ad_tvTitle);
+        tv_Description = view.findViewById(R.id.Ad_tvDescription);
+        imgRecyclerView = view.findViewById(R.id.Ad_imgRecycler);
 
-        tv_Date = (TextView) view.findViewById(R.id.Ad_etDate);
-        tv_Time = (TextView) view.findViewById(R.id.Ad_etTime);
+        tv_Date = view.findViewById(R.id.Ad_etDate);
+        tv_Time = view.findViewById(R.id.Ad_etTime);
 
-        tv_Name = (TextView) view.findViewById(R.id.Ad_tvName);
-        tv_Address = (TextView) view.findViewById(R.id.Ad_tvRoomNumber);
-        tv_Phone = (TextView) view.findViewById(R.id.Ad_tvPhone);
-        tv_College = (TextView) view.findViewById(R.id.Ad_tvCollege);
-        imageView = (ImageView) view.findViewById(R.id.Ad_Profile);
+        tv_Name = view.findViewById(R.id.Ad_tvName);
+        tv_Address = view.findViewById(R.id.Ad_tvRoomNumber);
+        tv_Phone = view.findViewById(R.id.Ad_tvPhone);
+        tv_College = view.findViewById(R.id.Ad_tvCollege);
+        imageView = view.findViewById(R.id.Ad_Profile);
 
+    }
+
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_ViewEvent);
+        super.onResume();
     }
 
     @Override

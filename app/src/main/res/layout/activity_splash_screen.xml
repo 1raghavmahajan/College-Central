@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/BlueGrey900"
+    android:background="@color/Grey900"
     android:fitsSystemWindows="true"
     tools:context="com.blackboxindia.PostIT.activities.SplashScreen">
 
@@ -55,21 +55,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="BlackBox India"
+            android:text="@string/blackbox_india"
             android:textStyle="bold"
             android:textSize="16sp"
             android:textColor="@color/grey"/>
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        app:layout_constraintBottom_toTopOf="@id/splash_madeBy"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="Made With Love"
-        android:textSize="13sp"
-        android:textColor="@color/grey"/>
 
 </android.support.constraint.ConstraintLayout>

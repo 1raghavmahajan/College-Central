@@ -59,12 +59,18 @@ public class Frag_newAd extends Fragment {
     String adType;
 
     int count =0;
-    private static final int NUMBER_OF_DUPLICATES = 7;
+    private static final int NUMBER_OF_DUPLICATES = 1;
 
     NetworkMethods networkMethods;
     //endregion
 
     //region Initial Setup
+
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_NewAd);
+        super.onResume();
+    }
 
     @Nullable
     @Override
@@ -98,13 +104,13 @@ public class Frag_newAd extends Fragment {
 
     private void initVariables() {
 
-        etTitle = (EditText) view.findViewById(R.id.newAd_etTitle);
-        tvPrice = (TextView) view.findViewById(R.id.newAd_tvPrice);
-        etPrice = (EditText) view.findViewById(R.id.newAd_etPrice);
-        etDescription = (EditText) view.findViewById(R.id.newAd_etDescription);
+        etTitle = view.findViewById(R.id.newAd_etTitle);
+        tvPrice = view.findViewById(R.id.newAd_tvPrice);
+        etPrice = view.findViewById(R.id.newAd_etPrice);
+        etDescription = view.findViewById(R.id.newAd_etDescription);
 
-        btn_newImg = (Button) view.findViewById(R.id.newAd_btnAddImg);
-        btn_Create = (Button) view.findViewById(R.id.newAd_btnCreate);
+        btn_newImg = view.findViewById(R.id.newAd_btnAddImg);
+        btn_Create = view.findViewById(R.id.newAd_btnCreate);
 
         context = view.getContext();
         imgURIs = new ArrayList<>();
@@ -127,7 +133,7 @@ public class Frag_newAd extends Fragment {
     }
 
     private void setUpRecycler() {
-        recyclerView = (RecyclerView) view.findViewById(R.id.newAd_imgRecycler);
+        recyclerView = view.findViewById(R.id.newAd_imgRecycler);
         adapter = new NewAdImageAdapter(context, new NewAdImageAdapter.onDeleteClickListener() {
             @Override
             public void onDelete(int position) {

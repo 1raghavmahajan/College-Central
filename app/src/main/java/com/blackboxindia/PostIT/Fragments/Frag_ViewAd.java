@@ -69,16 +69,22 @@ public class Frag_ViewAd extends Fragment {
 
     private void initVariables() {
 
-        tv_Title = (TextView) view.findViewById(R.id.Ad_tvTitle);
-        tv_Price = (TextView) view.findViewById(R.id.Ad_tvPrice);
-        tv_Description = (TextView) view.findViewById(R.id.Ad_tvDescription);
-        imgRecyclerView = (RecyclerView) view.findViewById(R.id.Ad_imgRecycler);
-        tv_Name = (TextView) view.findViewById(R.id.Ad_tvName);
-        tv_Address = (TextView) view.findViewById(R.id.Ad_tvRoomNumber);
-        tv_Phone = (TextView) view.findViewById(R.id.Ad_tvPhone);
-        tv_College = (TextView) view.findViewById(R.id.Ad_tvCollege);
-        imageView = (ImageView) view.findViewById(R.id.Ad_Profile);
+        tv_Title = view.findViewById(R.id.Ad_tvTitle);
+        tv_Price = view.findViewById(R.id.Ad_tvPrice);
+        tv_Description = view.findViewById(R.id.Ad_tvDescription);
+        imgRecyclerView = view.findViewById(R.id.Ad_imgRecycler);
+        tv_Name = view.findViewById(R.id.Ad_tvName);
+        tv_Address = view.findViewById(R.id.Ad_tvRoomNumber);
+        tv_Phone = view.findViewById(R.id.Ad_tvPhone);
+        tv_College = view.findViewById(R.id.Ad_tvCollege);
+        imageView = view.findViewById(R.id.Ad_Profile);
 
+    }
+
+    @Override
+    public void onResume() {
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_ViewAd);
+        super.onResume();
     }
 
     @Override
