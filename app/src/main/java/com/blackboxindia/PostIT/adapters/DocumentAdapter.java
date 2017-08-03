@@ -3,6 +3,7 @@ package com.blackboxindia.PostIT.adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blackboxindia.PostIT.HelperClasses.FileOpener;
 import com.blackboxindia.PostIT.Network.CloudStorageMethods;
@@ -127,31 +129,56 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
                     card.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            final ProgressDialog dialog = ProgressDialog.show(context, "Downloading file", "Please wait", true, true, new DialogInterface.OnCancelListener() {
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-                                    List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
-                                    for (FileDownloadTask activeDownloadTask : activeDownloadTasks) {
-                                        activeDownloadTask.cancel();
-                                    }
-                                }
-                            });
-                            new CloudStorageMethods(context).downloadFile(name, ((MainActivity)context).userInfo.getCollegeName(), new onCompleteListener<File>() {
-                                @Override
-                                public void onSuccess(File file) {
-                                    dialog.cancel();
-                                    try {
-                                        FileOpener.using(context).openFile(file);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
 
-                                @Override
-                                public void onFailure(Exception e) {
-                                    dialog.cancel();
-                                }
-                            });
+                            if(((MainActivity)context).offlineMode) {
+                                new CloudStorageMethods(context).getDownloadedFile(name, ((MainActivity) context).userInfo.getCollegeName(), new onCompleteListener<File>() {
+                                    @Override
+                                    public void onSuccess(File file) {
+                                        try {
+                                            FileOpener.using(context).openFile(file);
+                                        } catch (IOException e) {
+                                            Toast.makeText(context, "Error opening file", Toast.LENGTH_SHORT).show();
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        ((MainActivity) context).createSnackbar("Cannot download file in offline mode", Snackbar.LENGTH_INDEFINITE, true, "Go Online", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                ((MainActivity) context).goOnline();
+                                            }
+                                        });
+                                    }
+                                });
+                            }else {
+                                final ProgressDialog dialog = ProgressDialog.show(context, "Downloading file", "Please wait", true, true, new DialogInterface.OnCancelListener() {
+                                    @Override
+                                    public void onCancel(DialogInterface dialog) {
+                                        List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
+                                        for (FileDownloadTask activeDownloadTask : activeDownloadTasks) {
+                                            activeDownloadTask.cancel();
+                                        }
+                                    }
+                                });
+                                new CloudStorageMethods(context).downloadFile(name, ((MainActivity) context).userInfo.getCollegeName(), new onCompleteListener<File>() {
+                                    @Override
+                                    public void onSuccess(File file) {
+                                        dialog.cancel();
+                                        try {
+                                            FileOpener.using(context).openFile(file);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        dialog.cancel();
+                                    }
+                                });
+                            }
                         }
                     });
                     break;

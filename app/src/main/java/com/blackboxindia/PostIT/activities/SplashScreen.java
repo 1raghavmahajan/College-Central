@@ -50,44 +50,6 @@ public class SplashScreen extends AppCompatActivity {
             }, SPLASH_DELAY);
         }
 
-//        final UserCred userCred = new UserCred();
-//        if(userCred.load_Cred(context)) {
-//            NetworkMethods methods = new NetworkMethods(context);
-//            methods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
-//                @Override
-//                public void onSuccess(UserInfo userInfo) {
-//                    Log.i(TAG, "onSuccess: ");
-//                    Intent i = new Intent(context,MainActivity.class);
-//                    i.putExtra(ARG_User,userInfo);
-//                    i.putExtra(ARG_IsCached,true);
-//                    startActivity(i);
-//                    finish();
-//                }
-//
-//                @Override
-//                public void onFailure(Exception e) {
-//                    Log.e(TAG, "onFailure: ",e);
-//                    Intent i = new Intent(context,MainActivity.class);
-//                    i.putExtra(ARG_IsCached,false);
-//                    i.putExtra(ARG_Error,e);
-//                    startActivity(i);
-//                    finish();
-//                }
-//            });
-//        }
-//        else {
-//            Log.i(TAG, "onCreate: not saved");
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Intent i = new Intent(context,MainActivity.class);
-//                    i.putExtra(ARG_IsCached,false);
-//                    startActivity(i);
-//                    finish();
-//                }
-//            }, SPLASH_DELAY);
-//        }
-
     }
 
 }

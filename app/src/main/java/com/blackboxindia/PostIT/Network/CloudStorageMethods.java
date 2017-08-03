@@ -473,6 +473,14 @@ public class CloudStorageMethods {
         }
     }
 
+    public void getDownloadedFile(String name, String college, final onCompleteListener<File> listener) {
+        final File file = new File(context.getExternalFilesDir(DIRECTORY_DOCUMENTS), name + ".pdf");
+        if (!file.exists())
+            listener.onFailure(new Exception("File not downloaded."));
+        else
+            listener.onSuccess(file);
+    }
+
     public void uploadFile(String name, String college, final onCompleteListener<Uri> listener) {
 
     }

@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -128,6 +127,8 @@ public class Frag_newAd extends Fragment {
                 break;
             case TYPE_TEACH:
                 etDescription.setHint(R.string.hintDescriptionTeach);
+                tvPrice.setVisibility(View.INVISIBLE);
+                etPrice.setVisibility(View.INVISIBLE);
                 break;
         }
     }
@@ -190,8 +191,8 @@ public class Frag_newAd extends Fragment {
                     break;
                 case TYPE_TEACH:
                     adData.setPrice(null);
-                    if(!etPrice.getText().toString().trim().equals(""))
-                        adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
+//                    if(!etPrice.getText().toString().trim().equals(""))
+//                        adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
                     break;
                 case TYPE_SELL:
                     adData.setPrice(Integer.valueOf(etPrice.getText().toString()));
@@ -253,7 +254,7 @@ public class Frag_newAd extends Fragment {
                     create(mAdData);
                 }else{
                     ((MainActivity)context).onBackPressed();
-                    ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
+                    ((MainActivity)context).createSnackbar("Ad Created Successfully");
                 }
 
             }

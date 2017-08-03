@@ -15,12 +15,14 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -37,6 +39,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.Window;
@@ -78,6 +81,7 @@ import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_INFO;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_TEACH;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -128,9 +132,11 @@ public class MainActivity extends AppCompatActivity {
     AppBarLayout appBarLayout;
     FragmentManager fragmentManager;
     DrawerLayout drawer;
-    public FloatingActionButton fab;
     NavigationView navigationView;
     Menu navigationViewMenu;
+    public FloatingActionButton fab;
+    public Snackbar currentSnackbar;
+    private boolean specialSnackbar;
 
     public UserInfo userInfo;
     public NetworkMethods networkMethods;
@@ -207,13 +213,15 @@ public class MainActivity extends AppCompatActivity {
                         public void onFailure(Exception e) {
                             if(e!=null) {
                                 if (e.getMessage().contains("network")) {
-                                    createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, "Retry", new View.OnClickListener() {
+                                    offlineMode = true;
+                                    createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, true, "Retry", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
                                             networkMethods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
                                                 @Override
                                                 public void onSuccess(UserInfo userInfo) {
+                                                    offlineMode = false;
                                                     UpdateUI(userInfo, false, false);
                                                     userInfo.cacheUserDetails(context);
                                                     dialog.cancel();
@@ -240,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             else {
-                                createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE,"Login", new View.OnClickListener() {
+                                createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
@@ -256,8 +264,85 @@ public class MainActivity extends AppCompatActivity {
                 UpdateUIonLogout(false);
             }
 
+            createSnackbar("Please login to get started", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchOtherFragment(new Frag_LoginPage(),LOGIN_PAGE_TAG);
+                }
+            });
+
         }
 
+    }
+
+    public void goOnline() {
+        final UserCred userCred = new UserCred();
+        if(userCred.load_Cred(context)) {
+            networkMethods.Login(userCred.getEmail(), userCred.getpwd(),
+                    new onLoginListener() {
+                        @Override
+                        public void onSuccess(UserInfo userInfo) {
+                            UpdateUI(userInfo,false, false);
+                            Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                            userInfo.cacheUserDetails(context);
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            if(e!=null) {
+                                if (e.getMessage().contains("network")) {
+                                    offlineMode = true;
+                                    createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, true, "Retry", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
+                                            networkMethods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
+                                                @Override
+                                                public void onSuccess(UserInfo userInfo) {
+                                                    offlineMode = false;
+                                                    UpdateUI(userInfo, false, false);
+                                                    userInfo.cacheUserDetails(context);
+                                                    dialog.cancel();
+                                                    Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                                                }
+
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    if (e.getMessage().contains("network")) {
+                                                        dialog.cancel();
+                                                        createSnackbar("Network Error, Please try again later.");
+                                                    } else {
+                                                        dialog.cancel();
+                                                        createSnackbar("Session Expired. Please login again.");
+                                                        UserCred.clear_cred(context);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    createSnackbar("Session Expired, please login again.");
+                                    UserCred.clear_cred(context);
+                                }
+                            }
+                            else {
+                                createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                                    }
+                                });
+                            }
+                        }
+                    });
+        } else {
+            createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                }
+            });
+        }
     }
 
     private void initVariables() {
@@ -625,7 +710,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean checkVerification() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser==null) {
-            createSnackbar("Please Login to continue", Snackbar.LENGTH_LONG, "Login", new View.OnClickListener() {
+            createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE,true , "Login", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
@@ -775,21 +860,68 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createSnackbar(String msg) {
-        createSnackbar(msg,Snackbar.LENGTH_SHORT);
+        createSnackbar(msg,false);
     }
 
-    public void createSnackbar(String msg, int length) {
-        createSnackbar(msg,length,null,null);
+    public void createSnackbar(String msg, boolean removeOnTouch) {
+        createSnackbar(msg,Snackbar.LENGTH_SHORT, removeOnTouch);
     }
 
-    @SuppressWarnings("deprecation")
-    public void createSnackbar(String msg, int length, String actionTitle, View.OnClickListener listener) {
-        Snackbar snackbar = Snackbar.make(coordinatorLayout, msg, length);
+    public void createSnackbar(String msg, int length, boolean removeOnTouch) {
+        createSnackbar(msg,length,removeOnTouch, null,null);
+    }
+
+    public void createSnackbar(String msg, int length, final boolean removeOnTouch, String actionTitle, View.OnClickListener listener) {
+        currentSnackbar = Snackbar.make(coordinatorLayout, msg, length);
+        currentSnackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                super.onDismissed(transientBottomBar, event);
+                specialSnackbar = false;
+                currentSnackbar = null;
+            }
+
+            @Override
+            public void onShown(Snackbar transientBottomBar) {
+                specialSnackbar = removeOnTouch;
+                super.onShown(transientBottomBar);
+            }
+        });
+
         if(actionTitle!=null){
-            snackbar.setAction(actionTitle,listener);
-            snackbar.setActionTextColor(getResources().getColor(R.color.colorSearch));
+            currentSnackbar.setAction(actionTitle,listener);
+            currentSnackbar.setActionTextColor(getResources().getColor(R.color.colorSearch));
         }
-        snackbar.show();
+        currentSnackbar.show();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        Log.i(TAG, "onTouchEvent: ");
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+
+        if(specialSnackbar && currentSnackbar!=null) {
+            if (ev.getAction() == MotionEvent.ACTION_UP) {
+                if (currentSnackbar.isShown()) {
+
+                    Rect sRect = new Rect();
+                    currentSnackbar.getView().getHitRect(sRect);
+
+                    //This way the snackbar will only be dismissed if
+                    //the user clicks outside it.
+                    if (!sRect.contains((int) ev.getX(), (int) ev.getY())) {
+                        currentSnackbar.dismiss();
+                        currentSnackbar = null;
+                    }
+                }
+            }
+        }
+
+        return super.dispatchTouchEvent(ev);
     }
 
     //endregion

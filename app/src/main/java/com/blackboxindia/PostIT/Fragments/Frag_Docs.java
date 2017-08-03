@@ -20,6 +20,8 @@ import com.blackboxindia.PostIT.adapters.DocumentAdapter;
 import com.blackboxindia.PostIT.dataModels.Directory;
 import com.google.firebase.auth.FirebaseAuth;
 
+import io.paperdb.Paper;
+
 public class Frag_Docs extends Fragment {
 
     private static final String TAG = Frag_Docs.class.getSimpleName()+" YOYO";
@@ -35,31 +37,45 @@ public class Frag_Docs extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.frag_docs, container, false);
         context = mainView.getContext();
+        Paper.init(context);
 
         swipeRefreshLayout = mainView.findViewById(R.id.docs_swipe_refresh_layout);
         recyclerView = mainView.findViewById(R.id.docs_recycler);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
-                    getData();
-                }
-            }
-        });
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+        if(((MainActivity)context).offlineMode){
             swipeRefreshLayout.setRefreshing(true);
-            getData();
+            directory = Paper.book().read("Root", null);
+
+            if(directory != null){
+                Log.i(TAG, "onCreateView: nice");
+                setUpRecycler();
+            }else
+                Log.i(TAG, "onCreateView: ehh");
+
+            swipeRefreshLayout.setRefreshing(false);
+
+        }else {
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    getData();
+                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                        getData();
+                    }
                 }
             });
-        }else{
-            ((MainActivity)context).createSnackbar("Not Logged In!");
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                swipeRefreshLayout.setRefreshing(true);
+                getData();
+                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        getData();
+                    }
+                });
+            } else {
+                ((MainActivity) context).createSnackbar("Not Logged In!");
+            }
         }
-
 
         return mainView;
     }
@@ -75,6 +91,10 @@ public class Frag_Docs extends Fragment {
 
             @Override
             public void onSuccess(Directory dir) {
+
+                Paper.init(context);
+                Paper.book().write("Root",dir);
+
                 directory = dir;
                 if(swipeRefreshLayout.isRefreshing())
                     swipeRefreshLayout.setRefreshing(false);

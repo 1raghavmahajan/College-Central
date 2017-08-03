@@ -76,7 +76,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
     public class adItemViewHolder extends RecyclerView.ViewHolder{
 
         ImageView majorImage, btn_Delete;
-        TextView tv_Title, tv_Type;
+        TextView tv_Title, tv_Type, tv_Price;
         Context context;
         CardView cardView;
 
@@ -85,6 +85,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
             majorImage = itemView.findViewById(R.id.adItem_Image);
             tv_Title = itemView.findViewById(R.id.adItem_Title);
             tv_Type = itemView.findViewById(R.id.adItem_Type);
+            tv_Price = itemView.findViewById(R.id.adItem_Price);
             cardView = itemView.findViewById(R.id.adItem);
             btn_Delete = itemView.findViewById(R.id.adItem_Delete);
             context = itemView.getContext();
@@ -124,21 +125,26 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
 //                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorBuySell));
                         tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorBuySell));
                         tv_Type.setText(R.string.txt_sell);
+                        tv_Price.setVisibility(View.VISIBLE);
+                        tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
                         break;
                     case TYPE_LOSTFOUND:
 //                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorLostFound));
                         tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorLostFound));
                         tv_Type.setText(R.string.txt_lost);
+                        tv_Price.setVisibility(View.GONE);
                         break;
                     case TYPE_EVENT:
 //                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorEvents));
                         tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorEvents));
                         tv_Type.setText(R.string.txt_event);
+                        tv_Price.setVisibility(View.GONE);
                         break;
                     case TYPE_TEACH:
 //                        cardView.setCardBackgroundColor(cardView.getResources().getColor(R.color.colorTeaching));
                         tv_Type.setTextColor(cardView.getResources().getColor(R.color.colorTeaching));
                         tv_Type.setText(R.string.txt_teach);
+                        tv_Price.setVisibility(View.GONE);
                         break;
                 }
 
@@ -168,13 +174,13 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                             userAds.remove(position);
                             notifyItemRemoved(position);
                             ((MainActivity)context).UpdateUI(userInfo,false,false);
-                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully", Snackbar.LENGTH_LONG);
+                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
                         }
 
                         @Override
                         public void onFailure(Exception e) {
                             dialog.cancel();
-                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_LONG);
+                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_LONG, true);
                         }
                     });
                 }

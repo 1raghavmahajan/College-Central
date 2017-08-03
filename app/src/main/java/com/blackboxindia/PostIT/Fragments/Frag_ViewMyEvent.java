@@ -67,13 +67,13 @@ public class Frag_ViewMyEvent extends Fragment {
                             dialog.cancel();
                             ((MainActivity)context).onBackPressed();
                             ((MainActivity)context).UpdateUI(userInfo,false,false);
-                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully", Snackbar.LENGTH_LONG);
+                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
                         }
 
                         @Override
                         public void onFailure(Exception e) {
                             dialog.cancel();
-                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_LONG);
+                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_INDEFINITE, true);
                         }
                     });
                 }

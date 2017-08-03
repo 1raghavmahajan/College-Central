@@ -254,7 +254,7 @@ public class Frag_newEvent extends Fragment {
                     createAd(event);
                 }else{
                     ((MainActivity)context).onBackPressed();
-                    ((MainActivity)context).createSnackbar("Ad Created Successfully", Snackbar.LENGTH_LONG);
+                    ((MainActivity)context).createSnackbar("Ad Created Successfully");
                 }
             }
 

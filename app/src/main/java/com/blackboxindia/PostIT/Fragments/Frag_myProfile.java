@@ -407,13 +407,13 @@ public class Frag_myProfile extends Fragment {
                 public void onSuccess(UserInfo userInfo) {
                     show.cancel();
                     ((MainActivity) context).UpdateUI(userInfo, false, false);
-                    ((MainActivity) context).createSnackbar("Successfully Updated.", Snackbar.LENGTH_SHORT);
+                    ((MainActivity) context).createSnackbar("Successfully Updated.");
                 }
 
                 @Override
                 public void onFailure(Exception e) {
                     show.cancel();
-                    ((MainActivity) context).createSnackbar(e.getMessage(), Snackbar.LENGTH_SHORT);
+                    ((MainActivity) context).createSnackbar(e.getMessage(), Snackbar.LENGTH_INDEFINITE, true);
                 }
             });
 

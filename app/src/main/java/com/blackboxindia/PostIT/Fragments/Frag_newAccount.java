@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.util.Log;
 import android.util.Patterns;
@@ -112,7 +111,7 @@ public class Frag_newAccount extends Fragment {
                             public void onSuccess(UserInfo userInfo) {
                                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                                     ((MainActivity) context).UpdateUI(userInfo,true,true);
-                                    ((MainActivity) context).createSnackbar("Account Created Successfully", Snackbar.LENGTH_LONG);
+                                    ((MainActivity) context).createSnackbar("Account Created Successfully");
                                 }
                             }
 

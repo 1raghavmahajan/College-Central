@@ -119,7 +119,7 @@ public class Frag_Main extends Fragment {
                     mainActivity.launchOtherFragment(new Frag_Docs(),MainActivity.DOCS_TAG);
                 }
                 else {
-                    mainActivity.createSnackbar("Please Login to view Documents", Snackbar.LENGTH_LONG, "Login", new View.OnClickListener() {
+                    mainActivity.createSnackbar("Please Login to view Documents", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             ((MainActivity)context).launchOtherFragment(new Frag_LoginPage(),MainActivity.LOGIN_PAGE_TAG);

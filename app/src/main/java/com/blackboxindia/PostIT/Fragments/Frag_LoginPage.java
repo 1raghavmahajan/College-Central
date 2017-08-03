@@ -106,7 +106,7 @@ public class Frag_LoginPage extends Fragment {
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        ((MainActivity)context).createSnackbar("Check email for further instructions", Snackbar.LENGTH_LONG);
+                                                        ((MainActivity)context).createSnackbar("Check email for further instructions");
                                                         Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
                                                     }
                                                 }).addOnFailureListener(new OnFailureListener() {

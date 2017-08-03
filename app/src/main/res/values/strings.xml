@@ -117,5 +117,6 @@
     <string name="txt_event">EVENT</string>
     <string name="txt_teach">TEACH</string>
     <string name="blackbox_india">BlackBox India</string>
+    <string name="price">Price</string>
 
 </resources>

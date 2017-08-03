@@ -221,7 +221,7 @@ public class Frag_Manage extends Fragment {
                                         userCred.save_cred(context);
                                         progressDialog.cancel();
                                         openIt();
-                                        ((MainActivity)context).createSnackbar("Password Changed Successfully!", Snackbar.LENGTH_LONG);
+                                        ((MainActivity)context).createSnackbar("Password Changed Successfully!", Snackbar.LENGTH_LONG, false);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override

@@ -103,6 +103,7 @@ public class Frag_Ads extends Fragment {
         context = view.getContext();
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.ads_recycler);
+        networkMethods = new NetworkMethods(context);
 
         Bundle arguments = getArguments();
         if(arguments!= null)
@@ -236,7 +237,6 @@ public class Frag_Ads extends Fragment {
 
         userInfo = ((MainActivity)context).userInfo;
 
-        networkMethods = new NetworkMethods(context);
         getAllAds();
 
     }
@@ -336,7 +336,8 @@ public class Frag_Ads extends Fragment {
                 filterList();
                 if(recyclerView!=null) {
                     if (recyclerView.getAdapter() == null) {
-                        checkDeleteOrderEvents();
+                        if(adType.equals(TYPE_EVENT))
+                            checkDeleteOrderEvents();
                         setUpRecyclerView();
                     }
                     else {
@@ -371,6 +372,7 @@ public class Frag_Ads extends Fragment {
                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
 
     private void filterList() {
