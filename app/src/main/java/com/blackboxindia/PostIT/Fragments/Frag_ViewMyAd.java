@@ -53,8 +53,8 @@ public class Frag_ViewMyAd extends Fragment {
 
     @Override
     public void onResume() {
-        MenuItem item = ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete);
         ((MainActivity)context).toolbar.setTitle(TITLE_ViewAd);
+        MenuItem item = ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete);
         item.setVisible(true);
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -68,7 +68,7 @@ public class Frag_ViewMyAd extends Fragment {
                         public void onSuccess(UserInfo userInfo) {
                             dialog.cancel();
                             ((MainActivity)context).onBackPressed();
-                            ((MainActivity)context).UpdateUI(userInfo,false,false);
+                            ((MainActivity)context).UpdateUI(userInfo,false);
                             ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
                         }
 
@@ -120,7 +120,7 @@ public class Frag_ViewMyAd extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete).setVisible(false);
-        ((MainActivity) getActivity()).onBackPressedListener = null;
+        ((MainActivity) getActivity()).backPressedListener = null;
     }
 
     //endregion
@@ -149,11 +149,14 @@ public class Frag_ViewMyAd extends Fragment {
     }
 
     void setUpImgRecycler() {
-        main = ((Frag_myAds)(getFragmentManager().findFragmentByTag(MY_ADS_TAG))).current;
-        ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, view);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-        imgRecyclerView.setLayoutManager(linearLayoutManager);
-        imgRecyclerView.setAdapter(adapter);
+        if(adData.getNumberOfImages()>0){
+            main = ((Frag_myAds)(getFragmentManager().findFragmentByTag(MY_ADS_TAG))).current;
+            ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, adData, main, view);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            imgRecyclerView.setLayoutManager(linearLayoutManager);
+            imgRecyclerView.setAdapter(adapter);
+        }else
+            imgRecyclerView.setVisibility(View.GONE);
     }
 
 }

@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:src="@drawable/ad_img_placeholder"
+        android:src="@drawable/placeholder"
         />
     <ImageButton
         android:id="@+id/imgCard_delete"

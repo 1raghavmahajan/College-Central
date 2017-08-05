@@ -116,7 +116,8 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                             Log.e(TAG, "onFailure #" + position + " ", e);
                         }
                     });
-                }
+                }else
+                    GlideApp.with(context).load(R.drawable.placeholder).into(majorImage);
 
                 tv_Title.setText(currentAd.getTitle());
 
@@ -173,7 +174,8 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                             dialog.cancel();
                             userAds.remove(position);
                             notifyItemRemoved(position);
-                            ((MainActivity)context).UpdateUI(userInfo,false,false);
+                            notifyItemRangeChanged(position, getItemCount());
+                            ((MainActivity)context).UpdateUI(userInfo,false);
                             ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
                         }
 

@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,6 +91,25 @@ public class Frag_newAd extends Fragment {
         view = inflater.inflate(R.layout.frag_newad, container, false);
 
         initVariables();
+
+        etTitle.addTextChangedListener(new TextWatcher() {
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void afterTextChanged(Editable s) {
+
+                for(int i = s.length(); i > 0; i--) {
+                    if(s.subSequence(i-1, i).toString().equals("\n"))
+                        s.replace(i-1, i, " ");
+                }
+            }
+        });
 
         setUpRecycler();
 

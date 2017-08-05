@@ -19,6 +19,7 @@ import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.dataModels.Directory;
+import com.github.lzyzsd.circleprogress.DonutProgress;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -46,7 +47,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
         root = dir;
         path = new Stack<>();
         inflater = LayoutInflater.from(context);
-        ((MainActivity)context).onBackPressedListener = new MainActivity.onBackPressedListener() {
+        ((MainActivity)context).backPressedListener = new MainActivity.OnBackPressedListener() {
             @Override
             public boolean doneSomething() {
                 return goBack();
@@ -98,20 +99,24 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
         }
     }
 
-    class mViewHolder extends RecyclerView.ViewHolder{
+    public class mViewHolder extends RecyclerView.ViewHolder{
 
         ImageView icon;
         TextView tvTitle;
         CardView card;
+        DonutProgress donutProgress;
 
         mViewHolder(View itemView) {
             super(itemView);
             icon = itemView.findViewById(R.id.file_icon);
             tvTitle = itemView.findViewById(R.id.title);
             card = itemView.findViewById(R.id.card_doc);
+            donutProgress = itemView.findViewById(R.id.donut_progress);
         }
 
         public void setData(final String name, String type, final int position){
+            donutProgress.setProgress(0);
+            donutProgress.setVisibility(View.GONE);
             switch (type){
                 case TYPE_FOLDER:
                     icon.setImageResource(R.drawable.ic_folder);
@@ -184,6 +189,15 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
                     break;
             }
             tvTitle.setText(name);
+        }
+
+        public void setProgress(float progress){
+            if(progress>=0 && progress<=100){
+                donutProgress.setMax(100);
+                donutProgress.setVisibility(View.VISIBLE);
+                donutProgress.setProgress(progress);
+            }else
+                donutProgress.setVisibility(View.GONE);
         }
 
     }

@@ -138,6 +138,7 @@ public class NetworkMethods {
                                                 UserCred userCred = new UserCred(userInfo.getEmail(), password);
                                                 userCred.save_cred(context);
                                                 progressDialog.cancel();
+                                                ((MainActivity)context).UpdateUI(userInfo,false);
                                                 ((MainActivity) context).launchOtherFragment(
                                                         Frag_VerifyEmail.newInstance(loginListener, userInfo),
                                                         MainActivity.VERIFY_EMAIL_TAG);
@@ -153,6 +154,12 @@ public class NetworkMethods {
                                         mAuth.getCurrentUser().delete();
                                     }
                                 });
+                                //Todo:
+//                                addDetailsToDB(userInfo);
+//                                UserCred userCred = new UserCred(userInfo.getEmail(), password);
+//                                userCred.save_cred(context);
+//                                progressDialog.cancel();
+//                                ((MainActivity)context).UpdateUI(userInfo,true);
                             }
 
                         } else {
@@ -314,7 +321,6 @@ public class NetworkMethods {
 
     public void deleteUser(final UserInfo userInfo, final onDeleteUserListener listener) {
         if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
-
             deleteUserData(userInfo, new onDeleteUserListener() {
                 @Override
                 public void onSuccess() {
@@ -383,70 +389,75 @@ public class NetworkMethods {
         deleteUserRetryCount = 0;
 
         ArrayList<String> userAdKeys = userInfo.getUserAdKeys();
-        final boolean[] allDone = new boolean[userAdKeys.size()];
-        for (int i = 0; i < userAdKeys.size(); i++)
-            allDone[i] = false;
 
-        for (int i=0;i<userAdKeys.size();i++) {
+        if(userAdKeys.size()>0) {
+            final boolean[] allDone = new boolean[userAdKeys.size()];
+            for (int i = 0; i < userAdKeys.size(); i++)
+                allDone[i] = false;
 
-            final int finalI = i;
-            mDatabase.child(DIRECTORY_ADS).child(userAdKeys.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+            for (int i = 0; i < userAdKeys.size(); i++) {
 
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    final AdData adData = dataSnapshot.getValue(AdData.class);
-                    deleteAd(userInfo, adData, new onDeleteListener() {
-                        @Override
-                        public void onSuccess(UserInfo userInfo) {
-                            allDone[finalI] = true;
-                            boolean f = true;
-                            for (boolean k : allDone) {
-                                f = f&&k;
+                final int finalI = i;
+                mDatabase.child(DIRECTORY_ADS).child(userAdKeys.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final AdData adData = dataSnapshot.getValue(AdData.class);
+                        deleteAd(userInfo, adData, new onDeleteListener() {
+                            @Override
+                            public void onSuccess(UserInfo userInfo) {
+                                allDone[finalI] = true;
+                                boolean f = true;
+                                for (boolean k : allDone) {
+                                    f = f && k;
+                                }
+                                if (f) {
+                                    listener.onSuccess();
+                                }
                             }
-                            if(f){
-                                listener.onSuccess();
-                            }
-                        }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            deleteUserFlag = true;
-                            while (deleteUserRetryCount <5 && deleteUserFlag){
-                                deleteUserRetryCount++;
-                                deleteAd(userInfo, adData, new onDeleteListener() {
-                                    @Override
-                                    public void onSuccess(UserInfo userInfo) {
-                                        deleteUserFlag = false;
-                                        allDone[finalI] = true;
-                                        boolean f = true;
-                                        for (boolean k : allDone) {
-                                            f = f&&k;
+                            @Override
+                            public void onFailure(Exception e) {
+                                deleteUserFlag = true;
+                                while (deleteUserRetryCount < 5 && deleteUserFlag) {
+                                    deleteUserRetryCount++;
+                                    deleteAd(userInfo, adData, new onDeleteListener() {
+                                        @Override
+                                        public void onSuccess(UserInfo userInfo) {
+                                            deleteUserFlag = false;
+                                            allDone[finalI] = true;
+                                            boolean f = true;
+                                            for (boolean k : allDone) {
+                                                f = f && k;
+                                            }
+                                            if (f) {
+                                                listener.onSuccess();
+                                            }
                                         }
-                                        if(f){
-                                            listener.onSuccess();
+
+                                        @Override
+                                        public void onFailure(Exception e) {
+
                                         }
-                                    }
-                                    @Override
-                                    public void onFailure(Exception e) {
-
-                                    }
-                                });
+                                    });
+                                }
+                                if (!deleteUserFlag || deleteUserRetryCount > 5)
+                                    listener.onFailure(e);
                             }
-                            if(!deleteUserFlag || deleteUserRetryCount>5)
-                                listener.onFailure(e);
-                        }
-                    });
-                }
+                        });
+                    }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
-                    Log.w(TAG, "getAd: onCancelled", databaseError.toException());
-                    listener.onFailure(databaseError.toException());
-                }
+                        Log.w(TAG, "getAd: onCancelled", databaseError.toException());
+                        listener.onFailure(databaseError.toException());
+                    }
 
-            });
-        }
+                });
+            }
+        }else
+            listener.onSuccess();
 
     }
 

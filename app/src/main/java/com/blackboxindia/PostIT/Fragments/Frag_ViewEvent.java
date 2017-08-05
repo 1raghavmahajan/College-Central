@@ -106,7 +106,7 @@ public class Frag_ViewEvent extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ((MainActivity) getActivity()).onBackPressedListener = null;
+        ((MainActivity) getActivity()).backPressedListener = null;
     }
 
     //endregion

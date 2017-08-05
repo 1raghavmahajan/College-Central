@@ -88,45 +88,7 @@ public class Frag_newAccount extends Fragment {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                userInfo.setData(
-                        etName.getText().toString().trim(),
-                        etEmail.getText().toString().trim(),
-                        etAddress.getText().toString().trim(),
-                        etPhone.getText().toString().trim()
-                        );
-
-                if (validateDetails(userInfo)) {
-                    userInfo.setHostel(hostelList.get(hostelSpinner.getSelectedItemPosition()-1));
-                    userInfo.setCollegeName(collegeList.get(collegeSpinner.getSelectedItemPosition()-1));
-                    if(!userInfo.getHasProfileIMG())
-                        profileImage = null;
-                    if (isPasswordValid()) {
-
-                        String password = etPassword.getText().toString().trim();
-
-                        NetworkMethods net = new NetworkMethods(context);
-                        net.Create_Account(userInfo,password, profileImage, new onLoginListener() {
-                            @Override
-                            public void onSuccess(UserInfo userInfo) {
-                                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                                    ((MainActivity) context).UpdateUI(userInfo,true,true);
-                                    ((MainActivity) context).createSnackbar("Account Created Successfully");
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Exception e) {
-                                if (e != null) {
-                                    if (e.getMessage().contains("network"))
-                                        Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
-                                    else
-                                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }
-                }
+                prepareAndCreateAccount();
             }
         });
 
@@ -420,6 +382,47 @@ public class Frag_newAccount extends Fragment {
     }
 
     //endregion
+
+    private void prepareAndCreateAccount() {
+        userInfo.setData(
+                etName.getText().toString().trim(),
+                etEmail.getText().toString().trim(),
+                etAddress.getText().toString().trim(),
+                etPhone.getText().toString().trim()
+        );
+
+        if (validateDetails(userInfo)) {
+            userInfo.setHostel(hostelList.get(hostelSpinner.getSelectedItemPosition()-1));
+            userInfo.setCollegeName(collegeList.get(collegeSpinner.getSelectedItemPosition()-1));
+            if(!userInfo.getHasProfileIMG())
+                profileImage = null;
+            if (isPasswordValid()) {
+
+                String password = etPassword.getText().toString().trim();
+
+                NetworkMethods net = new NetworkMethods(context);
+                net.Create_Account(userInfo,password, profileImage, new onLoginListener() {
+                    @Override
+                    public void onSuccess(UserInfo userInfo) {
+                        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                            ((MainActivity) context).UpdateUI(userInfo,true);
+                            ((MainActivity) context).createSnackbar("Account Created Successfully");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        if (e != null) {
+                            if (e.getMessage().contains("network"))
+                                Toast.makeText(context, "Network Error", Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }
+    }
 
     boolean validateDetails(UserInfo userInfo) {
 

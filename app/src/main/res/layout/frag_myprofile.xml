@@ -64,7 +64,7 @@
             android:id="@+id/profile_verifiedIcon"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_margin="10dp"
+            android:layout_margin="14dp"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_error"
             app:layout_constraintLeft_toRightOf="@id/profile_etName"

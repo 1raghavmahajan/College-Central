@@ -246,76 +246,77 @@ public class Frag_myProfile extends Fragment {
     @SuppressWarnings("ConstantConditions")
     void checkVerified(){
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        currentUser.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
+        if(currentUser!=null) {
+            currentUser.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
 
-                if (!currentUser.isEmailVerified()) {
-                    ic_notVerified.setVisibility(View.VISIBLE);
-                    ic_notVerified.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            final ProgressDialog dialog = ProgressDialog.show(context, "Checking...", "", true, false);
-                            currentUser.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    dialog.cancel();
-                                    if(currentUser.isEmailVerified()){
-                                        ic_notVerified.setVisibility(View.GONE);
+                    if (!currentUser.isEmailVerified()) {
+                        ic_notVerified.setVisibility(View.VISIBLE);
+                        ic_notVerified.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final ProgressDialog dialog = ProgressDialog.show(context, "Checking...", "", true, false);
+                                currentUser.reload().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        dialog.cancel();
+                                        if (currentUser.isEmailVerified()) {
+                                            ic_notVerified.setVisibility(View.GONE);
+                                        } else {
+                                            new AlertDialog.Builder(context)
+                                                    .setMessage("Account not verified, check your email account for a verification mail.")
+                                                    .setPositiveButton("OK", null)
+                                                    .setCancelable(true)
+                                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            Log.i(TAG, "onClick: cancel");
+                                                            dialog.cancel();
+                                                        }
+                                                    })
+                                                    .setNeutralButton("Resend Email", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            //noinspection ConstantConditions
+                                                            Log.i(TAG, "onClick: resend");
+                                                            if (!recentlySentMail) {
+                                                                currentUser.sendEmailVerification()
+                                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                            @Override
+                                                                            public void onSuccess(Void aVoid) {
+                                                                                Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
+                                                                                recentlySentMail = true;
+                                                                                new Handler().postDelayed(new Runnable() {
+                                                                                    @Override
+                                                                                    public void run() {
+                                                                                        recentlySentMail = false;
+                                                                                    }
+                                                                                }, 5 * 60 * 1000);
+                                                                            }
+                                                                        })
+                                                                        .addOnFailureListener(new OnFailureListener() {
+                                                                            @Override
+                                                                            public void onFailure(@NonNull Exception e) {
+                                                                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                            }
+                                                                        });
+                                                            } else
+                                                                Toast.makeText(context, "Wait for 3 minutes before sending the mail again.", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    })
+                                                    .create()
+                                                    .show();
+                                        }
                                     }
-                                    else {
-                                        new AlertDialog.Builder(context)
-                                                .setMessage("Account not verified, check your email account for a verification mail.")
-                                                .setPositiveButton("OK", null)
-                                                .setCancelable(true)
-                                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        Log.i(TAG, "onClick: cancel");
-                                                        dialog.cancel();
-                                                    }
-                                                })
-                                                .setNeutralButton("Resend Email", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        //noinspection ConstantConditions
-                                                        Log.i(TAG, "onClick: resend");
-                                                        if (!recentlySentMail) {
-                                                            currentUser.sendEmailVerification()
-                                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void aVoid) {
-                                                                            Toast.makeText(context, "Email sent!", Toast.LENGTH_SHORT).show();
-                                                                            recentlySentMail = true;
-                                                                            new Handler().postDelayed(new Runnable() {
-                                                                                @Override
-                                                                                public void run() {
-                                                                                    recentlySentMail = false;
-                                                                                }
-                                                                            }, 5 * 60 * 1000);
-                                                                        }
-                                                                    })
-                                                                    .addOnFailureListener(new OnFailureListener() {
-                                                                        @Override
-                                                                        public void onFailure(@NonNull Exception e) {
-                                                                            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                                        }
-                                                                    });
-                                                        } else
-                                                            Toast.makeText(context, "Wait for 3 minutes before sending the mail again.", Toast.LENGTH_LONG).show();
-                                                    }
-                                                })
-                                                .create()
-                                                .show();
-                                    }
-                                }
-                            });
-                        }
-                    });
+                                });
+                            }
+                        });
+                    }
+
                 }
-
-            }
-        });
+            });
+        }
     }
 
     private void configureHostelSpinner(final CustomDialog.ClickListener listener){
@@ -406,7 +407,7 @@ public class Frag_myProfile extends Fragment {
                 @Override
                 public void onSuccess(UserInfo userInfo) {
                     show.cancel();
-                    ((MainActivity) context).UpdateUI(userInfo, false, false);
+                    ((MainActivity) context).UpdateUI(userInfo, false);
                     ((MainActivity) context).createSnackbar("Successfully Updated.");
                 }
 

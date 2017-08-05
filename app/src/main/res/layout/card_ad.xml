@@ -25,7 +25,7 @@
                 android:id="@+id/adItem_Image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ad_img_placeholder"
+                android:src="@drawable/placeholder"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"/>
             <TextView
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
                 android:text="@string/free"
-                android:textSize="15sp"
+                android:textSize="16sp"
                 android:textStyle="italic"
                 android:elevation="4dp"
                 android:textColor="@android:color/black"
@@ -52,12 +52,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="2"
+            android:maxLength="40"
             android:text="@string/sampleTitle"
             android:layout_marginStart="8dp"
             android:gravity="center"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="2dp"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:textColor="@android:color/black"/>
     </LinearLayout>
 

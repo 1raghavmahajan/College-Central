@@ -60,7 +60,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
         this.view = view;
 
         opened = false;
-        ((MainActivity)context).onBackPressedListener = new MainActivity.onBackPressedListener() {
+        ((MainActivity)context).backPressedListener = new MainActivity.OnBackPressedListener() {
             @Override
             public boolean doneSomething() {
                 Log.i(TAG, "doneSomething: ");

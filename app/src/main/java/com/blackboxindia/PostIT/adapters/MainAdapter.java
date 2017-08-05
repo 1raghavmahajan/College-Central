@@ -129,7 +129,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.adItemViewHold
                 });
             }
             else {
-                majorImage.setImageResource(R.drawable.ad_img_placeholder);
+                majorImage.setImageResource(R.drawable.placeholder);
                 progressBar.setVisibility(View.GONE);
             }
 

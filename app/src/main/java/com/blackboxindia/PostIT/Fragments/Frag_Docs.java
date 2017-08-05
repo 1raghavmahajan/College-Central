@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.blackboxindia.PostIT.Network.CloudStorageMethods;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
@@ -31,12 +32,14 @@ public class Frag_Docs extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     Context context;
     Directory directory;
+    CloudStorageMethods cloudStorageMethods;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.frag_docs, container, false);
         context = mainView.getContext();
+        cloudStorageMethods = new CloudStorageMethods(context);
         Paper.init(context);
 
         swipeRefreshLayout = mainView.findViewById(R.id.docs_swipe_refresh_layout);
@@ -55,25 +58,16 @@ public class Frag_Docs extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
 
         }else {
+            swipeRefreshLayout.setRefreshing(true);
+            getData();
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                        getData();
-                    }
+                    getData();
                 }
             });
-            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                swipeRefreshLayout.setRefreshing(true);
-                getData();
-                swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        getData();
-                    }
-                });
-            } else {
-                ((MainActivity) context).createSnackbar("Not Logged In!");
+            if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+                ((MainActivity) context).createSnackbar("Showing documents for IIT Indore");
             }
         }
 
@@ -117,12 +111,79 @@ public class Frag_Docs extends Fragment {
     @Override
     public void onResume() {
         ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_Documents);
+//        MenuItem item = ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_download);
+//        item.setVisible(true);
+//        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                if(item.getItemId() == R.id.toolbar_download){
+////                    downloadAll();
+//                }
+//                return true;
+//            }
+//        });
         super.onResume();
     }
 
+//    private void downloadAll() {
+//        final int i = directory.folders.size();
+//        for (int j = 0; j< directory.files.size(); j++){
+//
+//            final int finalJ = j;
+//            String name = directory.files.get(j);
+//            String college;
+//            if(((MainActivity)context).userInfo!=null)
+//                college = ((MainActivity)context).userInfo.getCollegeName();
+//            else
+//                college = "IIT Indore";
+//
+//            final DonutProgress donutProgress = recyclerView.getChildAt(i + j).findViewById(R.id.donut_progress);
+//            donutProgress.setMax(100);
+//            donutProgress.setVisibility(View.VISIBLE);
+//
+//            recyclerView.getLayoutManager().isViewPartiallyVisible(recyclerView.getChildAt(i+finalJ),false,true)
+//
+//            final File file = new File(context.getExternalFilesDir(DIRECTORY_DOCUMENTS), name + ".pdf");
+//            if (!file.exists()) {
+//                FirebaseStorage.getInstance().getReference().child(DIRECTORY_DATA).child(college).child(name + ".pdf")
+//                        .getFile(file)
+//                        .addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+//                                if (task.isSuccessful()) {
+//                                    Log.i(TAG, "downloadAll: "+i+" "+finalJ);
+//                                    donutProgress.setProgress(100);
+////                                    ((DocumentAdapter.mViewHolder) recyclerView.findViewHolderForAdapterPosition(i + finalJ)).setProgress(100);
+//                                } else {
+//                                    Log.e(TAG, "onComplete: failure "+finalJ+" ", task.getException());
+//                                }
+//                            }
+//                        })
+//                        .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+//                            @Override
+//                            public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                                float p = (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100;
+//                                Log.i(TAG, "onProgress downloadFile percentage: " + p);
+//                                donutProgress.setProgress(p);
+//                                Log.i(TAG, "downloadAll: "+i+" "+finalJ);
+////                                ((DocumentAdapter.mViewHolder) recyclerView.findViewHolderForAdapterPosition(i + finalJ)).setProgress(p);
+//                            }
+//                        });
+//            }else {
+//                donutProgress.setProgress(100);
+//                Log.i(TAG, "downloadAll: "+i+" "+finalJ);
+////                ((DocumentAdapter.mViewHolder) recyclerView.findViewHolderForAdapterPosition(i + finalJ)).setProgress(100);
+//            }
+//        }
+//    }
+
     @Override
     public void onDestroy() {
-        ((MainActivity)context).onBackPressedListener = null;
+        ((MainActivity)context).backPressedListener = null;
+//        List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
+//        for (FileDownloadTask activeDownloadTask : activeDownloadTasks) {
+//            activeDownloadTask.cancel();
+//        }
         super.onDestroy();
     }
 

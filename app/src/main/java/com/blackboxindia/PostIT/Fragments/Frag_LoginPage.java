@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -39,7 +38,6 @@ public class Frag_LoginPage extends Fragment {
     //endregion
 
     //region Initial setup
-
 
     @Override
     public void onResume() {
@@ -84,7 +82,7 @@ public class Frag_LoginPage extends Fragment {
             @Override
             public void onClick(View v) {
                 MainActivity mainActivity = (MainActivity)context;
-                mainActivity.launchOtherFragment(new Frag_newAccount(), MainActivity.NEW_ACCOUNT_TAG);
+                mainActivity.launchOtherFragment(new Frag_newAccount(), MainActivity.NEW_ACCOUNT_TAG, true);
             }
         });
 

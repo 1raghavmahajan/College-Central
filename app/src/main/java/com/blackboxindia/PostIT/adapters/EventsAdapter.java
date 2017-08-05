@@ -13,10 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
@@ -72,21 +70,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
     public class adItemViewHolder extends RecyclerView.ViewHolder{
 
         ImageView majorImage;
-        TextView tv_title,tv_Date;
-//        TextView tv_Price;
+        TextView tv_title,tv_Date, tv_Time;
         Context context;
         CardView cardView;
         Bitmap main;
-        ProgressBar progressBar;
 
         adItemViewHolder(View itemView) {
             super(itemView);
             majorImage = itemView.findViewById(R.id.adItem_Image);
             tv_title = itemView.findViewById(R.id.adItem_Title);
-//            tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
             tv_Date = itemView.findViewById(R.id.adItem_Date);
+            tv_Time = itemView.findViewById(R.id.adItem_Time);
             cardView = itemView.findViewById(R.id.adItem);
-            progressBar = itemView.findViewById(R.id.adItem_progress);
             context = itemView.getContext();
         }
 
@@ -103,7 +98,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
                     @Override
                     public void onSuccess(Uri uri) {
                         if (majorImage != null){
-                            progressBar.setVisibility(View.GONE);
                             new loadBitmap().execute(uri);
                         }
                     }
@@ -111,14 +105,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
                     @Override
                     public void onFailure(Exception e) {
                         Log.e(TAG, "onFailure #" + position + " ", e);
+//                        majorImage.setImageResource(R.drawable.img_broken);
+                        majorImage.setVisibility(View.GONE);
                     }
                 });
             }
             else {
-                GlideApp.with(context)
-                        .load(R.drawable.ad_img_placeholder)
-                        .into(majorImage);
-                progressBar.setVisibility(View.GONE);
+                majorImage.setVisibility(View.GONE);
             }
 
             tv_title.setText(currentEvent.getTitle());
@@ -126,6 +119,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
             String myFormat = "dd/MM/yy";
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
             tv_Date.setText(sdf.format(currentEvent.getDateTime().toCalender().getTime()));
+
+            String timeFormat = "hh:mm a";
+            SimpleDateFormat tf = new SimpleDateFormat(timeFormat, Locale.US);
+            tv_Time.setText(tf.format(currentEvent.getDateTime().toCalender().getTime()));
 
         }
 

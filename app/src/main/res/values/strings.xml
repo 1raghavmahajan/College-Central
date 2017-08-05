@@ -118,5 +118,8 @@
     <string name="txt_teach">TEACH</string>
     <string name="blackbox_india">BlackBox India</string>
     <string name="price">Price</string>
+    <string name="download_all">Download All</string>
+    <string name="not_logged_in">(Not logged in)</string>
+    <string name="broadcast">Broadcast!</string>
 
 </resources>

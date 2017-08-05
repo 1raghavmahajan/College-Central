@@ -5,9 +5,9 @@
 
     <color name="colorAccent">#cb3327</color>
 
-    <color name="colorCardBackground">#2fb8b6b6</color>
+    <color name="colorCardBackground">#d0efefef</color>
 
-    <color name="img_text">#7fffffff</color>
+    <color name="img_text">#a0ffffff</color>
 
     <color name="colorSearch">#b39914</color>
 
@@ -46,7 +46,7 @@
     <color name="blue">#2196F3</color>
     <color name="dark_blue">#01579b</color>
     <color name="light_blue">#03A9F4</color>
-    <color name="cyan">#00BCD4</color>
+    <color name="cyan">#00acc1</color>
     <color name="teal">#009688</color>
     <color name="green">#4CAF50</color>
     <color name="dark_green">#2e7d32</color>

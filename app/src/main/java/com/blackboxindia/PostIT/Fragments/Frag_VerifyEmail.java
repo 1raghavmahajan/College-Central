@@ -51,12 +51,25 @@ public class Frag_VerifyEmail extends Fragment {
     public void onResume() {
         verified = false;
         ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_VerifyEmail);
+        ((MainActivity)context).backPressedListener = new MainActivity.OnBackPressedListener() {
+            @Override
+            public boolean doneSomething() {
+
+                ((MainActivity)context).clearBackStack();
+                ((MainActivity)context).launchOtherFragment(new Frag_Main(), MainActivity.MAIN_SCREEN_TAG);
+//                if (manager.getBackStackEntryCount() > 0) {
+//                    FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+//                    manager.popBackStack(first.getId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//                }
+                return true;
+            }
+        };
         super.onResume();
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.frag_verify_email, container, false);
         context = view.getContext();
@@ -81,6 +94,7 @@ public class Frag_VerifyEmail extends Fragment {
                             if (user.isEmailVerified()) {
                                 Log.i(TAG, "Verified");
                                 Toast.makeText(context, "Email Verified!", Toast.LENGTH_SHORT).show();
+                                ((MainActivity)context).clearBackStack();
                                 ((MainActivity)context).launchOtherFragment(new Frag_Main(),MainActivity.MAIN_SCREEN_TAG);
                                 loginListener.onSuccess(userInfo);
                             }
@@ -97,5 +111,9 @@ public class Frag_VerifyEmail extends Fragment {
         return view;
     }
 
-
+    @Override
+    public void onDestroy() {
+        ((MainActivity)context).backPressedListener = null;
+        super.onDestroy();
+    }
 }

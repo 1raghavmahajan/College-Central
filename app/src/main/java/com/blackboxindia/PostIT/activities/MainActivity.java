@@ -28,7 +28,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
@@ -134,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawer;
     NavigationView navigationView;
     Menu navigationViewMenu;
+    Button btn_login;
+    MenuItem search_icon;
     public FloatingActionButton fab;
     public Snackbar currentSnackbar;
     private boolean specialSnackbar;
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     public NetworkMethods networkMethods;
     public CloudStorageMethods cloudStorageMethods;
 
-    public MainActivity.onBackPressedListener onBackPressedListener;
+    public OnBackPressedListener backPressedListener;
 
     //endregion
 
@@ -191,10 +192,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpUser(){
         Bundle extras = getIntent().getExtras();
-        boolean isCached = extras.getBoolean(ARG_IsCached);
+        final boolean isCached = extras.getBoolean(ARG_IsCached);
         if(isCached){
             UserInfo info = extras.getParcelable(ARG_User);
-            UpdateUI(info,false, false);
+            UpdateUI(info,false);
             offlineMode = true;
         }
 
@@ -204,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                     new onLoginListener() {
                         @Override
                         public void onSuccess(UserInfo userInfo) {
-                            UpdateUI(userInfo,false, false);
+                            UpdateUI(userInfo,false);
                             Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
                             userInfo.cacheUserDetails(context);
                         }
@@ -217,12 +218,13 @@ public class MainActivity extends AppCompatActivity {
                                     createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, true, "Retry", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
+                                            @SuppressWarnings("deprecation")
                                             final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
                                             networkMethods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
                                                 @Override
                                                 public void onSuccess(UserInfo userInfo) {
                                                     offlineMode = false;
-                                                    UpdateUI(userInfo, false, false);
+                                                    UpdateUI(userInfo, false);
                                                     userInfo.cacheUserDetails(context);
                                                     dialog.cancel();
                                                     Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
@@ -237,6 +239,10 @@ public class MainActivity extends AppCompatActivity {
                                                         dialog.cancel();
                                                         createSnackbar("Session Expired. Please login again.");
                                                         UserCred.clear_cred(context);
+                                                        if(isCached) {
+                                                            UserInfo.clearCache(context);
+                                                            UpdateUIonLogout(false, false);
+                                                        }
                                                     }
                                                 }
                                             });
@@ -245,13 +251,17 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     createSnackbar("Session Expired. Please login again.");
                                     UserCred.clear_cred(context);
+                                    if(isCached) {
+                                        UserInfo.clearCache(context);
+                                        UpdateUIonLogout(false, false);
+                                    }
                                 }
                             }
                             else {
                                 createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
                                     }
                                 });
                             }
@@ -261,13 +271,13 @@ public class MainActivity extends AppCompatActivity {
 
             if(isCached) {
                 UserInfo.clearCache(context);
-                UpdateUIonLogout(false);
+                UpdateUIonLogout(false, false);
             }
 
             createSnackbar("Please login to get started", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    launchOtherFragment(new Frag_LoginPage(),LOGIN_PAGE_TAG);
+                    launchOtherFragment(new Frag_LoginPage(),LOGIN_PAGE_TAG, true);
                 }
             });
 
@@ -282,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
                     new onLoginListener() {
                         @Override
                         public void onSuccess(UserInfo userInfo) {
-                            UpdateUI(userInfo,false, false);
+                            UpdateUI(userInfo,false);
                             Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
                             userInfo.cacheUserDetails(context);
                         }
@@ -300,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
                                                 @Override
                                                 public void onSuccess(UserInfo userInfo) {
                                                     offlineMode = false;
-                                                    UpdateUI(userInfo, false, false);
+                                                    UpdateUI(userInfo, false);
                                                     userInfo.cacheUserDetails(context);
                                                     dialog.cancel();
                                                     Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
@@ -329,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
                                 createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
                                     }
                                 });
                             }
@@ -339,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
             createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                    launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
                 }
             });
         }
@@ -367,16 +377,34 @@ public class MainActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) toolbar.getMenu().findItem(R.id.toolbar_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
-        MenuItem item = toolbar.getMenu().findItem(R.id.toolbar_search);
-        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+        search_icon = toolbar.getMenu().findItem(R.id.toolbar_search);
+        search_icon.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+
+            OnBackPressedListener listener;
+
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
+                if(backPressedListener!=null){
+                    listener = backPressedListener;
+                }
+                backPressedListener = new OnBackPressedListener() {
+                    @Override
+                    public boolean doneSomething() {
+                        if(search_icon.isActionViewExpanded()) {
+                            search_icon.collapseActionView();
+                            return true;
+                        }
+                        return false;
+                    }
+                };
                 animateSearchToolbar(1, true, true);
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
+                if(listener!=null)
+                    backPressedListener = listener;
                 ((Frag_Ads)(fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter("");
                 if (item.isActionViewExpanded())
                     animateSearchToolbar(1, false, false);
@@ -396,11 +424,11 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.nav_view);
         navigationViewMenu = navigationView.getMenu();
 
-        Button btn_nav = navigationView.getHeaderView(0).findViewById(R.id.nav_btnLogin);
-        btn_nav.setOnClickListener(new View.OnClickListener() {
+        btn_login = navigationView.getHeaderView(0).findViewById(R.id.nav_btnLogin);
+        btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
                 if(drawer.isDrawerOpen(Gravity.START))
                     drawer.closeDrawer(Gravity.START);
             }
@@ -413,23 +441,23 @@ public class MainActivity extends AppCompatActivity {
                 drawer.closeDrawer(GravityCompat.START);
                 switch (item.getItemId()) {
                     case R.id.nav_allAds:
-                        launchOtherFragment(new Frag_Main(), MAIN_SCREEN_TAG);
+                        launchOtherFragment(new Frag_Main(), MAIN_SCREEN_TAG, true);
                         break;
                     case R.id.nav_manage:
-                        launchOtherFragment(new Frag_Manage(), MANAGE_FRAG_TAG);
+                        launchOtherFragment(new Frag_Manage(), MANAGE_FRAG_TAG, true);
                         break;
                     case R.id.nav_profile:
                         if (userInfo != null) {
-                            launchOtherFragment(new Frag_myProfile(), MY_PROFILE_TAG);
+                            launchOtherFragment(new Frag_myProfile(), MY_PROFILE_TAG, true);
                         } else {
                             Toast.makeText(context, "Please login First", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case R.id.nav_newAccount:
-                        launchOtherFragment(new Frag_newAccount(), NEW_ACCOUNT_TAG);
+                        launchOtherFragment(new Frag_newAccount(), NEW_ACCOUNT_TAG, true);
                         break;
                     case R.id.nav_myAds:
-                        launchOtherFragment(new Frag_myAds(),MY_ADS_TAG);
+                        launchOtherFragment(new Frag_myAds(),MY_ADS_TAG, true);
                         break;
                     case R.id.nav_logout:
                         NetworkMethods.Logout(context);
@@ -461,9 +489,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (checkVerification()) {
-                    ((TextView) findViewById(R.id.nav_email)).setText(userInfo.getEmail());
+//                  if(true){
+                    //Todo:
 
-                    switch (adType) {
+                      if(userInfo!=null)
+                         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email)).setText(userInfo.getEmail());
+
+                      switch (adType) {
 
                         case TYPE_SELL:
                         case TYPE_LOSTFOUND:
@@ -476,17 +508,17 @@ public class MainActivity extends AppCompatActivity {
 
                             frag_newAd.setArguments(args);
 
-                            launchOtherFragment(frag_newAd, NEW_AD_TAG);
+                            launchOtherFragment(frag_newAd, NEW_AD_TAG, true);
 
                             break;
 
                         case TYPE_EVENT:
-                            launchOtherFragment(new Frag_newEvent(), NEW_EVENT_TAG);
+                            launchOtherFragment(new Frag_newEvent(), NEW_EVENT_TAG, true);
                             break;
 
                         case TYPE_INFO:
 
-                    }
+                      }
                 }
             }
         });
@@ -502,11 +534,19 @@ public class MainActivity extends AppCompatActivity {
     //region Movement
 
     public void launchOtherFragment(Fragment frag, String tag) {
-        
-        fragmentManager.beginTransaction()
+        launchOtherFragment(frag, tag, false);
+    }
+
+    public void launchOtherFragment(Fragment frag, String tag, boolean addToStack) {
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction()
                 .replace(R.id.frame_layout, frag, tag)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .addToBackStack(null).commit();
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+
+        if(addToStack)
+                transaction.addToBackStack(null);
+        transaction.commit();
+
     }
 
     boolean twiceToExit = false;
@@ -522,6 +562,7 @@ public class MainActivity extends AppCompatActivity {
         else {
 
             boolean f = true;
+
 //             region Viewing Ad
 //            if(fragmentManager.findFragmentByTag(VIEW_AD_TAG)!=null)
 //            {
@@ -580,10 +621,9 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //            }
 //
-            if(onBackPressedListener!=null) {
-                Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
-                if (onBackPressedListener.doneSomething()) {
-                    Log.i(TAG, "onBackPressed: did something");
+
+            if(backPressedListener !=null) {
+                if (backPressedListener.doneSomething()) {
                     f = false;
                 }
             }
@@ -613,7 +653,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public interface onBackPressedListener {
+    public interface OnBackPressedListener {
         boolean doneSomething();
     }
 
@@ -625,7 +665,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         if(Intent.ACTION_SEARCH.equals(intent.getAction())){
             String query = intent.getStringExtra(SearchManager.QUERY);
-            
             if (fragmentManager.findFragmentByTag(ALL_FRAG_TAG) != null) {
                 if(fragmentManager.findFragmentByTag(ALL_FRAG_TAG).isVisible())
                     ((Frag_Ads) (fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter(query);
@@ -699,8 +738,10 @@ public class MainActivity extends AppCompatActivity {
         toolbar.getMenu().findItem(R.id.toolbar_refresh).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(item.getItemId() == R.id.toolbar_refresh)
-                    ((Frag_Ads)fragmentManager.findFragmentByTag(ALL_FRAG_TAG)).refresh();
+                if(item.getItemId() == R.id.toolbar_refresh) {
+                    if(fragmentManager.findFragmentByTag(ALL_FRAG_TAG)!=null)
+                        ((Frag_Ads) fragmentManager.findFragmentByTag(ALL_FRAG_TAG)).refresh();
+                }
                 return true;
             }
         });
@@ -713,7 +754,7 @@ public class MainActivity extends AppCompatActivity {
             createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE,true , "Login", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG);
+                    launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
                 }
             });
             return false;
@@ -774,16 +815,18 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     @SuppressWarnings("ConstantConditions")
-    public void UpdateUI(UserInfo userInfo, Boolean redirect, Boolean toRefresh) {
+    public void UpdateUI(UserInfo userInfo, Boolean redirect) {
 
         this.userInfo = userInfo;
 
         //Drawer
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_Name)).setText(userInfo.getName());
-        FirebaseAuth.getInstance().getCurrentUser().reload();
         String notVerified = " (Not Verified)";
-        if(FirebaseAuth.getInstance().getCurrentUser().isEmailVerified())
-            notVerified = "";
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
+            FirebaseAuth.getInstance().getCurrentUser().reload();
+            if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified())
+                notVerified = "";
+        }
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email)).setText(userInfo.getEmail()+notVerified);
         final ImageView imageView = navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(userInfo.getHasProfileIMG()) {
@@ -810,7 +853,7 @@ public class MainActivity extends AppCompatActivity {
             GlideApp.with(context).load(R.drawable.avatar).into(imageView);
         }
 
-        navigationView.getHeaderView(0).findViewById(R.id.nav_Name).setVisibility(View.GONE);
+        btn_login.setVisibility(View.GONE);
 
         navigationViewMenu.findItem(R.id.nav_myAds).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_manage).setVisible(true);
@@ -818,34 +861,40 @@ public class MainActivity extends AppCompatActivity {
         navigationViewMenu.findItem(R.id.nav_logout).setVisible(true);
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(false);
 
-        if(redirect)
-            launchOtherFragment(new Frag_Main(),MAIN_SCREEN_TAG);
-        else if (toRefresh){
-            if(fragmentManager.findFragmentByTag(ALL_FRAG_TAG)!=null)
-                ((Frag_Ads) (fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).refresh();
-            else
-                Log.i(TAG,"Main frag null");
+        if(redirect) {
+            clearBackStack();
+            launchOtherFragment(new Frag_Main(), MAIN_SCREEN_TAG);
+            createSnackbar("Logged in!");
         }
+    }
 
+    public void AnonLogin(UserInfo userInfo){
+        this.userInfo = userInfo;
+
+        //Drawer
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_Name)).setText(userInfo.getName());
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email)).setText(R.string.not_logged_in);
+        final ImageView imageView = navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
+        GlideApp.with(context).load(R.drawable.avatar).into(imageView);
     }
 
     public void UpdateUIonLogout() {
-        UpdateUIonLogout(true);
+        UpdateUIonLogout(true, true);
     }
 
-    public void UpdateUIonLogout(boolean createSnack) {
+    public void UpdateUIonLogout(boolean createSnack, boolean redirect) {
 
         this.userInfo = null;
 
         //Drawer
-        ((TextView) findViewById(R.id.nav_Name)).setText(R.string.sample_ID);
-        ((TextView) findViewById(R.id.nav_email)).setText(R.string.sample_email);
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_Name)).setText(R.string.sample_ID);
+        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email)).setText(R.string.sample_email);
         ImageView imageView = navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(imageView.getDrawable() !=null) {
             GlideApp.with(context).load(R.drawable.avatar).into(imageView);
         }
 
-        (findViewById(R.id.nav_btnLogin)).setVisibility(View.VISIBLE);
+        btn_login.setVisibility(View.VISIBLE);
 
         navigationViewMenu.findItem(R.id.nav_myAds).setVisible(false);
         navigationViewMenu.findItem(R.id.nav_manage).setVisible(false);
@@ -853,10 +902,19 @@ public class MainActivity extends AppCompatActivity {
         navigationViewMenu.findItem(R.id.nav_logout).setVisible(false);
         navigationViewMenu.findItem(R.id.nav_newAccount).setVisible(true);
 
-        launchOtherFragment(new Frag_Main(),MAIN_SCREEN_TAG);
+        if(redirect) {
+            clearBackStack();
+            launchOtherFragment(new Frag_Main(), MAIN_SCREEN_TAG);
+        }
 
         if(createSnack)
             createSnackbar("Logged out!");
+    }
+
+    public void clearBackStack(){
+        while (getFragmentManager().getBackStackEntryCount() > 0){
+            getFragmentManager().popBackStackImmediate();
+        }
     }
 
     public void createSnackbar(String msg) {

@@ -3,7 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
+    android:layout_marginTop="3dp"
+    android:layout_marginBottom="2dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
     app:cardCornerRadius="3dp"
     app:cardElevation="3dp"
     android:backgroundTint="@color/colorCardBackground"
@@ -11,36 +14,36 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:layout_height="70dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingEnd="8dp"
         >
-        <TextView
-            android:id="@+id/adItem_Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-
-            android:text="@string/sampleTitle"
-            android:gravity="start"
-            android:textSize="22sp"
-            android:textColor="@android:color/black"
-            />
-
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/adItem_CreatedByImage"
-            android:layout_width="49dp"
-            android:layout_height="49dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:visibility="gone"
+            android:src="@drawable/avatar"
+            android:visibility="visible"
+            />
+
+        <TextView
+            android:id="@+id/adItem_Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:maxLength="40"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/adItem_CreatedByImage"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            android:text="@string/title"
+            android:gravity="start"
+            android:textSize="17sp"
+            android:textColor="@android:color/black"
             />
 
         <TextView
@@ -51,7 +54,7 @@
             app:layout_constraintRight_toLeftOf="@id/adItem_CreatedByImage"
             android:layout_marginEnd="4dp"
             android:text="@string/name"
-            android:textSize="16sp"
+            android:textSize="14sp"
             />
 
         <TextView
@@ -62,7 +65,7 @@
             android:layout_marginEnd="5dp"
             android:layout_gravity="end"
             android:text="@string/by"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textStyle="italic"/>
 
     </android.support.constraint.ConstraintLayout>

@@ -100,7 +100,7 @@ public class Frag_ViewAd extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ((MainActivity) getActivity()).onBackPressedListener = null;
+        ((MainActivity) getActivity()).backPressedListener = null;
     }
     //endregion
 

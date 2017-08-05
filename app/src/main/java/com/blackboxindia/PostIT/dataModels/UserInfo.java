@@ -109,7 +109,7 @@ public class UserInfo implements Parcelable{
                 UserCred userCred = new UserCred(email, password);
                 userCred.save_cred(context);
 
-                ((MainActivity) context).UpdateUI(userInfo, true, true);
+                ((MainActivity) context).UpdateUI(userInfo, true);
             }
 
             @Override

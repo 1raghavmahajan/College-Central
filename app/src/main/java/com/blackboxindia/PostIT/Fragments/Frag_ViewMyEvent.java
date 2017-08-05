@@ -66,7 +66,7 @@ public class Frag_ViewMyEvent extends Fragment {
                         public void onSuccess(UserInfo userInfo) {
                             dialog.cancel();
                             ((MainActivity)context).onBackPressed();
-                            ((MainActivity)context).UpdateUI(userInfo,false,false);
+                            ((MainActivity)context).UpdateUI(userInfo,false);
                             ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
                         }
 
@@ -128,7 +128,7 @@ public class Frag_ViewMyEvent extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete).setVisible(false);
-        ((MainActivity) getActivity()).onBackPressedListener = null;
+        ((MainActivity) getActivity()).backPressedListener = null;
     }
     //endregion
 

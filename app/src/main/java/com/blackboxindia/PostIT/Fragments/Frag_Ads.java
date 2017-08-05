@@ -65,6 +65,8 @@ public class Frag_Ads extends Fragment {
     ArrayList<AdData> allAds;
     ArrayList<AdData> everything;
     Map<AdData,Integer> priority;
+
+    String college;
     //endregion
 
     //region Initial Setup
@@ -82,6 +84,7 @@ public class Frag_Ads extends Fragment {
                 break;
         }
         ((MainActivity)context).toolbar.setTitle(title);
+
         super.onResume();
     }
 
@@ -113,9 +116,16 @@ public class Frag_Ads extends Fragment {
             adType = TYPE_SELL;
         }
 
+        if(((MainActivity)context).userInfo!=null) {
+            userInfo = ((MainActivity) context).userInfo;
+            college = userInfo.getCollegeName();
+        }else {
+            college = "IIT Indore";
+            ((MainActivity)context).createSnackbar("Showing ads for IIT Indore");
+        }
+
         ((MainActivity)context).setUpFab(adType);
 
-        swipeRefreshLayout.setRefreshing(true);
         refresh();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -207,7 +217,7 @@ public class Frag_Ads extends Fragment {
     }
 
     private void setUp3() {
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
 
         EventsAdapter adapter = new EventsAdapter(context,allAds, new EventsAdapter.ImageClickListener() {
             @Override
@@ -237,13 +247,14 @@ public class Frag_Ads extends Fragment {
 
         userInfo = ((MainActivity)context).userInfo;
 
+        if(!swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(true);
+
         getAllAds();
 
     }
 
     public void filter(String query) {
-
-        Log.i(TAG, "filter: "+query);
 
         priority = new HashMap<>();
         query = query.trim().toLowerCase();
@@ -282,7 +293,7 @@ public class Frag_Ads extends Fragment {
                 }
             });
             if(newList.isEmpty()) {
-                view.findViewById(R.id.ads_default).setVisibility(View.VISIBLE);
+//                view.findViewById(R.id.ads_default).setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
                 Toast.makeText(context, "No matches found.", Toast.LENGTH_SHORT).show();
             }
@@ -302,16 +313,35 @@ public class Frag_Ads extends Fragment {
                             ((MainAdapter) recyclerView.getAdapter()).change(newList);
                             break;
                     }
+                }else {
+                    setUpRecyclerView();
+                    switch (adType) {
+                        case TYPE_EVENT:
+                            ((EventsAdapter) recyclerView.getAdapter()).change(newList);
+                            break;
+                        case TYPE_TEACH:
+                            ((teachingAdAdapter) recyclerView.getAdapter()).change(newList);
+                            break;
+                        default:
+                            ((MainAdapter) recyclerView.getAdapter()).change(newList);
+                            break;
+                    }
                 }
             }
         }
-        else
-        if(recyclerView.getAdapter() != null) {
+        else if(recyclerView.getAdapter() != null) {
+
             if(allAds.size()==0) {
                 view.findViewById(R.id.ads_default).setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.INVISIBLE);
             }else
                 recyclerView.setVisibility(View.VISIBLE);
+
+            if(query.length()<=2 && query.length()>0) {
+                Toast.makeText(context, "Search string too small!", Toast.LENGTH_SHORT).show();
+                recyclerView.setVisibility(View.INVISIBLE);
+            }
+
             switch (adType) {
                 case TYPE_EVENT:
                     ((EventsAdapter) recyclerView.getAdapter()).change(allAds);
@@ -323,6 +353,8 @@ public class Frag_Ads extends Fragment {
                     ((MainAdapter) recyclerView.getAdapter()).change(allAds);
                     break;
             }
+        } else {
+            getAllAds();
         }
 
     }
@@ -342,8 +374,10 @@ public class Frag_Ads extends Fragment {
                     }
                     else {
 
-                        if(allAds.size()!=0)
+                        if(allAds.size()!=0) {
                             view.findViewById(R.id.ads_default).setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
 
                         switch (adType) {
                             case TYPE_TEACH:
@@ -381,8 +415,10 @@ public class Frag_Ads extends Fragment {
         if(everything!=null){
             if(everything.size()!=0){
                 for (AdData ad : everything) {
-                    if(ad.getType().equals(adType))
-                        allAds.add(ad);
+                    if(ad.getCreatedBy().getCollegeName().equals(college)) {
+                        if (ad.getType().equals(adType))
+                            allAds.add(ad);
+                    }
                 }
             }
         }
