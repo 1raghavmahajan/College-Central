@@ -60,7 +60,7 @@ public class CloudStorageMethods {
     private ArrayList<Boolean> allGood;
     private ArrayList<Integer> retryNo;
     void uploadPics(final ArrayList<Uri> imgURIs, final String key, final ProgressDialog progressDialog, final onCompleteListener<Void> mainListener) {
-        Log.i(TAG,"uploadPics");
+        //Log.i(TAG,"uploadPics");
         progressDialog.setTitle("Uploading Images..");
         //final ProgressDialog progressDialog = ProgressDialog.show(context, "Uploading Images", "", true, false);
         final ProgressBar progressBar = ((MainActivity)context).progressBar;
@@ -101,10 +101,10 @@ public class CloudStorageMethods {
 
             @Override
             public void failure(Exception e, int i) {
-                Log.i(TAG,"failure of #"+i+" Due to " + e.getMessage());
+                //Log.i(TAG,"failure of #"+i+" Due to " + e.getMessage());
                 if(retryNo.get(i)<5) {
                     retryNo.set(i,retryNo.get(i)+1);
-                    Log.i(TAG, "Retrying.. #" + retryNo.get(i));
+                    //Log.i(TAG, "Retrying.. #" + retryNo.get(i));
                     uploadPic(imgURIs.get(i),key,i,this);
                 }
                 else {
@@ -123,7 +123,7 @@ public class CloudStorageMethods {
                 for(int j=0;j<total;j++)
                     tt+=progress.get(j);
 
-                Log.i(TAG,"TOTAL Progress: " + (tt/total) + "%");
+                //Log.i(TAG,"TOTAL Progress: " + (tt/total) + "%");
                 progressBar.setProgress(tt);
             }
         };
@@ -139,7 +139,7 @@ public class CloudStorageMethods {
     }
 
     void uploadBitmap(String AdID, Bitmap bitmap, final onCompleteListener<Void> listener){
-        Log.i(TAG,"bitmap up started");
+        //Log.i(TAG,"bitmap up started");
         uploadBitmapWorker task = new uploadBitmapWorker("images/"+AdID+"/0s", listener);
         task.execute(bitmap);
     }
@@ -148,7 +148,7 @@ public class CloudStorageMethods {
     public void getMajorImage(final String AdID, final onCompleteListener<Uri> listener) {
 
         if(cachedIcons.containsKey(AdID)) {
-            Log.i(TAG,"getMajorImage cached");
+            //Log.i(TAG,"getMajorImage cached");
             listener.onSuccess(cachedIcons.get(AdID));
         }
         else {
@@ -177,11 +177,11 @@ public class CloudStorageMethods {
     public void getBigImage(final String AdID, final int i, final onCompleteListener<Uri> listener) {
 
         if(cachedBigImages.containsKey(AdID + i)) {
-            Log.i(TAG,"Getting image from cache "+ AdID + i );
+            //Log.i(TAG,"Getting image from cache "+ AdID + i );
             listener.onSuccess(cachedBigImages.get(AdID + i));
         }
         else {
-            Log.i(TAG,"Getting image from internet "+ AdID + i );
+            //Log.i(TAG,"Getting image from internet "+ AdID + i );
 
             final File localFile;
             localFile = new File(context.getCacheDir(), AdID + i + ".bmp");
@@ -190,7 +190,7 @@ public class CloudStorageMethods {
                     .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            Log.i(TAG,"uri:" + Uri.fromFile(localFile));
+                            //Log.i(TAG,"uri:" + Uri.fromFile(localFile));
                             cachedBigImages.put(AdID+i,Uri.fromFile(localFile));
                             listener.onSuccess(Uri.fromFile(localFile));
                         }
@@ -205,7 +205,7 @@ public class CloudStorageMethods {
     }
 
     void uploadProfileImage(String uID, Bitmap bitmap, final onCompleteListener<Void> listener){
-        Log.i(TAG,"bitmap up started");
+        //Log.i(TAG,"bitmap up started");
         uploadBitmapWorker task = new uploadBitmapWorker("user/"+uID+"/profileImage", listener);
         task.execute(bitmap);
     }
@@ -233,7 +233,7 @@ public class CloudStorageMethods {
                                         }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                                Log.e(TAG, "onFailure: getNewImage",e);
+                                                //Log.e(TAG, "onFailure: getNewImage",e);
                                                 listener.onSuccess(cachedProfileImages.get(uID).uri);
                                             }
                                         });
@@ -245,7 +245,7 @@ public class CloudStorageMethods {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.e(TAG, "onFailure: getMetaData",e);
+                            //Log.e(TAG, "onFailure: getMetaData",e);
                             listener.onSuccess(cachedProfileImages.get(uID).uri);
                         }
                     });
@@ -278,7 +278,7 @@ public class CloudStorageMethods {
     }
 
     public void saveCache(){
-        Log.i(TAG,"saveCache");
+        //Log.i(TAG,"saveCache");
 
         SharedPreferences cache = context.getSharedPreferences("cache", Context.MODE_PRIVATE);
 
@@ -306,11 +306,11 @@ public class CloudStorageMethods {
     }
 
     public void getCache(){
-        Log.i(TAG,"getCache");
+        //Log.i(TAG,"getCache");
         SharedPreferences cache = context.getSharedPreferences("cache", Context.MODE_PRIVATE);
 
         if(cache.getBoolean("isSaved",false)) {
-            Log.i(TAG,"isSaved");
+            //Log.i(TAG,"isSaved");
 
             cachedIcons = new HashMap<>();
             Set<String> icons = new HashSet<>();
@@ -369,7 +369,7 @@ public class CloudStorageMethods {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            Log.i(TAG,"uploadBitmap: onFailure",exception);
+                            //Log.i(TAG,"uploadBitmap: onFailure",exception);
                             Toast.makeText(context, exception.getMessage(), Toast.LENGTH_SHORT).show();
                             listener.onFailure(exception);
                         }
@@ -409,20 +409,20 @@ public class CloudStorageMethods {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            Log.i(TAG, "uploadPics: onFailure" + i, exception);
+                            //Log.i(TAG, "uploadPics: onFailure" + i, exception);
                             listener.failure(exception, i);
                         }
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Log.i(TAG, "uploadPics: onSuccess" + i);
+                    //Log.i(TAG, "uploadPics: onSuccess" + i);
                     listener.onSuccess(i);
                 }
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                     long p = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                    Log.i(TAG, "uploadPics: onProgress" + i + ": " + p);
+                    //Log.i(TAG, "uploadPics: onProgress" + i + ": " + p);
                     listener.onProgressUpdate(i, (int) p);
                 }
             });
@@ -456,7 +456,7 @@ public class CloudStorageMethods {
                             if (task.isSuccessful()) {
                                 listener.onSuccess(file);
                             } else {
-                                Log.e(TAG, "onComplete: failure", task.getException());
+                                //Log.e(TAG, "onComplete: failure", task.getException());
                                 listener.onFailure(task.getException());
                             }
                         }
@@ -465,7 +465,7 @@ public class CloudStorageMethods {
                         @Override
                         public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
                             float p = (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100;
-                            Log.i(TAG, "onProgress downloadFile percentage: " + p);
+                            //Log.i(TAG, "onProgress downloadFile percentage: " + p);
                         }
                     });
         }else {

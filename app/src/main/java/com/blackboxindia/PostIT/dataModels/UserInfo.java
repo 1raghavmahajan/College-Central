@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Keep;
 import android.widget.Toast;
 
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
+@Keep
 public class UserInfo implements Parcelable{
 
     //region Variables

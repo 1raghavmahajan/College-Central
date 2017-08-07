@@ -54,7 +54,7 @@
             android:gravity="center|top"
             android:alpha="0.8"
             android:text="@string/lbl_subtitle"
-            android:textSize="13sp"
+            android:textSize="14sp"
             android:textColor="@android:color/white" />
 
 

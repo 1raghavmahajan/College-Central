@@ -97,7 +97,7 @@ public class NetworkMethods {
                                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                     @Override
                                                                     public void onSuccess(Void aVoid) {
-                                                                        Log.i(TAG, "Create Account Successful: " + userInfo.toString());
+                                                                        //Log.i(TAG, "Create Account Successful: " + userInfo.toString());
                                                                         addDetailsToDB(userInfo);
                                                                         UserCred userCred = new UserCred(userInfo.getEmail(), password);
                                                                         userCred.save_cred(context);
@@ -113,7 +113,7 @@ public class NetworkMethods {
                                                                 progressDialog.cancel();
                                                                 Toast.makeText(context, "Failed to create account", Toast.LENGTH_SHORT).show();
                                                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                                                                Log.e(TAG, "Failed to send email.", e);
+                                                                //Log.e(TAG, "Failed to send email.", e);
                                                                 mAuth.getCurrentUser().delete();
                                                             }
                                                         });
@@ -123,7 +123,7 @@ public class NetworkMethods {
                                                     @Override
                                                     public void onFailure(Exception e) {
                                                         progressDialog.cancel();
-                                                        Log.e(TAG, "onFailure: profileImageUpload", e);
+                                                        //Log.e(TAG, "onFailure: profileImageUpload", e);
                                                         loginListener.onFailure(e);
                                                     }
                                                 });
@@ -133,7 +133,7 @@ public class NetworkMethods {
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
-                                                Log.i(TAG, "Create Account Successful: " + userInfo.toString());
+                                                //Log.i(TAG, "Create Account Successful: " + userInfo.toString());
                                                 addDetailsToDB(userInfo);
                                                 UserCred userCred = new UserCred(userInfo.getEmail(), password);
                                                 userCred.save_cred(context);
@@ -150,7 +150,7 @@ public class NetworkMethods {
                                         progressDialog.cancel();
                                         Toast.makeText(context, "Failed to create account", Toast.LENGTH_SHORT).show();
                                         Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                                        Log.e(TAG, "Failed to send email.", e);
+                                        //Log.e(TAG, "Failed to send email.", e);
                                         mAuth.getCurrentUser().delete();
                                     }
                                 });
@@ -164,7 +164,7 @@ public class NetworkMethods {
 
                         } else {
                             progressDialog.cancel();
-                            Log.w(TAG, "Create Account Failure: ", task.getException());
+                            //Log.w(TAG, "Create Account Failure: ", task.getException());
                             loginListener.onFailure(task.getException());
                         }
                     }
@@ -173,7 +173,7 @@ public class NetworkMethods {
 
     @SuppressWarnings("ConstantConditions")
     private void addDetailsToDB(UserInfo userInfo) {
-        Log.i(TAG,"addDetailsToDB: in progress");
+        //Log.i(TAG,"addDetailsToDB: in progress");
 
         String uID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userInfo.setuID(uID);
@@ -181,7 +181,7 @@ public class NetworkMethods {
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mDatabase.child(DIRECTORY_USERS).child(uID).setValue(userInfo);
-        Log.i(TAG,"addDetailsToDB: successful");
+        //Log.i(TAG,"addDetailsToDB: successful");
     }
 
     public void Login(final String email, String pass, final onLoginListener loginListener) {
@@ -199,7 +199,7 @@ public class NetworkMethods {
                             getDetailsFromDB(userInfo, loginListener);
 
                         } else {
-                            Log.w(TAG, task.getException());
+                            //Log.w(TAG, task.getException());
                             loginListener.onFailure(task.getException());
                         }
                     }
@@ -209,7 +209,7 @@ public class NetworkMethods {
 
     private void getDetailsFromDB(UserInfo userInfo, final onLoginListener loginListener) {
 
-        Log.i(TAG,"getDetailsFromDB: in progress");
+        //Log.i(TAG,"getDetailsFromDB: in progress");
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mDatabase.child(DIRECTORY_USERS).child(userInfo.getuID()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -217,7 +217,7 @@ public class NetworkMethods {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 UserInfo nUserInfo = dataSnapshot.getValue(UserInfo.class);
-                Log.i(TAG,"getDetailsFromDB: successful");
+                //Log.i(TAG,"getDetailsFromDB: successful");
 
                 //UserInfo.cacheUserDetails(nUserInfo,context);
                 loginListener.onSuccess(nUserInfo);
@@ -226,7 +226,7 @@ public class NetworkMethods {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
-                Log.i(TAG,"getDetailsFromDB: databaseError");
+                //Log.i(TAG,"getDetailsFromDB: databaseError");
                 loginListener.onFailure(databaseError.toException());
             }
         });
@@ -239,7 +239,7 @@ public class NetworkMethods {
 
     public void UpdateUser(final UserInfo userInfo, Bitmap profileImage, final onUpdateListener listener) {
 
-        Log.i(TAG,"UpdateUser: in progress");
+        //Log.i(TAG,"UpdateUser: in progress");
 
         if(mAuth==null) {
             listener.onFailure(new Exception("Not Logged in."));
@@ -258,19 +258,19 @@ public class NetworkMethods {
                 cloudStorageMethods.uploadProfileImage(userInfo.getuID(), profileImage, new onCompleteListener<Void>() {
                     @Override
                     public void onSuccess(Void a) {
-                        Log.i(TAG, "onSuccess: Profile Image Upload");
+                        //Log.i(TAG, "onSuccess: Profile Image Upload");
                         mDatabase.child(DIRECTORY_USERS).child(userInfo.getuID()).setValue(userInfo)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Log.i(TAG, "UpdateUser: successful");
+                                        //Log.i(TAG, "UpdateUser: successful");
                                         //UserInfo.cacheUserDetails(userInfo,context);
                                         listener.onSuccess(userInfo);
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.i(TAG, "UpdateUser: failed", e);
+                                //Log.i(TAG, "UpdateUser: failed", e);
                                 listener.onFailure(e);
                             }
                         });
@@ -278,7 +278,7 @@ public class NetworkMethods {
 
                     @Override
                     public void onFailure(Exception e) {
-                        Log.e(TAG, "onFailure: profileImageUpload", e);
+                        //Log.e(TAG, "onFailure: profileImageUpload", e);
                         listener.onFailure(e);
                     }
                 });
@@ -288,14 +288,14 @@ public class NetworkMethods {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
-                                Log.i(TAG, "UpdateUser: successful");
+                                //Log.i(TAG, "UpdateUser: successful");
                                 //UserInfo.cacheUserDetails(userInfo,context);
                                 listener.onSuccess(userInfo);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.i(TAG, "UpdateUser: failed", e);
+                        //Log.i(TAG, "UpdateUser: failed", e);
                         listener.onFailure(e);
                     }
                 });
@@ -368,7 +368,7 @@ public class NetworkMethods {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.i(TAG, "UpdateUser: failed", e);
+                                    //Log.i(TAG, "UpdateUser: failed", e);
                                     listener.onFailure(e);
                                     }
                             });
@@ -450,7 +450,7 @@ public class NetworkMethods {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
-                        Log.w(TAG, "getAd: onCancelled", databaseError.toException());
+                        //Log.w(TAG, "getAd: onCancelled", databaseError.toException());
                         listener.onFailure(databaseError.toException());
                     }
 
@@ -469,7 +469,7 @@ public class NetworkMethods {
     private Boolean once_NewAd;
     public void createNewAd(final UserInfo userInfo, final AdData adData, final ArrayList<Uri> imgURIs, Bitmap major, final onCompleteListener<AdData> listener) {
 
-        Log.i(TAG,"createNewAd: begin");
+        //Log.i(TAG,"createNewAd: begin");
         once_NewAd = true;
         try_update_NewAd = 5;
 
@@ -486,7 +486,7 @@ public class NetworkMethods {
 
             final String key = mDatabase.child(DIRECTORY_ADS).push().getKey();
 
-            Log.i(TAG, "createNewAd: key: "+key);
+            //Log.i(TAG, "createNewAd: key: "+key);
 
             adData.setAdID(key);
             adData.setCreatedBy(userInfo);
@@ -507,14 +507,14 @@ public class NetworkMethods {
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Log.i(TAG,"createNewAd: onFailure",e);
+                                                //Log.i(TAG,"createNewAd: onFailure",e);
                                                 progressDialog.cancel();
                                                 listener.onFailure(e);
                                             }
                                         }).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Log.i(TAG,"createNewAd: onSuccess");
+                                        //Log.i(TAG,"createNewAd: onSuccess");
                                         userInfo.addUserAd(key);
                                         UpdateUser(userInfo, new onUpdateListener() {
                                             @Override
@@ -526,7 +526,7 @@ public class NetworkMethods {
                                             public void onFailure(Exception e) {
                                                 if(try_update_NewAd >0) {
                                                     try_update_NewAd--;
-                                                    Log.i(TAG,"onUpdate Retry #" + (2- try_update_NewAd));
+                                                    //Log.i(TAG,"onUpdate Retry #" + (2- try_update_NewAd));
                                                     UpdateUser(userInfo, this);
                                                 }
                                                 else {
@@ -564,19 +564,19 @@ public class NetworkMethods {
                 });
             }
             else {
-                Log.i(TAG, "createNewAd: major null");
+                //Log.i(TAG, "createNewAd: major null");
                 mDatabase.child(DIRECTORY_ADS).child(key).setValue(adData)
                         .addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Log.i(TAG, "createNewAd: onFailure", e);
+                                //Log.i(TAG, "createNewAd: onFailure", e);
                                 progressDialog.cancel();
                                 listener.onFailure(e);
                             }
                         }).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.i(TAG, "createNewAd: onSuccess");
+                        //Log.i(TAG, "createNewAd: onSuccess");
                         userInfo.addUserAd(key);
                         UpdateUser(userInfo, new onUpdateListener() {
                             @Override
@@ -589,7 +589,7 @@ public class NetworkMethods {
                             public void onFailure(Exception e) {
                                 if (try_update_NewAd > 0) {
                                     try_update_NewAd--;
-                                    Log.i(TAG, "onUpdate Retry #" + (2 - try_update_NewAd));
+                                    //Log.i(TAG, "onUpdate Retry #" + (2 - try_update_NewAd));
                                     UpdateUser(userInfo, this);
                                 } else {
                                     progressDialog.cancel();
@@ -626,7 +626,7 @@ public class NetworkMethods {
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
-                    Log.w(TAG, "getAd: onCancelled", databaseError.toException());
+                    //Log.w(TAG, "getAd: onCancelled", databaseError.toException());
                     listener.onFailure(databaseError.toException());
                 }
 
@@ -727,22 +727,22 @@ public class NetworkMethods {
 //                            UpdateUser(userInfo, new onUpdateListener() {
 //                                @Override
 //                                public void onSuccess(UserInfo userInfo) {
-//                                    Log.i(TAG, "onSuccess: updatedUser");
+//                                    //Log.i(TAG, "onSuccess: updatedUser");
 //                                }
 //
 //                                @Override
 //                                public void onFailure(Exception e) {
-//                                    Log.e(TAG, "onFailure: deleteEvent", e);
+//                                    //Log.e(TAG, "onFailure: deleteEvent", e);
 //                                }
 //                            });
 //                        }
 //                        else
-                        Log.i(TAG, "onSuccess: deleteEvent");
+                        //Log.i(TAG, "onSuccess: deleteEvent");
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "onFailure: deleteEvent", e);
+                //Log.e(TAG, "onFailure: deleteEvent", e);
             }
         });
     }
@@ -752,11 +752,11 @@ public class NetworkMethods {
     //region College Data
 
     public void getCollegeOptions(final onCompleteListener<ArrayList<String>> listener){
-        Log.i(TAG, "getCollegeOptions: called");
+        //Log.i(TAG, "getCollegeOptions: called");
         mDatabase.child(DIRECTORY_COLLEGES).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.i(TAG, "onDataChange: getCollegeOptions");
+                //Log.i(TAG, "onDataChange: getCollegeOptions");
                 ArrayList<String> colleges;
                 colleges = new ArrayList<>();
                 Iterable<DataSnapshot> dataSnapshotChildren = dataSnapshot.getChildren();

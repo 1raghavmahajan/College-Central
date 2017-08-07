@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -223,7 +222,7 @@ public class Frag_myProfile extends Fragment {
                                     public void onFailure(Exception e) {
                                         progressDialog.cancel();
                                         hostelList.remove(hostelList.size() - 1);
-                                        Log.e(TAG, "Add hostel error", e);
+                                        //Log.e(TAG, "Add hostel error", e);
                                         Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -237,7 +236,7 @@ public class Frag_myProfile extends Fragment {
             }
             @Override
             public void onFailure(Exception e) {
-                Log.e(TAG,"Get hostel list error", e);
+                //Log.e(TAG,"Get hostel list error", e);
                 Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -271,7 +270,7 @@ public class Frag_myProfile extends Fragment {
                                                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialog, int which) {
-                                                            Log.i(TAG, "onClick: cancel");
+                                                            //Log.i(TAG, "onClick: cancel");
                                                             dialog.cancel();
                                                         }
                                                     })
@@ -279,7 +278,7 @@ public class Frag_myProfile extends Fragment {
                                                         @Override
                                                         public void onClick(DialogInterface dialog, int which) {
                                                             //noinspection ConstantConditions
-                                                            Log.i(TAG, "onClick: resend");
+                                                            //Log.i(TAG, "onClick: resend");
                                                             if (!recentlySentMail) {
                                                                 currentUser.sendEmailVerification()
                                                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -346,9 +345,9 @@ public class Frag_myProfile extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                Log.i(TAG, "onItemSelected of " + id + " " + position );
-                if(hostelList!=null)
-                    Log.i(TAG, "hostel no: "+hostelList.size());
+                //Log.i(TAG, "onItemSelected of " + id + " " + position );
+//                if(hostelList!=null)
+                    //Log.i(TAG, "hostel no: "+hostelList.size());
                 int size=0;
                 if (hostelList != null) {
                     size = hostelList.size();

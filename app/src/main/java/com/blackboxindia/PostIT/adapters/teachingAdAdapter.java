@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +67,6 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
         TextView tv_title;
         TextView tv_createdBy;
         ImageView creater;
-//        TextView tv_Price;
         Context context;
         CardView cardView;
 
@@ -104,7 +102,7 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
 
                     @Override
                     public void onFailure(Exception e) {
-                        Log.e(TAG, "onFailure: GetCreaterImage", e);
+                        //Log.e(TAG, "onFailure: GetCreaterImage", e);
                     }
                 });
             }
@@ -117,8 +115,6 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
         }
 
         private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {
-
-//            ViewCompat.setTransitionName(holder.getMajorImage(), String.valueOf(position) + "_image");
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

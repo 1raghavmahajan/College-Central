@@ -19,9 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.R;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 public class OnboardingActivity extends AppCompatActivity {
 
@@ -49,7 +47,7 @@ public class OnboardingActivity extends AppCompatActivity {
             R.drawable.page3_event,
             R.drawable.page4_teach,
             R.drawable.page5_docs,
-            R.drawable.icon_without_back };
+            R.drawable.app_icon_wo_title };
 
     int colors[] = {
             R.color.cyan,
@@ -57,7 +55,7 @@ public class OnboardingActivity extends AppCompatActivity {
             R.color.dark_green,
             R.color.BlueGrey700,
             R.color.Black_85,
-            R.color.colorSearch };
+            R.color.appIcon_back };
 
     static String title[] = {
             "Buy / Sell",
@@ -210,10 +208,12 @@ public class OnboardingActivity extends AppCompatActivity {
             tv_Subtitle.setText(subtitle[position]);
 
             img = rootView.findViewById(R.id.section_img);
-            GlideApp.with(container.getContext())
-                    .load(bgs[position])
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(img);
+
+            img.setImageResource(bgs[position]);
+//            GlideApp.with(container.getContext())
+//                    .load(bgs[position])
+//                    .dontAnimate()
+//                    .into(img);
 
             return rootView;
         }

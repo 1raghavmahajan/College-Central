@@ -5,7 +5,7 @@
 
     <color name="colorAccent">#cb3327</color>
 
-    <color name="colorCardBackground">#d0efefef</color>
+    <color name="colorCardBackground">#dcefefef</color>
 
     <color name="img_text">#a0ffffff</color>
 
@@ -35,6 +35,9 @@
 
     <color name="BlueGrey900">#263238</color>
     <color name="Grey900">#212121</color>
+    <color name="Grey800">#2a2a2a</color>
+
+    <color name="appIcon_back">#153D54</color>
 
     <color name="BlueGrey700">#455A64</color>
     <color name="BlueGrey500">#607d8b</color>

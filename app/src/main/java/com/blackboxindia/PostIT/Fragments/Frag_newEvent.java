@@ -244,7 +244,7 @@ public class Frag_newEvent extends Fragment {
 
             Bitmap major = adapter.getMajor();
             if(major==null)
-                Log.e(TAG, "prepareAndCreateAd: major null");
+                //Log.e(TAG, "prepareAndCreateAd: major null");
 
             createAd(event);
 

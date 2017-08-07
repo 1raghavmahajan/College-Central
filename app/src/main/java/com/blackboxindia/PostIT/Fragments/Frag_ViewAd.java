@@ -61,6 +61,8 @@ public class Frag_ViewAd extends Fragment {
         view = inflater.inflate(R.layout.frag_viewad, container, false);
         context = view.getContext();
 
+        Log.i(TAG, "onCreateView: ");
+
         initVariables();
 
         PopulateViews();
@@ -153,8 +155,8 @@ public class Frag_ViewAd extends Fragment {
             }
             setUpImgRecycler();
         }
-        else
-            Log.i("Frag_ViewAd YOYO","no adDATA");
+//        else
+            //Log.i("Frag_ViewAd YOYO","no adDATA");
     }
 
     void setUpImgRecycler() {

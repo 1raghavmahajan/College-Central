@@ -15,7 +15,6 @@ public class SplashScreen extends AppCompatActivity {
     public static int SPLASH_DELAY = 1000;
     public static final String ARG_IsCached = "ARG_IsCached";
     public static final String ARG_User = "ARG_user";
-    public static final String ARG_Error = "ARG_error";
 
     Context context;
 

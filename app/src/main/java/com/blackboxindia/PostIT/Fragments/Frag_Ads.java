@@ -11,7 +11,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -167,7 +166,7 @@ public class Frag_Ads extends Fragment {
             @Override
             public void onClick(MainAdapter.adItemViewHolder holder, int position, AdData currentAd, Bitmap main) {
 
-                Frag_ViewAd fragViewAd = Frag_ViewAd.newInstance(allAds.get(position));
+                Frag_ViewAd fragViewAd = Frag_ViewAd.newInstance(currentAd);
                 current = main;
 
                 fragViewAd.setSharedElementEnterTransition(new adViewTransition());
@@ -197,7 +196,7 @@ public class Frag_Ads extends Fragment {
             public void onClick(teachingAdAdapter.adItemViewHolder holder, int position, AdData currentAd) {
 
 
-                Frag_ViewAd fragViewAd = Frag_ViewAd.newInstance(allAds.get(position));
+                Frag_ViewAd fragViewAd = Frag_ViewAd.newInstance(currentAd);
 
 //                ((MainActivity)context).launchOtherFragment(fragViewAd,VIEW_AD_TAG);
                 Bundle args = new Bundle();
@@ -223,7 +222,7 @@ public class Frag_Ads extends Fragment {
             @Override
             public void onClick(EventsAdapter.adItemViewHolder holder, int position, AdData currentAd, Bitmap main) {
 
-                Frag_ViewEvent fragViewAd = Frag_ViewEvent.newInstance(allAds.get(position));
+                Frag_ViewEvent fragViewAd = Frag_ViewEvent.newInstance(currentAd);
 
                 fragViewAd.setSharedElementEnterTransition(new adViewTransition());
                 fragViewAd.setEnterTransition(new Fade());
@@ -427,13 +426,13 @@ public class Frag_Ads extends Fragment {
 
     private void checkDeleteOrderEvents() {
 
-        Log.i(TAG, "checkDeleteOrderEvents: ");
+        //Log.i(TAG, "checkDeleteOrderEvents: ");
 
         for (int i=0; i<allAds.size();i++) {
             Calendar calender = allAds.get(i).getDateTime().toCalender();
             calender.add(Calendar.HOUR_OF_DAY,12);
             if(calender.before(Calendar.getInstance())) {
-                Log.i(TAG, "checkDeleteOrderEvents: to delete: "+allAds.get(i).getTitle());
+                //Log.i(TAG, "checkDeleteOrderEvents: to delete: "+allAds.get(i).getTitle());
                 networkMethods.deleteEvent(userInfo,allAds.get(i));
                 allAds.remove(i);
             }

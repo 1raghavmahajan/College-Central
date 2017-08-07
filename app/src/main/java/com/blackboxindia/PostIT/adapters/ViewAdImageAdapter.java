@@ -4,17 +4,19 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -63,7 +65,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
         ((MainActivity)context).backPressedListener = new MainActivity.OnBackPressedListener() {
             @Override
             public boolean doneSomething() {
-                Log.i(TAG, "doneSomething: ");
+                //Log.i(TAG, "doneSomething: ");
                 if(opened){
                     opened = false;
                     scrollView.setScrollingEnabled(true);
@@ -182,7 +184,7 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
             @Override
             public void onAnimationCancel(Animator animation) {
                 mCurrentAnimator = null;
-                expandedImageView.setVisibility(View.GONE);
+                expandedImageView.setVisibility(View.INVISIBLE);
                 thumbView.setAlpha(1f);
             }
         });
@@ -223,14 +225,14 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
             @Override
             public void onAnimationEnd(Animator animation) {
                 imgView.setAlpha(1f);
-                expandedImageView.setVisibility(View.GONE);
+                expandedImageView.setVisibility(View.INVISIBLE);
                 mCurrentAnimator = null;
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
                 imgView.setAlpha(1f);
-                expandedImageView.setVisibility(View.GONE);
+                expandedImageView.setVisibility(View.INVISIBLE);
                 mCurrentAnimator = null;
             }
         });
@@ -243,12 +245,15 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
         ImageView imageView;
         ImageButton imgButton;
         ProgressBar progressBar;
+        int time;
+        final static int DELAY = 1000;
 
         imgViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imgCard_img);
             imgButton = itemView.findViewById(R.id.imgCard_button);
             progressBar = itemView.findViewById(R.id.img_progress);
+            imageView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.MATCH_PARENT));
         }
 
         void setData(final Integer position) {
@@ -259,15 +264,22 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                     imageView.setVisibility(View.VISIBLE);
                 }
             }
+
+            ObjectAnimator objectAnimator  = new ObjectAnimator();
+            objectAnimator.setDuration(DELAY);
+            objectAnimator.setIntValues(0,DELAY);
+            objectAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    time = (int) valueAnimator.getAnimatedValue();
+                }
+            });
+
             ((MainActivity)context).cloudStorageMethods.getBigImage(adData.getAdID(), position, new onCompleteListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
 
                     progressBar.setVisibility(View.INVISIBLE);
-                    GlideApp.with(context).load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(imageView);
                     imageView.setVisibility(View.VISIBLE);
 
                     final Uri finalUri = uri;
@@ -275,19 +287,57 @@ public class ViewAdImageAdapter extends RecyclerView.Adapter<ViewAdImageAdapter.
                         @Override
                         public void onClick(View v) {
                             scrollView.setScrollingEnabled(false);
-                            zoomImageFromThumb(imageView,finalUri);
+                            zoomImageFromThumb(imageView, finalUri);
                         }
                     });
+
+                    if(main!=null && position==0){
+                        if(DELAY - time > 0) {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int newHeight = imageView.getHeight();
+                                    int newWidth = imageView.getWidth();
+
+                                    imageView.requestLayout();
+                                    imageView.getLayoutParams().height = newHeight;
+                                    imageView.getLayoutParams().width = newWidth;
+
+                                    GlideApp.with(context).load(finalUri)
+                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                            .skipMemoryCache(true)
+                                            .into(imageView);
+
+                                }
+                            }, DELAY - time);
+                        }else {
+                            int newHeight = imageView.getHeight();
+                            int newWidth = imageView.getWidth();
+
+                            imageView.requestLayout();
+                            imageView.getLayoutParams().height = newHeight;
+                            imageView.getLayoutParams().width = newWidth;
+                            GlideApp.with(context).load(uri)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(imageView);
+                        }
+                    }else{
+                        GlideApp.with(context).load(uri)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(imageView);
+                    }
 
                 }
 
                 @Override
                 public void onFailure(Exception e) {
                     if(position!=0) {
-                        Log.e(TAG,"getImage onFailure #"+position,e);
+                        //Log.e(TAG,"getImage onFailure #"+position,e);
                         Toast.makeText(imageView.getContext(), "Failed to get image#"+position, Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.INVISIBLE);
-                        imageView.setImageResource(R.drawable.ic_error);
+                        imageView.setImageResource(R.drawable.img_broken);
                     }
                 }
             });

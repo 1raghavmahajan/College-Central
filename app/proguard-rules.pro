@@ -32,5 +32,23 @@
   public *;
 }
 
+-keep class io.paperdb.** { *; }
+-keep class com.esotericsoftware.** { *; }
+-dontwarn com.esotericsoftware.**
+-keep class de.javakaffee.kryoserializers.** { *; }
+-dontwarn de.javakaffee.kryoserializers.**
+-keep class android.support.v7.widget.SearchView { *; }
+
+-keepattributes Signature
+
+-keepclassmembers class com.blackboxindia.PostIT.dataModels.AdData.** { *; }
+-keepclassmembers class com.blackboxindia.PostIT.dataModels.AdTypes.** { *; }
+-keepclassmembers class com.blackboxindia.PostIT.dataModels.UserInfo.** { *; }
+
+-keep public class com.blackboxindia.PostIT.dataModels.** {
+  public protected *;
+}
+
+
 # for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule

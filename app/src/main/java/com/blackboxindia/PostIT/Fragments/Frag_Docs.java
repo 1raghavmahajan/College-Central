@@ -50,10 +50,10 @@ public class Frag_Docs extends Fragment {
             directory = Paper.book().read("Root", null);
 
             if(directory != null){
-                Log.i(TAG, "onCreateView: nice");
+                //Log.i(TAG, "onCreateView: nice");
                 setUpRecycler();
             }else
-                Log.i(TAG, "onCreateView: ehh");
+                //Log.i(TAG, "onCreateView: ehh");
 
             swipeRefreshLayout.setRefreshing(false);
 
@@ -101,7 +101,7 @@ public class Frag_Docs extends Fragment {
 
             @Override
             public void onFailure(Exception e) {
-                Log.e(TAG, "onFailure: getDir", e);
+                //Log.e(TAG, "onFailure: getDir", e);
             }
 
         });
@@ -151,11 +151,11 @@ public class Frag_Docs extends Fragment {
 //                            @Override
 //                            public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
 //                                if (task.isSuccessful()) {
-//                                    Log.i(TAG, "downloadAll: "+i+" "+finalJ);
+//                                    //Log.i(TAG, "downloadAll: "+i+" "+finalJ);
 //                                    donutProgress.setProgress(100);
 ////                                    ((DocumentAdapter.mViewHolder) recyclerView.findViewHolderForAdapterPosition(i + finalJ)).setProgress(100);
 //                                } else {
-//                                    Log.e(TAG, "onComplete: failure "+finalJ+" ", task.getException());
+//                                    //Log.e(TAG, "onComplete: failure "+finalJ+" ", task.getException());
 //                                }
 //                            }
 //                        })
@@ -163,15 +163,15 @@ public class Frag_Docs extends Fragment {
 //                            @Override
 //                            public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
 //                                float p = (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100;
-//                                Log.i(TAG, "onProgress downloadFile percentage: " + p);
+//                                //Log.i(TAG, "onProgress downloadFile percentage: " + p);
 //                                donutProgress.setProgress(p);
-//                                Log.i(TAG, "downloadAll: "+i+" "+finalJ);
+//                                //Log.i(TAG, "downloadAll: "+i+" "+finalJ);
 ////                                ((DocumentAdapter.mViewHolder) recyclerView.findViewHolderForAdapterPosition(i + finalJ)).setProgress(p);
 //                            }
 //                        });
 //            }else {
 //                donutProgress.setProgress(100);
-//                Log.i(TAG, "downloadAll: "+i+" "+finalJ);
+//                //Log.i(TAG, "downloadAll: "+i+" "+finalJ);
 ////                ((DocumentAdapter.mViewHolder) recyclerView.findViewHolderForAdapterPosition(i + finalJ)).setProgress(100);
 //            }
 //        }

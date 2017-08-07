@@ -108,12 +108,12 @@ public class Frag_myAds extends Fragment {
                             new NetworkMethods(context).UpdateUser(((MainActivity) context).userInfo, null, new onUpdateListener() {
                                 @Override
                                 public void onSuccess(UserInfo userInfo) {
-                                    Log.i(TAG, "onSuccess: updated user");
+                                    //Log.i(TAG, "onSuccess: updated user");
                                 }
 
                                 @Override
                                 public void onFailure(Exception e) {
-                                    Log.e(TAG, "onFailure: update user ", e);
+                                    //Log.e(TAG, "onFailure: update user ", e);
                                 }
                             });
                             orderAds();
@@ -145,12 +145,12 @@ public class Frag_myAds extends Fragment {
                                     new NetworkMethods(context).UpdateUser(((MainActivity) context).userInfo, null, new onUpdateListener() {
                                         @Override
                                         public void onSuccess(UserInfo userInfo) {
-                                            Log.i(TAG, "onSuccess: updated user");
+                                            //Log.i(TAG, "onSuccess: updated user");
                                         }
 
                                         @Override
                                         public void onFailure(Exception e) {
-                                            Log.e(TAG, "onFailure: update user ", e);
+                                            //Log.e(TAG, "onFailure: update user ", e);
                                         }
                                     });
                                     if(swipe.isRefreshing())
@@ -170,7 +170,7 @@ public class Frag_myAds extends Fragment {
                                 if(swipe.isRefreshing())
                                     swipe.setRefreshing(false);
                                 Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, "onFailure: getAd", e);
+                                //Log.e(TAG, "onFailure: getAd", e);
                             }
                         });
                     }

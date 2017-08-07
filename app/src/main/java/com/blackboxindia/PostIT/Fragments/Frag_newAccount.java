@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,7 +167,7 @@ public class Frag_newAccount extends Fragment {
         networkMethods.getCollegeOptions(new onCompleteListener<ArrayList<String>>() {
             @Override
             public void onSuccess(ArrayList<String> data) {
-                Log.i(TAG, "onSuccess: getCollegeDetails");
+                //Log.i(TAG, "onSuccess: getCollegeDetails");
                 ParentView.findViewById(R.id.create_collegeProgress).setVisibility(View.INVISIBLE);
                 if(data!=null)
                     collegeList = data;
@@ -214,7 +213,7 @@ public class Frag_newAccount extends Fragment {
                                                         public void onFailure(Exception e) {
                                                             progressDialog.cancel();
                                                             hostelList.remove(hostelList.size() - 1);
-                                                            Log.e(TAG, "Add hostel error", e);
+                                                            //Log.e(TAG, "Add hostel error", e);
                                                             Toast.makeText(context, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                                         }
                                                     });
@@ -227,7 +226,7 @@ public class Frag_newAccount extends Fragment {
 
                             @Override
                             public void onFailure(Exception e) {
-                                Log.e(TAG,"Get hostel list error", e);
+                                //Log.e(TAG,"Get hostel list error", e);
                                 Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -250,7 +249,7 @@ public class Frag_newAccount extends Fragment {
                             public void onFailure(Exception e) {
                                 progressDialog.cancel();
                                 collegeList.remove(collegeList.size()-1);
-                                Log.e(TAG,"Add college error", e);
+                                //Log.e(TAG,"Add college error", e);
                                 Toast.makeText(context, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         });
@@ -262,7 +261,7 @@ public class Frag_newAccount extends Fragment {
 
             @Override
             public void onFailure(Exception e) {
-                Log.e(TAG,"Get college options error", e);
+                //Log.e(TAG,"Get college options error", e);
             }
         });
 
@@ -360,8 +359,8 @@ public class Frag_newAccount extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(hostelList!=null)
-                    Log.i(TAG, "hostel no: "+hostelList.size());
+//                if(hostelList!=null)
+                    //Log.i(TAG, "hostel no: "+hostelList.size());
                 int size=0;
                 if (hostelList != null) {
                     size = hostelList.size();

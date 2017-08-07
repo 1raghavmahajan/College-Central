@@ -83,10 +83,10 @@ public class Frag_newAd extends Fragment {
 
         if (adType == null) {
             adType = TYPE_SELL;
-            Log.i(TAG, "onCreateView: adType null");
+            //Log.i(TAG, "onCreateView: adType null");
         }
         else
-            Log.i(TAG, "adType: "+adType);
+            //Log.i(TAG, "adType: "+adType);
 
         view = inflater.inflate(R.layout.frag_newad, container, false);
 
@@ -289,7 +289,7 @@ public class Frag_newAd extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.i(TAG, "onRequestPermissionsResult: ");
+        //Log.i(TAG, "onRequestPermissionsResult: ");
         imageUtils.request_permission_result(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }

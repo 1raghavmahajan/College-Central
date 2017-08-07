@@ -73,19 +73,11 @@
 
         </RelativeLayout>
 
-        <com.jsibbold.zoomage.ZoomageView
+        <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/expanded_image"
-            android:layout_gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:zoomage_restrictBounds="false"
-            app:zoomage_zoomable="true"
-            app:zoomage_autoCenter="true"
-            app:zoomage_minScale="1"
-            app:zoomage_maxScale="8"
-            app:zoomage_translatable="true"
-            android:visibility="gone"
-            />
+            android:visibility="invisible"/>
 
     </FrameLayout>
 

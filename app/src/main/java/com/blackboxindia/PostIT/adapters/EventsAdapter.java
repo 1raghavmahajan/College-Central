@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,9 +103,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
 
                     @Override
                     public void onFailure(Exception e) {
-                        Log.e(TAG, "onFailure #" + position + " ", e);
-//                        majorImage.setImageResource(R.drawable.img_broken);
-                        majorImage.setVisibility(View.GONE);
+                        //Log.e(TAG, "onFailure #" + position + " ", e);
+                        majorImage.setImageResource(R.drawable.img_broken);
+//                        majorImage.setVisibility(View.GONE);
                     }
                 });
             }
@@ -127,7 +126,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.adItemView
         }
 
         private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {
-
             ViewCompat.setTransitionName(holder.getMajorImage(), String.valueOf(position) + "_image");
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

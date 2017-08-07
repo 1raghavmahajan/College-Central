@@ -30,7 +30,6 @@ import android.support.v4.content.FileProvider;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.blackboxindia.PostIT.BuildConfig;
@@ -157,7 +156,7 @@ public class ImageUtils {
             byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
             return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
         } catch (Exception e) {
-            Log.e(TAG,"StringToBitMap error: ",e);
+            //Log.e(TAG,"StringToBitMap error: ",e);
             return null;
         }
     }
@@ -302,17 +301,17 @@ public class ImageUtils {
 
             int orientation = exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, 0);
-            Log.d("EXIF", "Exif: " + orientation);
+            //Log.d("EXIF", "Exif: " + orientation);
             Matrix matrix = new Matrix();
             if (orientation == 6) {
                 matrix.postRotate(90);
-                Log.d("EXIF", "Exif: " + orientation);
+                //Log.d("EXIF", "Exif: " + orientation);
             } else if (orientation == 3) {
                 matrix.postRotate(180);
-                Log.d("EXIF", "Exif: " + orientation);
+                //Log.d("EXIF", "Exif: " + orientation);
             } else if (orientation == 8) {
                 matrix.postRotate(270);
-                Log.d("EXIF", "Exif: " + orientation);
+                //Log.d("EXIF", "Exif: " + orientation);
             }
             scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix,
                     true);
@@ -524,7 +523,7 @@ public class ImageUtils {
 
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
-                Log.d(TAG, "failed to create directory");
+                //Log.d(TAG, "failed to create directory");
                 return null;
             }
         }
@@ -562,7 +561,7 @@ public class ImageUtils {
      */
 
     public void gallery_call() {
-        Log.d(TAG, "gallery_call: ");
+        //Log.d(TAG, "gallery_call: ");
 
         Intent intent2 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent2.setType("image/*");
@@ -583,7 +582,7 @@ public class ImageUtils {
      * @param grantResults
      */
     public void request_permission_result(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.i(TAG,"request_permission_result "+ requestCode);
+        //Log.i(TAG,"request_permission_result "+ requestCode);
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -648,8 +647,8 @@ public class ImageUtils {
                         bitmap = resize(imageUri,MAX_ICON_RES[0],context);
 //                        bitmap = compressImage(imageUri.toString(), MAX_ICON_RES[0], MAX_ICON_RES[1]);
 
-                        Log.i(TAG, "now height: "+bitmap.getHeight());
-                        Log.i(TAG, "now Width: "+bitmap.getWidth());
+                        //Log.i(TAG, "now height: "+bitmap.getHeight());
+                        //Log.i(TAG, "now Width: "+bitmap.getWidth());
 
                         imageAttachment_callBack.image_attachment(from, file_name, bitmap, imageUri);
                     } catch (Exception e) {
@@ -669,8 +668,8 @@ public class ImageUtils {
                         bitmap = resize(selectedImage,MAX_GALLERY_RES[0],context);
 //                        bitmap = compressImage(selectedImage.toString(), MAX_GALLERY_RES[0], MAX_GALLERY_RES[1]);
 
-                        Log.i(TAG, "gallery now height: "+bitmap.getHeight());
-                        Log.i(TAG, "gallery now Width: "+bitmap.getWidth());
+                        //Log.i(TAG, "gallery now height: "+bitmap.getHeight());
+                        //Log.i(TAG, "gallery now Width: "+bitmap.getWidth());
 
                         imageAttachment_callBack.image_attachment(from, file_name, bitmap, selectedImage);
                     } catch (Exception e) {
@@ -738,13 +737,9 @@ public class ImageUtils {
         File path = new File(file_path);
 
         File file = new File(path, file_name);
-        if (file.exists()) {
-            Log.i("file", "exists");
-            flag = true;
-        } else {
-            Log.i("file", "not exist");
-            flag = false;
-        }
+        //Log.i("file", "exists");
+//Log.i("file", "not exist");
+        flag = file.exists();
 
         return flag;
     }
@@ -807,10 +802,10 @@ public class ImageUtils {
                 if(isDeleted) {
                     file = new File(path, file_name);
                     store_image(file, bitmap);
-                    Log.i(TAG, "file replaced");
+                    //Log.i(TAG, "file replaced");
                 }
-                else
-                    Log.i(TAG, "could not delete file");
+//                else
+                    //Log.i(TAG, "could not delete file");
             }
         } else {
             store_image(file, bitmap);

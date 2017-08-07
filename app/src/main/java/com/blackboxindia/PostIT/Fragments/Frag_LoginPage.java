@@ -110,7 +110,7 @@ public class Frag_LoginPage extends Fragment {
                                                 }).addOnFailureListener(new OnFailureListener() {
                                                     @Override
                                                     public void onFailure(@NonNull Exception e) {
-                                                        Log.e(TAG,"password reset failed",e);
+                                                        //Log.e(TAG,"password reset failed",e);
                                                         if(e.getMessage().contains("no user record"))
                                                             Toast.makeText(context, "No account exists with that email ID", Toast.LENGTH_SHORT).show();
                                                         else

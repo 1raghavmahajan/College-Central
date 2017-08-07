@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -128,7 +127,7 @@ public class Frag_ViewMyAd extends Fragment {
     void populateViews() {
 
         if(adData!=null) {
-            Log.i(TAG,"AdData not null");
+            //Log.i(TAG,"AdData not null");
 
             if(adData.getPrice()!=null) {
                 if (adData.getPrice() == 0)
@@ -144,8 +143,8 @@ public class Frag_ViewMyAd extends Fragment {
 
             setUpImgRecycler();
         }
-        else
-            Log.i("Frag_ViewAd YOYO","no adDATA");
+//        else
+            //Log.i("Frag_ViewAd YOYO","no adDATA");
     }
 
     void setUpImgRecycler() {

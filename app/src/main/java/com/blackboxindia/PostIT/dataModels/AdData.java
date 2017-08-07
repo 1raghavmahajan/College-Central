@@ -1,5 +1,8 @@
 package com.blackboxindia.PostIT.dataModels;
 
+import android.support.annotation.Keep;
+
+@Keep
 public class AdData {
 
     private String adID;

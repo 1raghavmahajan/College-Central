@@ -59,7 +59,7 @@ public class Frag_Main extends Fragment {
         cardView[0].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"onClick: sell");
+                //Log.i(TAG,"onClick: sell");
 
                 Frag_Ads frag_ads = new Frag_Ads();
 
@@ -73,7 +73,7 @@ public class Frag_Main extends Fragment {
         cardView[1].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"onClick: lost");
+                //Log.i(TAG,"onClick: lost");
                 Frag_Ads frag_ads = new Frag_Ads();
 
                 Bundle args = new Bundle();
@@ -86,7 +86,7 @@ public class Frag_Main extends Fragment {
         cardView[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"onClick: event");
+                //Log.i(TAG,"onClick: event");
                 Frag_Ads frag_ads = new Frag_Ads();
 
                 Bundle args = new Bundle();
@@ -99,7 +99,7 @@ public class Frag_Main extends Fragment {
         cardView[3].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"onClick: data");
+                //Log.i(TAG,"onClick: data");
 
                 if(mainActivity.userInfo != null){
                     mainActivity.launchOtherFragment(new Frag_Docs(),MainActivity.DOCS_TAG, true);
@@ -130,7 +130,7 @@ public class Frag_Main extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Log.i(TAG,"onClick: teach");
+                //Log.i(TAG,"onClick: teach");
                 Frag_Ads frag_ads = new Frag_Ads();
 
                 Bundle args = new Bundle();
@@ -146,7 +146,7 @@ public class Frag_Main extends Fragment {
         cardView[5].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG,"onClick: broadcast");
+                //Log.i(TAG,"onClick: broadcast");
 
                 mainActivity.createSnackbar("Feature Coming Soon!");
 

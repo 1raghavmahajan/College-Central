@@ -34,7 +34,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -569,9 +568,9 @@ public class MainActivity extends AppCompatActivity {
 //                if(fragmentManager.findFragmentByTag(VIEW_AD_TAG).isVisible()){
 //                    f = false;
 //                    if(onBackPressedListener!=null) {
-//                        Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
+//                        //Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
 //                        if (onBackPressedListener.doneSomething()) {
-//                            Log.i(TAG, "onBackPressed: Image already closed");
+//                            //Log.i(TAG, "onBackPressed: Image already closed");
 //                            super.onBackPressed();
 //                        }
 //                    }else
@@ -583,9 +582,9 @@ public class MainActivity extends AppCompatActivity {
 //                if(fragmentManager.findFragmentByTag(VIEW_EVENT_TAG).isVisible()){
 //                    f = false;
 //                    if(onBackPressedListener!=null) {
-//                        Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
+//                        //Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
 //                        if (onBackPressedListener.doneSomething()) {
-//                            Log.i(TAG, "onBackPressed: Image already closed");
+//                            //Log.i(TAG, "onBackPressed: Image already closed");
 //                            super.onBackPressed();
 //                        }
 //                    }else
@@ -597,9 +596,9 @@ public class MainActivity extends AppCompatActivity {
 //                if(fragmentManager.findFragmentByTag(VIEW_MyAD_TAG).isVisible()){
 //                    f = false;
 //                    if(onBackPressedListener!=null) {
-//                        Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
+//                        //Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
 //                        if (onBackPressedListener.doneSomething()) {
-//                            Log.i(TAG, "onBackPressed: Image already closed");
+//                            //Log.i(TAG, "onBackPressed: Image already closed");
 //                            super.onBackPressed();
 //                        }
 //                    }else
@@ -611,9 +610,9 @@ public class MainActivity extends AppCompatActivity {
 //                if(fragmentManager.findFragmentByTag(VIEW_MyEVENT_TAG).isVisible()){
 //                    f = false;
 //                    if(onBackPressedListener!=null) {
-//                        Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
+//                        //Log.i(TAG, "onBackPressed: onBackPressedListener!=null");
 //                        if (onBackPressedListener.doneSomething()) {
-//                            Log.i(TAG, "onBackPressed: Image already closed");
+//                            //Log.i(TAG, "onBackPressed: Image already closed");
 //                            super.onBackPressed();
 //                        }
 //                    }else
@@ -843,7 +842,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Exception e) {
-                    Log.e(TAG, "onFailure: getProfileImage ", e);
+                    //Log.e(TAG, "onFailure: getProfileImage ", e);
                     GlideApp.with(context).load(R.drawable.avatar).into(imageView);
 //                    imageView.setImageResource(R.drawable.avatar);
                 }
@@ -955,7 +954,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.i(TAG, "onTouchEvent: ");
+        //Log.i(TAG, "onTouchEvent: ");
         return super.onTouchEvent(event);
     }
 

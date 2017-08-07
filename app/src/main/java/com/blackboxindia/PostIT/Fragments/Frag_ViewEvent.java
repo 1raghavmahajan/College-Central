@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -160,8 +159,8 @@ public class Frag_ViewEvent extends Fragment {
             }
             setUpImgRecycler();
         }
-        else
-            Log.i("Frag_ViewAd YOYO","no adDATA");
+//        else
+            //Log.i("Frag_ViewAd YOYO","no adDATA");
     }
 
     void setUpImgRecycler() {

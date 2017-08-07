@@ -1,6 +1,8 @@
 package com.blackboxindia.PostIT.dataModels;
 
-@SuppressWarnings("WeakerAccess")
+import android.support.annotation.Keep;
+
+@Keep
 public class AdTypes {
     public static final String TYPE_SELL = "BuySellType";
     public static final String TYPE_LOSTFOUND = "LostFoundType";
