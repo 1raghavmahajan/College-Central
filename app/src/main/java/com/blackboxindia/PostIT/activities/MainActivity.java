@@ -34,6 +34,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,6 +60,7 @@ import com.blackboxindia.PostIT.Fragments.Frag_newAd;
 import com.blackboxindia.PostIT.Fragments.Frag_newEvent;
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.Network.CloudStorageMethods;
+import com.blackboxindia.PostIT.Network.ConnectionDetector;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
@@ -72,14 +74,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import static com.blackboxindia.PostIT.activities.OnboardingActivity.PREFERENCES_FILE;
-import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_IsCached;
-import static com.blackboxindia.PostIT.activities.SplashScreen.ARG_User;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_INFO;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
 import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_TEACH;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -190,107 +189,122 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpUser(){
-        Bundle extras = getIntent().getExtras();
-        final boolean isCached = extras.getBoolean(ARG_IsCached);
+        Log.i(TAG, "setUpUser: ");
+
+        UserInfo userInfo = UserInfo.readCachedUserDetails(context);
+
+        final boolean isCached = userInfo!=null;
+
+        offlineMode = !ConnectionDetector.isNetworkAvailable(context);
+
         if(isCached){
-            UserInfo info = extras.getParcelable(ARG_User);
-            UpdateUI(info,false);
-            offlineMode = true;
+            UpdateUI(userInfo,false);
         }
 
         final UserCred userCred = new UserCred();
-        if(userCred.load_Cred(context)) {
-            networkMethods.Login(userCred.getEmail(), userCred.getpwd(),
-                    new onLoginListener() {
-                        @Override
-                        public void onSuccess(UserInfo userInfo) {
-                            UpdateUI(userInfo,false);
-                            Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
-                            userInfo.cacheUserDetails(context);
-                        }
+        if(!offlineMode){
+            if(userCred.load_Cred(context)) {
+                networkMethods.Login(userCred.getEmail(), userCred.getpwd(),
+                        new onLoginListener() {
+                            @Override
+                            public void onSuccess(UserInfo userInfo) {
+                                UpdateUI(userInfo,false);
+                                Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                                userInfo.cacheUserDetails(context);
+                            }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            if(e!=null) {
-                                if (e.getMessage().contains("network")) {
-                                    offlineMode = true;
-                                    createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, true, "Retry", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            @SuppressWarnings("deprecation")
-                                            final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
-                                            networkMethods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
-                                                @Override
-                                                public void onSuccess(UserInfo userInfo) {
-                                                    offlineMode = false;
-                                                    UpdateUI(userInfo, false);
-                                                    userInfo.cacheUserDetails(context);
-                                                    dialog.cancel();
-                                                    Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
-                                                }
+                            @Override
+                            public void onFailure(Exception e) {
+                                if(e!=null) {
+                                    if (e.getMessage().contains("network")) {
+                                        offlineMode = true;
+                                        createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, true, "Retry", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                @SuppressWarnings("deprecation")
+                                                final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
+                                                networkMethods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
+                                                    @Override
+                                                    public void onSuccess(UserInfo userInfo) {
+                                                        offlineMode = false;
+                                                        UpdateUI(userInfo, false);
+                                                        userInfo.cacheUserDetails(context);
+                                                        dialog.cancel();
+                                                        Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
+                                                    }
 
-                                                @Override
-                                                public void onFailure(Exception e) {
-                                                    if (e.getMessage().contains("network")) {
-                                                        dialog.cancel();
-                                                        createSnackbar("Network Error, Please try again later.");
-                                                    } else {
-                                                        dialog.cancel();
-                                                        createSnackbar("Session Expired. Please login again.");
-                                                        UserCred.clear_cred(context);
-                                                        if(isCached) {
-                                                            UserInfo.clearCache(context);
-                                                            UpdateUIonLogout(false, false);
+                                                    @Override
+                                                    public void onFailure(Exception e) {
+                                                        if (e.getMessage().contains("network")) {
+                                                            dialog.cancel();
+                                                            createSnackbar("Network Error, Please try again later.");
+                                                        } else {
+                                                            dialog.cancel();
+                                                            createSnackbar("Session Expired. Please login again.");
+                                                            UserCred.clear_cred(context);
+                                                            if(isCached) {
+                                                                UserInfo.clearCache(context);
+                                                                UpdateUIonLogout(false, false);
+                                                            }
                                                         }
                                                     }
-                                                }
-                                            });
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        createSnackbar("Session Expired. Please login again.");
+                                        UserCred.clear_cred(context);
+                                        if(isCached) {
+                                            UserInfo.clearCache(context);
+                                            UpdateUIonLogout(false, false);
                                         }
-                                    });
-                                } else {
-                                    createSnackbar("Session Expired. Please login again.");
-                                    UserCred.clear_cred(context);
-                                    if(isCached) {
-                                        UserInfo.clearCache(context);
-                                        UpdateUIonLogout(false, false);
                                     }
                                 }
+                                else {
+                                    createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
+                                        }
+                                    });
+                                }
                             }
-                            else {
-                                createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
-                                    }
-                                });
-                            }
-                        }
-                    });
-        } else {
+                        });
+            } else {
 
-            if(isCached) {
-                UserInfo.clearCache(context);
-                UpdateUIonLogout(false, false);
+                if(isCached) {
+                    UserInfo.clearCache(context);
+                    UpdateUIonLogout(false, false);
+                }
+
+                createSnackbar("Please login to get started", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        launchOtherFragment(new Frag_LoginPage(),LOGIN_PAGE_TAG, true);
+                    }
+                });
+
             }
-
-            createSnackbar("Please login to get started", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
+        }else {
+            if(userCred.load_Cred(context))
+            createSnackbar("No Network!", Snackbar.LENGTH_INDEFINITE, true, "Retry?", new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    launchOtherFragment(new Frag_LoginPage(),LOGIN_PAGE_TAG, true);
+                public void onClick(View v) {
+                   setUpUser();
                 }
             });
-
         }
 
     }
 
-    public void goOnline() {
+    public void goOnline(final boolean prompt) {
         final UserCred userCred = new UserCred();
         if(userCred.load_Cred(context)) {
             networkMethods.Login(userCred.getEmail(), userCred.getpwd(),
                     new onLoginListener() {
                         @Override
                         public void onSuccess(UserInfo userInfo) {
+                            offlineMode = false;
                             UpdateUI(userInfo,false);
                             Toast.makeText(context, "Logged In!", Toast.LENGTH_SHORT).show();
                             userInfo.cacheUserDetails(context);
@@ -335,16 +349,18 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             else {
-                                createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
-                                    }
-                                });
+                                if(prompt) {
+                                    createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
-        } else {
+        } else if (prompt) {
             createSnackbar("Please Login to continue", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -528,6 +544,13 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         cloudStorageMethods.saveCache();
     }
+
+    @Override
+    protected void onResume() {
+        offlineMode = !ConnectionDetector.isNetworkAvailable(context);
+        super.onResume();
+    }
+
     //endregion
 
     //region Movement
@@ -823,6 +846,7 @@ public class MainActivity extends AppCompatActivity {
         String notVerified = " (Not Verified)";
         if(FirebaseAuth.getInstance().getCurrentUser()!=null) {
             FirebaseAuth.getInstance().getCurrentUser().reload();
+            offlineMode = false;
             if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified())
                 notVerified = "";
         }
@@ -917,11 +941,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void createSnackbar(String msg) {
-        createSnackbar(msg,false);
+        createSnackbar(msg,Snackbar.LENGTH_SHORT, false);
     }
 
     public void createSnackbar(String msg, boolean removeOnTouch) {
-        createSnackbar(msg,Snackbar.LENGTH_SHORT, removeOnTouch);
+        createSnackbar(msg,Snackbar.LENGTH_INDEFINITE, removeOnTouch);
     }
 
     public void createSnackbar(String msg, int length, boolean removeOnTouch) {

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.dataModels.AdTypes;
-import com.blackboxindia.PostIT.dataModels.UserInfo;
 
 public class Frag_Main extends Fragment {
 
@@ -105,22 +103,6 @@ public class Frag_Main extends Fragment {
                     mainActivity.launchOtherFragment(new Frag_Docs(),MainActivity.DOCS_TAG, true);
                 }
                 else {
-//                    mainActivity.createSnackbar("Please Login to view Documents", Snackbar.LENGTH_INDEFINITE, true, "Login", new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            ((MainActivity)context).launchOtherFragment(new Frag_LoginPage(),MainActivity.LOGIN_PAGE_TAG, true);
-//                        }
-//                    });
-                    UserInfo userInfo = new UserInfo();
-                    userInfo.setCollegeName("IIT Indore");
-                    userInfo.setName("Anonymous");
-                    userInfo.setEmail("login@iiti.ac.in");
-                    userInfo.setHostel("");
-                    userInfo.setuID("");
-                    userInfo.setPhone("");
-                    userInfo.setRoomNumber("");
-                    userInfo.setHasProfileIMG(false);
-                    ((MainActivity)context).AnonLogin(userInfo);
                     mainActivity.launchOtherFragment(new Frag_Docs(),MainActivity.DOCS_TAG, true);
                 }
 

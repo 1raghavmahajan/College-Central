@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.blackboxindia.PostIT.HelperClasses.FileOpener;
 import com.blackboxindia.PostIT.Network.CloudStorageMethods;
+import com.blackboxindia.PostIT.Network.ConnectionDetector;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
@@ -39,7 +40,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
     private Directory directory;
     private Directory root;
     private Stack<Integer> path;
-
+    private String collegeName;
 
     public DocumentAdapter(Context context, Directory dir){
         this.context = context;
@@ -53,6 +54,10 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
                 return goBack();
             }
         };
+        if(((MainActivity) context).userInfo!=null)
+            collegeName = ((MainActivity) context).userInfo.getCollegeName();
+        else
+            collegeName = "IIT Indore";
     }
 
     @Override
@@ -78,7 +83,13 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
         root = dir;
         Directory d = root;
         for (Integer integer : path) {
-            d = d.folders.get(integer);
+            if(d.folders.size()<integer)
+                d = d.folders.get(integer);
+            else{
+                path.clear();
+                d = root;
+                break;
+            }
         }
         directory = d;
         notifyDataSetChanged();
@@ -99,9 +110,9 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
         }
     }
 
-    public class mViewHolder extends RecyclerView.ViewHolder{
+    class mViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView icon;
+        ImageView icon, doneIcon;
         TextView tvTitle;
         CardView card;
         DonutProgress donutProgress;
@@ -112,6 +123,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
             tvTitle = itemView.findViewById(R.id.title);
             card = itemView.findViewById(R.id.card_doc);
             donutProgress = itemView.findViewById(R.id.donut_progress);
+            doneIcon = itemView.findViewById(R.id.done_icon);
         }
 
         public void setData(final String name, String type, final int position){
@@ -120,6 +132,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
             switch (type){
                 case TYPE_FOLDER:
                     icon.setImageResource(R.drawable.ic_folder);
+                    doneIcon.setVisibility(View.INVISIBLE);
                     card.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -131,12 +144,28 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
                     break;
                 case TYPE_PDF:
                     icon.setImageResource(R.drawable.ic_pdf);
+
+                    if(((MainActivity)context).offlineMode){
+                        new CloudStorageMethods(context).getDownloadedFile(name, collegeName, new onCompleteListener<File>() {
+                            @Override
+                            public void onSuccess(File data) {
+                                doneIcon.setVisibility(View.VISIBLE);
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                doneIcon.setVisibility(View.INVISIBLE);
+                            }
+                        });
+                    }else
+                        doneIcon.setVisibility(View.INVISIBLE);
+
                     card.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 
                             if(((MainActivity)context).offlineMode) {
-                                new CloudStorageMethods(context).getDownloadedFile(name, ((MainActivity) context).userInfo.getCollegeName(), new onCompleteListener<File>() {
+                                new CloudStorageMethods(context).getDownloadedFile(name, collegeName, new onCompleteListener<File>() {
                                     @Override
                                     public void onSuccess(File file) {
                                         try {
@@ -149,10 +178,16 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
 
                                     @Override
                                     public void onFailure(Exception e) {
-                                        ((MainActivity) context).createSnackbar("Cannot download file in offline mode", Snackbar.LENGTH_INDEFINITE, true, "Go Online", new View.OnClickListener() {
+                                        ((MainActivity) context).createSnackbar("Offline!", Snackbar.LENGTH_INDEFINITE, true, "Go Online", new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                ((MainActivity) context).goOnline();
+                                                ((MainActivity) context).offlineMode = !ConnectionDetector.isNetworkAvailable(context);
+                                                if(((MainActivity) context).offlineMode){
+                                                    ((MainActivity) context).createSnackbar("No Network!");
+                                                }else {
+                                                    ((MainActivity) context).createSnackbar("Online!");
+                                                    ((MainActivity) context).goOnline(false);
+                                                }
                                             }
                                         });
                                     }
@@ -167,7 +202,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
                                         }
                                     }
                                 });
-                                new CloudStorageMethods(context).downloadFile(name, ((MainActivity) context).userInfo.getCollegeName(), new onCompleteListener<File>() {
+                                new CloudStorageMethods(context).downloadFile(name, collegeName, new onCompleteListener<File>() {
                                     @Override
                                     public void onSuccess(File file) {
                                         dialog.cancel();

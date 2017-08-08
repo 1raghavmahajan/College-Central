@@ -29,10 +29,11 @@
     <dimen name="activity_margin_content">24dp</dimen>
     <dimen name="viewAdImageSize">240dp</dimen>
 
-
-
     <dimen name="action_button_min_width_overflow_material">36dp</dimen>
     <dimen name="action_button_min_width_material">48dp</dimen>
-    <dimen name="linear_cardMargin">36dp</dimen>
+
+    <dimen name="card_margin_top">2dp</dimen>
+    <dimen name="card_margin_side">3dp</dimen>
+    <dimen name="card_margin_centre">1dp</dimen>
 
 </resources>

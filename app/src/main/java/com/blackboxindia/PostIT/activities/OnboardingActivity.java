@@ -47,7 +47,7 @@ public class OnboardingActivity extends AppCompatActivity {
             R.drawable.page3_event,
             R.drawable.page4_teach,
             R.drawable.page5_docs,
-            R.drawable.app_icon_wo_title };
+            R.drawable.app_icon };
 
     int colors[] = {
             R.color.cyan,

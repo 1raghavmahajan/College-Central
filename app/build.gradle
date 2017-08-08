@@ -15,9 +15,9 @@ android {
         applicationId "com.blackboxindia.PostIt"
         minSdkVersion 21
         targetSdkVersion 26
-        versionName '2.3'
+        versionName '2.32'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode 4
+        versionCode 6
     }
     buildTypes {
         release {

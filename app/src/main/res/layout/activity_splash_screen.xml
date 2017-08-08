@@ -33,7 +33,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/app_name"
         android:textColor="@color/grey"
-        android:textSize="42sp"/>
+        android:textSize="36sp"/>
 
     <LinearLayout
         android:id="@+id/splash_madeBy"

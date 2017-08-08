@@ -3,7 +3,9 @@ package com.blackboxindia.PostIT.Fragments;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.blackboxindia.PostIT.Network.CloudStorageMethods;
+import com.blackboxindia.PostIT.Network.ConnectionDetector;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
@@ -32,6 +35,7 @@ public class Frag_Docs extends Fragment {
     SwipeRefreshLayout swipeRefreshLayout;
     Context context;
     Directory directory;
+    String college;
     CloudStorageMethods cloudStorageMethods;
 
     @Nullable
@@ -45,19 +49,61 @@ public class Frag_Docs extends Fragment {
         swipeRefreshLayout = mainView.findViewById(R.id.docs_swipe_refresh_layout);
         recyclerView = mainView.findViewById(R.id.docs_recycler);
 
-        if(((MainActivity)context).offlineMode){
+        if(((MainActivity)context).userInfo==null)
+            college = "IIT Indore";
+        else
+            college = ((MainActivity) context).userInfo.getCollegeName();
+
+        ((MainActivity) context).offlineMode = !ConnectionDetector.isNetworkAvailable(context);
+
+        if (((MainActivity) context).offlineMode) {
             swipeRefreshLayout.setRefreshing(true);
             directory = Paper.book().read("Root", null);
 
-            if(directory != null){
-                //Log.i(TAG, "onCreateView: nice");
+            swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    ((MainActivity) context).offlineMode = !ConnectionDetector.isNetworkAvailable(context);
+                    if(((MainActivity) context).offlineMode){
+                        swipeRefreshLayout.setRefreshing(false);
+                        ((MainActivity) context).createSnackbar("Offline!", Snackbar.LENGTH_INDEFINITE, true, "Go Online", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ((MainActivity) context).offlineMode = !ConnectionDetector.isNetworkAvailable(context);
+                                if(((MainActivity) context).offlineMode){
+                                    ((MainActivity) context).createSnackbar("No Network!");
+                                }else {
+                                    ((MainActivity) context).createSnackbar("Online!");
+                                    ((MainActivity) context).goOnline(false);
+                                }
+                            }
+                        });
+                    }else {
+                        getData();
+                    }
+                }
+            });
+
+            if (directory != null) {
                 setUpRecycler();
-            }else
-                //Log.i(TAG, "onCreateView: ehh");
+                swipeRefreshLayout.setRefreshing(false);
+            } else {
+                swipeRefreshLayout.setRefreshing(false);
+                ((MainActivity) context).createSnackbar("No Network!", Snackbar.LENGTH_INDEFINITE, true, "Go Online", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ((MainActivity) context).offlineMode = !ConnectionDetector.isNetworkAvailable(context);
+                        if(((MainActivity) context).offlineMode){
+                            ((MainActivity) context).createSnackbar("No Network!");
+                        }else {
+                            ((MainActivity) context).createSnackbar("Online!");
+                            ((MainActivity) context).goOnline(false);
+                        }
+                    }
+                });
+            }
 
-            swipeRefreshLayout.setRefreshing(false);
-
-        }else {
+        } else {
             swipeRefreshLayout.setRefreshing(true);
             getData();
             swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -81,12 +127,29 @@ public class Frag_Docs extends Fragment {
 
     public void getData() {
 
-        new NetworkMethods(context).getAllFiles(((MainActivity)context).userInfo.getCollegeName(), new onCompleteListener<Directory>() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(directory==null){
+                    if(swipeRefreshLayout.isRefreshing())
+                        swipeRefreshLayout.setRefreshing(false);
+                    directory = Paper.book().read("Root", null);
+                    if(directory!=null) {
+                        if (recyclerView.getAdapter() != null)
+                            ((DocumentAdapter) recyclerView.getAdapter()).changeRoot(directory);
+                        else
+                            setUpRecycler();
+                    }
+                }
+            }
+        }, 1500);
+
+        new NetworkMethods(context).getAllFiles(college, new onCompleteListener<Directory>() {
 
             @Override
             public void onSuccess(Directory dir) {
+                ((MainActivity) context).offlineMode = false;
 
-                Paper.init(context);
                 Paper.book().write("Root",dir);
 
                 directory = dir;
@@ -101,7 +164,17 @@ public class Frag_Docs extends Fragment {
 
             @Override
             public void onFailure(Exception e) {
-                //Log.e(TAG, "onFailure: getDir", e);
+                Log.e(TAG, "onFailure: getDir", e);
+                if(swipeRefreshLayout.isRefreshing())
+                    swipeRefreshLayout.setRefreshing(false);
+                directory = Paper.book().read("Root", null);
+                if(directory!=null) {
+                    ((MainActivity) context).createSnackbar("Viewing Documents offline");
+                    if (recyclerView.getAdapter() != null)
+                        ((DocumentAdapter) recyclerView.getAdapter()).changeRoot(directory);
+                    else
+                        setUpRecycler();
+                }
             }
 
         });

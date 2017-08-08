@@ -447,30 +447,33 @@ public class CloudStorageMethods {
     public void downloadFile(String name, String college, final onCompleteListener<File> listener) {
 
         final File file = new File(context.getExternalFilesDir(DIRECTORY_DOCUMENTS), name + ".pdf");
-        if (!file.exists()) {
-            FirebaseStorage.getInstance().getReference().child(DIRECTORY_DATA).child(college).child(name + ".pdf")
-                    .getFile(file)
-                    .addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
+        final boolean downloaded = file.exists();
+
+        FirebaseStorage.getInstance().getReference().child(DIRECTORY_DATA).child(college).child(name + ".pdf")
+                .getFile(file)
+                .addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            listener.onSuccess(file);
+                        } else {
+                            Log.e(TAG, "onComplete: failure", task.getException());
+                            if(downloaded) {
                                 listener.onSuccess(file);
-                            } else {
-                                //Log.e(TAG, "onComplete: failure", task.getException());
+                            }
+                            else {
                                 listener.onFailure(task.getException());
                             }
                         }
-                    })
-                    .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            float p = (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100;
-                            //Log.i(TAG, "onProgress downloadFile percentage: " + p);
-                        }
-                    });
-        }else {
-            listener.onSuccess(file);
-        }
+                    }
+                })
+                .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        float p = (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100;
+                        //Log.i(TAG, "onProgress downloadFile percentage: " + p);
+                }
+                });
     }
 
     public void getDownloadedFile(String name, String college, final onCompleteListener<File> listener) {
