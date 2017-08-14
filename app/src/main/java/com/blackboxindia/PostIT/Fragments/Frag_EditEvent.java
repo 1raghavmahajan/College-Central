@@ -28,6 +28,7 @@ import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.adapters.NewAdImageAdapter;
+import com.blackboxindia.PostIT.adapters.ViewAdImageAdapter;
 import com.blackboxindia.PostIT.cameraIntentHelper.ImageUtils;
 import com.blackboxindia.PostIT.dataModels.AdData;
 import com.blackboxindia.PostIT.dataModels.AdTypes;
@@ -39,11 +40,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class Frag_newEvent extends Fragment {
+public class Frag_EditEvent extends Fragment {
 
     //region Variables
 
-    private static String TAG = Frag_newEvent.class.getSimpleName()+" YOYO";
+    private static String TAG = Frag_EditEvent.class.getSimpleName()+" YOYO";
     private static Integer ADD_PHOTO_CODE = 154;
 
     EditText etTitle, etDate, etTime, etDescription;
@@ -52,6 +53,8 @@ public class Frag_newEvent extends Fragment {
     NewAdImageAdapter adapter;
     View view;
     Context context;
+    
+    AdData event;
 
     UserInfo userInfo;
     ImageUtils imageUtils;
@@ -60,22 +63,28 @@ public class Frag_newEvent extends Fragment {
     Calendar myCalendar;
     NetworkMethods networkMethods;
 
-    int count = 0;
-    private static final int NUMBER_OF_DUPLICATES = 1;
     //endregion
 
     //region Initial Setup
 
     @Override
     public void onResume() {
-        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_NewEvent);
+        ((MainActivity)context).toolbar.setTitle(MainActivity.TITLE_EditEvent);
         super.onResume();
+    }
+
+    public static Frag_EditEvent newInstance(AdData event) {
+
+        Frag_EditEvent fragment = new Frag_EditEvent();
+        fragment.event = event;
+
+        return fragment;
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.frag_newevent, container, false);
+        view = inflater.inflate(R.layout.frag_editevent, container, false);
 
         initVariables();
 
@@ -97,13 +106,10 @@ public class Frag_newEvent extends Fragment {
                 }
             }
         });
-        etTitle.requestFocus();
 
-        setUpRecycler();
+        PopulateViews();
 
         setUpListeners();
-
-        initCamera();
 
         return view;
     }
@@ -124,16 +130,44 @@ public class Frag_newEvent extends Fragment {
         imgURIs = new ArrayList<>();
     }
 
+    void PopulateViews() {
+
+        if(event!=null) {
+
+            etTime.setText(event.getTitle());
+            etDescription.setText(event.getDescription());
+
+            String myFormat = "dd/MM/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            etDate.setText(sdf.format(event.getDateTime().toCalender().getTime()));
+            String timeFormat = "hh:mm a";
+            SimpleDateFormat tf = new SimpleDateFormat(timeFormat, Locale.US);
+            etTime.setText(tf.format(event.getDateTime().toCalender().getTime()));
+
+            setUpRecycler();
+        }
+
+    }
+
     private void setUpRecycler() {
         recyclerView = view.findViewById(R.id.ImageRecycler);
-        adapter = new NewAdImageAdapter(context, new NewAdImageAdapter.onDeleteClickListener() {
-            @Override
-            public void onDelete(int position) {
-                imgURIs.remove(position);
-            }
-        });
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false));
+        if(event.getNumberOfImages()>0) {
+            view.findViewById(R.id.ImgRecyclerHint).setVisibility(View.GONE);
+            ViewAdImageAdapter adapter = new ViewAdImageAdapter(context, event, null, view);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            recyclerView.setLayoutManager(linearLayoutManager);
+            recyclerView.setAdapter(adapter);
+        }else {
+            initCamera();
+            adapter = new NewAdImageAdapter(context, new NewAdImageAdapter.onDeleteClickListener() {
+                @Override
+                public void onDelete(int position) {
+                    imgURIs.remove(position);
+                }
+            });
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false));
+        }
     }
 
     private void setUpListeners() {
@@ -217,7 +251,7 @@ public class Frag_newEvent extends Fragment {
             etDescription.setError("Please give some details about the event");
             f = false;
         }
-        if(etTitle.getText().toString().equals("") || etTitle.getText().toString().toLowerCase().contains("title")){
+        if(etTitle.getText().toString().equals("") ||  etTitle.getText().toString().toLowerCase().contains("title")){
             etTitle.setError("Please give a suitable title");
             f = false;
         }
@@ -228,25 +262,25 @@ public class Frag_newEvent extends Fragment {
         userInfo = ((MainActivity)context).userInfo;
         if(userInfo!=null) {
 
-            AdData event = new AdData();
+            AdData nEvent = event;
+            
+            nEvent.setTitle(etTitle.getText().toString().trim());
+            nEvent.setPrice(null);
+            nEvent.setDescription(etDescription.getText().toString().trim());
 
-            event.setCreatedBy(userInfo);
-            event.setTitle(etTitle.getText().toString().trim());
-            event.setPrice(null);
-            event.setDescription(etDescription.getText().toString().trim());
+            if(imgURIs!=null) {
+                if (imgURIs.size() > 0) {
+                    nEvent.setNumberOfImages(imgURIs.size());
+                }
+            }
+            
+            nEvent.setDateTime(new DateObject(myCalendar));
 
-            event.setNumberOfImages(imgURIs.size());
-            event.setDateTime(new DateObject(myCalendar));
-
-            event.setType(AdTypes.TYPE_EVENT);
+            nEvent.setType(AdTypes.TYPE_EVENT);
 
             networkMethods = new NetworkMethods(context);
 
-//            Bitmap major = adapter.getMajor();
-//            if(major==null)
-                //Log.e(TAG, "prepareAndCreateAd: major null");
-
-            createAd(event);
+            updateEvent(nEvent);
 
         }
         else
@@ -255,34 +289,39 @@ public class Frag_newEvent extends Fragment {
         }
     }
 
-    void createAd(AdData event){
-        networkMethods.createNewAd(userInfo, event, imgURIs, adapter.getMajor(), new onCompleteListener<AdData>() {
-            @Override
-            public void onSuccess(AdData event) {
+    void updateEvent(AdData event){
+        boolean ff = true;
+        if(imgURIs!=null){
+            if(imgURIs.size()>0){
+                ff = false;
+                networkMethods.editAd(event, new onCompleteListener<AdData>() {
+                    @Override
+                    public void onSuccess(AdData data) {
+                        ((MainActivity)context).onBackPressed();
+                        ((MainActivity)context).createSnackbar("Ad Updated Successfully");
+                    }
 
-                count++;
-                if(count<NUMBER_OF_DUPLICATES){
-                    Toast.makeText(context, "In Progress #"+count, Toast.LENGTH_SHORT).show();
-                    if(event.getTitle().contains("#"))
-                        event.setTitle(event.getTitle().replace("#"+(count-1),"#"+count));
-                    else
-                        event.setTitle(event.getTitle()+ " #1");
-
-                    event.setDescription(event.getDescription()+" #"+count);
-                    if(event.getPrice()!=null)
-                        event.setPrice(event.getPrice()+count);
-                    createAd(event);
-                }else{
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(context, "Error: "+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                    }
+                }, true, ((NewAdImageAdapter)recyclerView.getAdapter()).getMajor(), imgURIs );
+            }
+        }
+        if(ff){
+            networkMethods.editAd(event, new onCompleteListener<AdData>() {
+                @Override
+                public void onSuccess(AdData data) {
                     ((MainActivity)context).onBackPressed();
-                    ((MainActivity)context).createSnackbar("Ad Created Successfully");
+                    ((MainActivity)context).createSnackbar("Ad Updated Successfully");
                 }
-            }
 
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(context, "Error: "+ e.getMessage() , Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(context, "Error: "+ e.getMessage() , Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     //region Camera Setup

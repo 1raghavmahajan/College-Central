@@ -181,6 +181,7 @@ public class UserInfo implements Parcelable{
                 userInfo.setPhone(cache.getString("phone", null));
                 userInfo.setHostel(cache.getString("hostel", null));
                 userInfo.setCollegeName(cache.getString("collegeName","IIT Indore"));
+                userInfo.setHasProfileIMG(cache.getBoolean("hasProfileIMG", false));
 
                 Set<String> userAdKeys = cache.getStringSet("userAdKeys", null);
                 ArrayList<String> keys;

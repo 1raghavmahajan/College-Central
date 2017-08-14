@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blackboxindia.PostIT.Fragments.Frag_EditAd;
+import com.blackboxindia.PostIT.Fragments.Frag_EditEvent;
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onDeleteListener;
@@ -74,7 +76,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
 
     public class adItemViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView majorImage, btn_Delete;
+        ImageView majorImage, btn_Delete, btn_Edit;
         TextView tv_Title, tv_Type, tv_Price;
         Context context;
         CardView cardView;
@@ -87,6 +89,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
             tv_Price = itemView.findViewById(R.id.adItem_Price);
             cardView = itemView.findViewById(R.id.adItem);
             btn_Delete = itemView.findViewById(R.id.adItem_Delete);
+            btn_Edit = itemView.findViewById(R.id.adItem_Edit);
             context = itemView.getContext();
         }
 
@@ -149,8 +152,6 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                 }
 
             }
-//            else
-                //Log.i(TAG,"CurrentAd null");
         }
 
         private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {
@@ -184,6 +185,18 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                             ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_LONG, true);
                         }
                     });
+                }
+            });
+            btn_Edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(currentAd.getType().equals(TYPE_EVENT)){
+                        Frag_EditEvent frag_editAd = Frag_EditEvent.newInstance(currentAd);
+                        ((MainActivity) context).launchOtherFragment(frag_editAd, MainActivity.EDIT_EVENT_TAG, true);
+                    }else {
+                        Frag_EditAd frag_editAd = Frag_EditAd.newInstance(currentAd);
+                        ((MainActivity) context).launchOtherFragment(frag_editAd, MainActivity.EDIT_AD_TAG, true);
+                    }
                 }
             });
         }

@@ -142,23 +142,21 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
                         }
                     });
                     break;
+
                 case TYPE_PDF:
                     icon.setImageResource(R.drawable.ic_pdf);
 
-                    if(((MainActivity)context).offlineMode){
-                        new CloudStorageMethods(context).getDownloadedFile(name, collegeName, new onCompleteListener<File>() {
-                            @Override
-                            public void onSuccess(File data) {
-                                doneIcon.setVisibility(View.VISIBLE);
-                            }
+                    new CloudStorageMethods(context).getDownloadedFile(name, collegeName, new onCompleteListener<File>() {
+                        @Override
+                        public void onSuccess(File data) {
+                            doneIcon.setVisibility(View.VISIBLE);
+                        }
 
-                            @Override
-                            public void onFailure(Exception e) {
-                                doneIcon.setVisibility(View.INVISIBLE);
-                            }
-                        });
-                    }else
-                        doneIcon.setVisibility(View.INVISIBLE);
+                        @Override
+                        public void onFailure(Exception e) {
+                            doneIcon.setVisibility(View.INVISIBLE);
+                        }
+                    });
 
                     card.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -168,6 +166,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
                                 new CloudStorageMethods(context).getDownloadedFile(name, collegeName, new onCompleteListener<File>() {
                                     @Override
                                     public void onSuccess(File file) {
+                                        doneIcon.setVisibility(View.VISIBLE);
                                         try {
                                             FileOpener.using(context).openFile(file);
                                         } catch (IOException e) {

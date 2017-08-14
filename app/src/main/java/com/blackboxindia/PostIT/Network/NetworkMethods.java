@@ -219,7 +219,8 @@ public class NetworkMethods {
                 UserInfo nUserInfo = dataSnapshot.getValue(UserInfo.class);
                 //Log.i(TAG,"getDetailsFromDB: successful");
 
-                //UserInfo.cacheUserDetails(nUserInfo,context);
+                if(nUserInfo!=null)
+                    nUserInfo.cacheUserDetails(context);
                 loginListener.onSuccess(nUserInfo);
             }
 
@@ -263,17 +264,31 @@ public class NetworkMethods {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        //Log.i(TAG, "UpdateUser: successful");
-                                        //UserInfo.cacheUserDetails(userInfo,context);
-                                        listener.onSuccess(userInfo);
+                                        userInfo.cacheUserDetails(context);
+                                        if(userInfo.getUserAdKeys().size()>0) {
+                                            updateAdCreater(userInfo.getUserAdKeys(), userInfo, new onCompleteListener<Void>(){
+
+                                                @Override
+                                                public void onSuccess(Void data) {
+                                                    listener.onSuccess(userInfo);
+                                                }
+
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    Log.e(TAG, "onFailure: updateAdCreater", e);
+//                                                    listener.onFailure(e);
+                                                    listener.onSuccess(userInfo);
+                                                }
+                                            });
+                                        }
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                //Log.i(TAG, "UpdateUser: failed", e);
-                                listener.onFailure(e);
-                            }
-                        });
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        //Log.i(TAG, "UpdateUser: failed", e);
+                                        listener.onFailure(e);
+                                    }
+                                });
                     }
 
                     @Override
@@ -289,13 +304,28 @@ public class NetworkMethods {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 //Log.i(TAG, "UpdateUser: successful");
-                                //UserInfo.cacheUserDetails(userInfo,context);
-                                listener.onSuccess(userInfo);
+                                userInfo.cacheUserDetails(context);
+                                if(userInfo.getUserAdKeys().size()>0) {
+                                    updateAdCreater(userInfo.getUserAdKeys(), userInfo, new onCompleteListener<Void>(){
+
+                                        @Override
+                                        public void onSuccess(Void data) {
+                                            listener.onSuccess(userInfo);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            Log.e(TAG, "onFailure: updateAdCreater", e);
+//                                                    listener.onFailure(e);
+                                            listener.onSuccess(userInfo);
+                                        }
+                                    });
+                                }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        //Log.i(TAG, "UpdateUser: failed", e);
+                        Log.i(TAG, "UpdateUser: failed", e);
                         listener.onFailure(e);
                     }
                 });
@@ -673,6 +703,144 @@ public class NetworkMethods {
                             listener.onFailure(databaseError.toException());
                         }
                     });
+        }
+    }
+
+    public void editAd(final AdData adData, final onCompleteListener<AdData> listener) {
+        editAd(adData, listener,false,null,null);
+    }
+
+    private Boolean once_EditAd;
+    public void editAd(final AdData adData, final onCompleteListener<AdData> listener, boolean addedImages, Bitmap major, final ArrayList<Uri> imgURIs) {
+
+        if(mAuth==null)
+        {
+            listener.onFailure(new Exception("Not Logged In"));
+        }
+        else if(mAuth.getCurrentUser() == null)
+        {
+            listener.onFailure(new Exception("Not Logged In"));
+        }
+        else {
+            final ProgressDialog progressDialog = ProgressDialog.show(context, "Updating Ad...", "", true, false);
+
+            final String key = adData.getAdID();
+
+            final CloudStorageMethods methods = new CloudStorageMethods(context);
+
+            if(addedImages && major!=null){
+                methods.uploadBitmap(key, major, new onCompleteListener<Void>() {
+                    @Override
+                    public void onSuccess(Void a) {
+
+                        methods.uploadPics(imgURIs, key,progressDialog, new onCompleteListener<Void>() {
+
+                            @Override
+                            public void onSuccess(Void a) {
+
+                                mDatabase.child(DIRECTORY_ADS).child(key).setValue(adData)
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                progressDialog.cancel();
+                                                listener.onFailure(e);
+                                            }
+                                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                progressDialog.cancel();
+                                                listener.onSuccess(adData);
+                                            }
+                                        });
+
+                            }
+                            @Override
+                            public void onFailure(Exception e) {
+                                FirebaseStorage storage = FirebaseStorage.getInstance();
+                                storage.getReference().child("images/" + key + "/0s").delete();
+                                for(int i=0;i<imgURIs.size();i++)
+                                    storage.getReference().child("images/" + key + "/" + i).delete();
+                                if(once_EditAd)
+                                {
+                                    once_EditAd =false;
+                                    progressDialog.cancel();
+                                    listener.onFailure(e);
+                                }
+
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        progressDialog.cancel();
+                        listener.onFailure(e);
+                    }
+                });
+            }else {
+                mDatabase.child(DIRECTORY_ADS).child(key).setValue(adData)
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e(TAG, "onFailure: editAd", e);
+                                progressDialog.cancel();
+                                listener.onFailure(e);
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.i(TAG, "onSuccess: editAd");
+                        progressDialog.cancel();
+                        listener.onSuccess(adData);
+                    }
+                });
+            }
+        }
+    }
+
+    private int updateAdCreater_nos;
+    private void updateAdCreater(final ArrayList<String> keys, final UserInfo userInfo, final onCompleteListener<Void> listener){
+        if(mAuth==null)
+        {
+            listener.onFailure(new Exception("Not Logged In"));
+        }
+        else if(mAuth.getCurrentUser() == null)
+        {
+            listener.onFailure(new Exception("Not Logged In"));
+        }
+        else {
+            updateAdCreater_nos = 0;
+            for (String key : keys) {
+                final String fKey = key;
+                mDatabase.child(DIRECTORY_ADS).child(key).child("createdBy").setValue(userInfo)
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                mDatabase.child(DIRECTORY_ADS).child(fKey).child("createdBy").setValue(userInfo)
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.e(TAG, "onFailure: updateAdCreater key: "+fKey, e);
+                                                listener.onFailure(e);
+                                            }
+                                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        updateAdCreater_nos++;
+                                        if(updateAdCreater_nos==keys.size())
+                                            listener.onSuccess(null);
+                                    }
+                                });
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                updateAdCreater_nos++;
+                                if(updateAdCreater_nos==keys.size())
+                                    listener.onSuccess(null);
+                            }
+                        });
+            }
         }
     }
 

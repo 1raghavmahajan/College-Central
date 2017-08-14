@@ -121,5 +121,7 @@
     <string name="download_all">Download All</string>
     <string name="not_logged_in">(Not logged in)</string>
     <string name="broadcast">Broadcast!</string>
+    <string name="posted_on">Posted on:</string>
+    <string name="edit">Edit</string>
 
 </resources>

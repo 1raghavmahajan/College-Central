@@ -136,22 +136,25 @@ public class Frag_ViewAd extends Fragment {
                 }
             });
             if(userInfo.getHasProfileIMG()) {
-
                 ((MainActivity)context).cloudStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        GlideApp.with(context)
-                                .load(uri)
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .skipMemoryCache(true)
-                                .into(imageView);
+                        if(imageView!=null) {
+                            GlideApp.with(context)
+                                    .load(uri)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(imageView);
+                        }
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-
+                        imageView.setVisibility(View.INVISIBLE);
                     }
                 });
+            }else {
+                imageView.setVisibility(View.INVISIBLE);
             }
             setUpImgRecycler();
         }

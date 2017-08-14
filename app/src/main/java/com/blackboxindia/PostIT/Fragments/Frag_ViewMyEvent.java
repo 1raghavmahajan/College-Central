@@ -79,6 +79,18 @@ public class Frag_ViewMyEvent extends Fragment {
                 return true;
             }
         });
+        item = ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_edit);
+        item.setVisible(true);
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.toolbar_edit){
+                    Frag_EditEvent frag_editAd = Frag_EditEvent.newInstance(event);
+                    ((MainActivity) context).launchOtherFragment(frag_editAd, MainActivity.EDIT_EVENT_TAG, true);
+                }
+                return true;
+            }
+        });
         super.onResume();
     }
 
@@ -127,6 +139,7 @@ public class Frag_ViewMyEvent extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete).setVisible(false);
+        ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_edit).setVisible(false);
         ((MainActivity) getActivity()).backPressedListener = null;
     }
     //endregion
@@ -147,8 +160,7 @@ public class Frag_ViewMyEvent extends Fragment {
 
             setUpImgRecycler();
         }
-//        else
-            //Log.i("Frag_ViewAd YOYO","no adDATA");
+
     }
 
     void setUpImgRecycler() {

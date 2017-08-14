@@ -67,7 +67,6 @@ import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.dataModels.UserCred;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -98,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
     public final static String VIEW_EVENT_TAG = "VIEW_EVENT";
     public final static String VIEW_MyAD_TAG = "VIEW_MyAD";
     public final static String VIEW_MyEVENT_TAG = "VIEW_MyEVENT";
+    public final static String EDIT_AD_TAG = "EDIT_AD";
+    public final static String EDIT_EVENT_TAG = "EDIT_EVENT";
 
     public final static String TITLE_AllAds = "All Ads";
     public final static String TITLE_MainScreen = "College Central";
@@ -111,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
     public final static String TITLE_NewAd = "Create New Ad";
     public final static String TITLE_NewEvent = "New Event";
     public final static String TITLE_ViewAd = "College Central";
-    public final static String TITLE_ViewEvent = "College Central";
+    public final static String TITLE_ViewEvent = "Event";
+    public final static String TITLE_EditAd = "Edit Ad";
+    public final static String TITLE_EditEvent = "Edit Event";
 
     private final static String TAG = MainActivity.class.getSimpleName()+" YOYO";
     public static final String PREF_USER_FIRST_TIME = "user_first_time";
@@ -174,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
         View backgroundImage = findViewById(R.id.frame_layout);
         Drawable background = backgroundImage.getBackground();
-        background.setAlpha(20);
+        background.setAlpha(10);
 
         initVariables();
 
@@ -189,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpUser(){
-        Log.i(TAG, "setUpUser: ");
 
         UserInfo userInfo = UserInfo.readCachedUserDetails(context);
 
@@ -274,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(isCached) {
                     UserInfo.clearCache(context);
+                    Log.i(TAG, "setUpUser: problem");
                     UpdateUIonLogout(false, false);
                 }
 
@@ -853,15 +856,13 @@ public class MainActivity extends AppCompatActivity {
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email)).setText(userInfo.getEmail()+notVerified);
         final ImageView imageView = navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
         if(userInfo.getHasProfileIMG()) {
+            Log.i(TAG, "UpdateUI: hasImage");
             cloudStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-//                    imageView.setImageURI(uri);
-                    GlideApp.with(context)
-                            .load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(imageView);
+                    if(imageView!=null) {
+                        imageView.setImageURI(uri);
+                    }
                 }
 
                 @Override
@@ -889,16 +890,6 @@ public class MainActivity extends AppCompatActivity {
             launchOtherFragment(new Frag_Main(), MAIN_SCREEN_TAG);
             createSnackbar("Logged in!");
         }
-    }
-
-    public void AnonLogin(UserInfo userInfo){
-        this.userInfo = userInfo;
-
-        //Drawer
-        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_Name)).setText(userInfo.getName());
-        ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_email)).setText(R.string.not_logged_in);
-        final ImageView imageView = navigationView.getHeaderView(0).findViewById(R.id.nav_profileImg);
-        GlideApp.with(context).load(R.drawable.avatar).into(imageView);
     }
 
     public void UpdateUIonLogout() {

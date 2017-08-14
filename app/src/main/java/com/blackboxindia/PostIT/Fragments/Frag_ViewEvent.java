@@ -140,22 +140,25 @@ public class Frag_ViewEvent extends Fragment {
             tv_Time.setText(tf.format(event.getDateTime().toCalender().getTime()));
 
             if(userInfo.getHasProfileIMG()) {
-
                 ((MainActivity)context).cloudStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        GlideApp.with(context).load(uri)
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                                .skipMemoryCache(true)
-                                .into(imageView);
+                        if(imageView!=null) {
+                            GlideApp.with(context).load(uri)
+                                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                    .skipMemoryCache(true)
+                                    .into(imageView);
+                        }
 //                        imageView.setImageURI(uri);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-
+                        imageView.setVisibility(View.INVISIBLE);
                     }
                 });
+            }else {
+                imageView.setVisibility(View.INVISIBLE);
             }
             setUpImgRecycler();
         }

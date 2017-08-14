@@ -131,10 +131,12 @@ public class Frag_myProfile extends Fragment {
             ((MainActivity)context).cloudStorageMethods.getProfileImage(userInfo.getuID(), new onCompleteListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    GlideApp.with(context).load(uri)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)
-                            .skipMemoryCache(true)
-                            .into(imageView);
+                    if(imageView!=null) {
+                        GlideApp.with(context).load(uri)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                .skipMemoryCache(true)
+                                .into(imageView);
+                    }
                 }
 
                 @Override

@@ -214,7 +214,8 @@ public class CloudStorageMethods {
     public void getProfileImage(final String uID, final onCompleteListener<Uri> listener) {
 
         if(cachedProfileImages.containsKey(uID)) {
-
+            Log.i(TAG, "getProfileImage: containsKey");
+            listener.onSuccess(Uri.fromFile(new File(context.getCacheDir(), uID + "_image.webp")));
             storage.getReference().child("user/"+uID+"/profileImage").getMetadata()
                     .addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                         @Override
@@ -238,20 +239,17 @@ public class CloudStorageMethods {
                                             }
                                         });
                             }
-                            else {
-                                listener.onSuccess(cachedProfileImages.get(uID).uri);
-                            }
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            //Log.e(TAG, "onFailure: getMetaData",e);
-                            listener.onSuccess(cachedProfileImages.get(uID).uri);
+                            Log.e(TAG, "onFailure: getMetaData",e);
+//                            listener.onSuccess(cachedProfileImages.get(uID).uri);
                         }
                     });
         }
         else {
-
+            Log.i(TAG, "getProfileImage: no key");
             final File localFile;
 
             localFile = new File(context.getCacheDir(), uID + "_image.webp");
@@ -449,31 +447,37 @@ public class CloudStorageMethods {
         final File file = new File(context.getExternalFilesDir(DIRECTORY_DOCUMENTS), name + ".pdf");
         final boolean downloaded = file.exists();
 
-        FirebaseStorage.getInstance().getReference().child(DIRECTORY_DATA).child(college).child(name + ".pdf")
-                .getFile(file)
-                .addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            listener.onSuccess(file);
-                        } else {
-                            Log.e(TAG, "onComplete: failure", task.getException());
-                            if(downloaded) {
+        if(downloaded)
+            listener.onSuccess(file);
+        else {
+            FirebaseStorage.getInstance().getReference().child(DIRECTORY_DATA).child(college).child(name + ".pdf")
+                    .getFile(file)
+                    .addOnCompleteListener(new OnCompleteListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<FileDownloadTask.TaskSnapshot> task) {
+                            if (task.isSuccessful()) {
                                 listener.onSuccess(file);
-                            }
-                            else {
+                            } else {
+                                Log.e(TAG, "onComplete: failure", task.getException());
                                 listener.onFailure(task.getException());
                             }
                         }
-                    }
-                })
-                .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
-                    @Override
-                    public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        float p = (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100;
-                        //Log.i(TAG, "onProgress downloadFile percentage: " + p);
-                }
-                });
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "onFailure: ", e);
+                            listener.onFailure(e);
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            float p = (taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()) * 100;
+                            //Log.i(TAG, "onProgress downloadFile percentage: " + p);
+                        }
+                    });
+        }
     }
 
     public void getDownloadedFile(String name, String college, final onCompleteListener<File> listener) {

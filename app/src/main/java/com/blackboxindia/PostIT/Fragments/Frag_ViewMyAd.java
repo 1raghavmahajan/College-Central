@@ -81,6 +81,18 @@ public class Frag_ViewMyAd extends Fragment {
                 return true;
             }
         });
+        item = ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_edit);
+        item.setVisible(true);
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.toolbar_edit){
+                    Frag_EditAd frag_editAd = Frag_EditAd.newInstance(adData);
+                    ((MainActivity) context).launchOtherFragment(frag_editAd, MainActivity.EDIT_AD_TAG, true);
+                }
+                return true;
+            }
+        });
         super.onResume();
     }
 
@@ -119,6 +131,7 @@ public class Frag_ViewMyAd extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete).setVisible(false);
+        ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_edit).setVisible(false);
         ((MainActivity) getActivity()).backPressedListener = null;
     }
 

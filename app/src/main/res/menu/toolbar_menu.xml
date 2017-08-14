@@ -14,6 +14,16 @@
         app:showAsAction="ifRoom"
         android:visible="false"
         />
+
+    <item
+        android:id="@+id/toolbar_edit"
+        android:title="@string/edit"
+        android:icon="@drawable/ic_edit"
+        android:orderInCategory="2"
+        app:showAsAction="ifRoom"
+        android:visible="false"
+        />
+
     <item
         android:id="@+id/toolbar_search"
         android:icon="@drawable/ic_search"

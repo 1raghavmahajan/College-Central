@@ -22,6 +22,7 @@ import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.adapters.EventsAdapter;
+import com.blackboxindia.PostIT.adapters.LostFoundAdapter;
 import com.blackboxindia.PostIT.adapters.MainAdapter;
 import com.blackboxindia.PostIT.adapters.teachingAdAdapter;
 import com.blackboxindia.PostIT.dataModels.AdData;
@@ -147,7 +148,7 @@ public class Frag_Ads extends Fragment {
                 setUp1();
                 break;
             case TYPE_LOSTFOUND:
-                setUp1();
+                setUp4();
                 break;
             case TYPE_TEACH:
                 setUp2();
@@ -239,6 +240,32 @@ public class Frag_Ads extends Fragment {
         });
         recyclerView.setAdapter(adapter);
     }
+
+    private void setUp4() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false));
+
+        LostFoundAdapter adapter = new LostFoundAdapter(context,allAds, new LostFoundAdapter.ImageClickListener() {
+            @Override
+            public void onClick(LostFoundAdapter.adItemViewHolder holder, int position, AdData currentAd, Bitmap main) {
+
+                Frag_ViewEvent fragViewAd = Frag_ViewEvent.newInstance(currentAd);
+
+                fragViewAd.setSharedElementEnterTransition(new adViewTransition());
+                fragViewAd.setEnterTransition(new Fade());
+                setExitTransition(new Fade());
+                fragViewAd.setSharedElementReturnTransition(new adViewTransition());
+
+                getActivity().getFragmentManager().beginTransaction()
+                        .addSharedElement(holder.getMajorImage(), "adImage0")
+                        .replace(R.id.frame_layout, fragViewAd, MainActivity.VIEW_EVENT_TAG)
+                        .addToBackStack(null)
+                        .commit();
+
+            }
+        });
+        recyclerView.setAdapter(adapter);
+    }
+
 
     //endregion
 
