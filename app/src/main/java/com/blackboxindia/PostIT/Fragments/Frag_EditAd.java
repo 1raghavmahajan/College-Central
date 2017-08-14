@@ -110,6 +110,7 @@ public class Frag_EditAd extends Fragment {
                 }
             }
         });
+        etTitle.requestFocus();
 
         PopulateViews();
 
@@ -182,13 +183,13 @@ public class Frag_EditAd extends Fragment {
                 break;
             case TYPE_LOSTFOUND:
                 etDescription.setHint(R.string.hintDescriptionLostFound);
-                tvPrice.setVisibility(View.INVISIBLE);
-                etPrice.setVisibility(View.INVISIBLE);
+                tvPrice.setVisibility(View.GONE);
+                etPrice.setVisibility(View.GONE);
                 break;
             case TYPE_TEACH:
                 etDescription.setHint(R.string.hintDescriptionTeach);
-                tvPrice.setVisibility(View.INVISIBLE);
-                etPrice.setVisibility(View.INVISIBLE);
+                tvPrice.setVisibility(View.GONE);
+                etPrice.setVisibility(View.GONE);
                 break;
         }
     }

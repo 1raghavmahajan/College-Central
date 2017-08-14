@@ -69,7 +69,9 @@
                 android:text="@string/loremIpsum"
                 android:textIsSelectable="true"
                 android:textSize="15sp"
-                android:maxLength="@integer/Max_Description_Size"/>
+                android:maxLength="@integer/Max_Description_Size"
+                android:linksClickable="true"
+                android:autoLink="all"/>
 
         </RelativeLayout>
 
@@ -77,7 +79,7 @@
             android:id="@+id/expanded_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"/>
+            android:visibility="gone"/>
 
     </FrameLayout>
 

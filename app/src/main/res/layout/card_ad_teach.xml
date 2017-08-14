@@ -20,15 +20,15 @@
         android:paddingStart="10dp"
         android:paddingEnd="8dp"
         >
+
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/adItem_CreatedByImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:src="@drawable/avatar"
-            android:visibility="visible"
-            />
+            android:id="@+id/adItem_Image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/placeholder"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/adItem_Title"/>
 
         <TextView
             android:id="@+id/adItem_Title"
@@ -36,8 +36,8 @@
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:maxLength="40"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/adItem_CreatedByImage"
+            app:layout_constraintLeft_toRightOf="@id/adItem_Image"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             android:text="@string/title"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/adItem_CreatedByImage"
+            app:layout_constraintRight_toRightOf="parent"
             android:layout_marginEnd="4dp"
             android:text="@string/name"
             android:textSize="14sp"

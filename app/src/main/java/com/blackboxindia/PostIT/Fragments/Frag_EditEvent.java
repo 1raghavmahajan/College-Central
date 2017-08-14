@@ -106,6 +106,7 @@ public class Frag_EditEvent extends Fragment {
                 }
             }
         });
+        etTitle.requestFocus();
 
         PopulateViews();
 

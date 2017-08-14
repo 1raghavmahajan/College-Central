@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -102,6 +101,8 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
             if(currentAd!=null) {
                 setListeners(currentAd, this, position);
                 if(currentAd.getNumberOfImages() > 0) {
+                    majorImage.setVisibility(View.VISIBLE);
+                    majorImage.setImageResource(R.drawable.placeholder);
                     ((MainActivity) context).cloudStorageMethods.getMajorImage(currentAd.getAdID(), new onCompleteListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
@@ -119,7 +120,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
                         }
                     });
                 }else
-                    GlideApp.with(context).load(R.drawable.placeholder).into(majorImage);
+                    majorImage.setVisibility(View.GONE);
 
                 tv_Title.setText(currentAd.getTitle());
 
@@ -156,7 +157,7 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
 
         private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {
 
-            ViewCompat.setTransitionName(holder.getMajorImage(), String.valueOf(position) + "_image");
+//            ViewCompat.setTransitionName(holder.getMajorImage(), String.valueOf(position) + "_image");
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

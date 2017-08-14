@@ -8,15 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Fade;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.blackboxindia.PostIT.HelperClasses.adViewTransition;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onUpdateListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
@@ -186,38 +183,11 @@ public class Frag_myAds extends Fragment {
             public void onClick(MyAdsAdapter.adItemViewHolder holder, int position, AdData currentAd) {
 
                 if(currentAd.getType().equals(TYPE_EVENT)){
-
                     Frag_ViewMyEvent frag_viewMyEvent = Frag_ViewMyEvent.newInstance(currentAd);
-
-                    frag_viewMyEvent.setSharedElementEnterTransition(new adViewTransition());
-                    frag_viewMyEvent.setEnterTransition(new Fade());
-                    setExitTransition(new Fade());
-                    frag_viewMyEvent.setSharedElementReturnTransition(new adViewTransition());
-
-                    getActivity().getFragmentManager().beginTransaction()
-                            .addSharedElement(holder.getMajorImage(), "adImage0")
-                            .replace(R.id.frame_layout, frag_viewMyEvent, MainActivity.VIEW_MyEVENT_TAG)
-                            .addToBackStack(null)
-                            .commit();
-
-
+                    ((MainActivity)context).launchOtherFragment(frag_viewMyEvent, MainActivity.VIEW_MyEVENT_TAG, true);
                 } else {
-
                     Frag_ViewMyAd fragViewMyAd = Frag_ViewMyAd.newInstance(currentAd);
-
-//                current = main;
-
-                    fragViewMyAd.setSharedElementEnterTransition(new adViewTransition());
-                    fragViewMyAd.setEnterTransition(new Fade());
-                    setExitTransition(new Fade());
-                    fragViewMyAd.setSharedElementReturnTransition(new adViewTransition());
-
-                    getActivity().getFragmentManager().beginTransaction()
-                            .addSharedElement(holder.getMajorImage(), "adImage0")
-                            .replace(R.id.frame_layout, fragViewMyAd, MainActivity.VIEW_MyAD_TAG)
-                            .addToBackStack(null)
-                            .commit();
-
+                    ((MainActivity)context).launchOtherFragment(fragViewMyAd, MainActivity.VIEW_MyAD_TAG,true);
                 }
             }
         });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,7 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
 
         TextView tv_title;
         TextView tv_createdBy;
-        ImageView creater;
+        ImageView majorImage;
         Context context;
         CardView cardView;
 
@@ -74,46 +75,36 @@ public class teachingAdAdapter extends RecyclerView.Adapter<teachingAdAdapter.ad
             super(itemView);
             tv_title = itemView.findViewById(R.id.adItem_Title);
             tv_createdBy = itemView.findViewById(R.id.adItem_CreatedBy);
-//            tv_Price = (TextView) itemView.findViewById(R.id.adItem_Price);
+            majorImage = itemView.findViewById(R.id.adItem_Image);
             cardView = itemView.findViewById(R.id.adItem);
             context = itemView.getContext();
-            creater = itemView.findViewById(R.id.adItem_CreatedByImage);
         }
 
         void setData(final AdData currentAd, final int position, adItemViewHolder holder) {
-
             setListeners(currentAd, holder, position);
-
             tv_title.setText(currentAd.getTitle());
             tv_createdBy.setText(currentAd.getCreatedBy().getName());
-
-            if(currentAd.getCreatedBy().getHasProfileIMG()){
-                creater.setVisibility(View.VISIBLE);
-                GlideApp.with(context).load(R.drawable.avatar).into(creater);
-                ((MainActivity)context).cloudStorageMethods.getProfileImage(currentAd.getCreatedBy().getuID(), new onCompleteListener<Uri>() {
+            if(currentAd.getNumberOfImages() > 0) {
+                majorImage.setVisibility(View.VISIBLE);
+                majorImage.setImageResource(R.drawable.placeholder);
+                ((MainActivity) context).cloudStorageMethods.getMajorImage(currentAd.getAdID(), new onCompleteListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        if(creater!=null) {
+                        if (majorImage != null) {
                             GlideApp.with(context)
                                     .load(uri)
                                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                                     .skipMemoryCache(true)
-                                    .into(creater);
+                                    .into(majorImage);
                         }
                     }
-
                     @Override
                     public void onFailure(Exception e) {
-                        //Log.e(TAG, "onFailure: GetCreaterImage", e);
+                        Log.e(TAG, "onFailure #" + position + " ", e);
                     }
                 });
-            }
-
-//            if(currentAd.getPrice()==0)
-//                tv_Price.setText(R.string.free);
-//            else
-//                tv_Price.setText(String.format(context.getString(R.string.currency), currentAd.getPrice()));
-
+            }else
+                majorImage.setVisibility(View.GONE);
         }
 
         private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {

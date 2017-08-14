@@ -69,7 +69,9 @@
                 android:text="@string/loremIpsum"
                 android:textIsSelectable="true"
                 android:textSize="15sp"
-                android:maxLength="@integer/Max_Description_Size"/>
+                android:maxLength="@integer/Max_Description_Size"
+                android:linksClickable="true"
+                android:autoLink="all"/>
 
 
             <TextView

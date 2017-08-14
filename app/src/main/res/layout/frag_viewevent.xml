@@ -101,7 +101,9 @@
                 android:layout_marginStart="16dp"
                 android:text="@string/loremIpsum"
                 android:textSize="15sp"
-                android:maxLength="@integer/Max_Description_Size"/>
+                android:maxLength="@integer/Max_Description_Size"
+                android:linksClickable="true"
+                android:autoLink="all"/>
 
             <TextView
                 android:id="@+id/Ad_tv2"
@@ -180,7 +182,7 @@
             android:id="@+id/expanded_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"/>
+            android:visibility="gone" />
 
     </FrameLayout>
 
