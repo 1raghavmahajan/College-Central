@@ -115,39 +115,14 @@
             app:layout_constraintLeft_toLeftOf="@+id/newAd_etDate"
             app:layout_constraintTop_toBottomOf="@+id/newAd_etDate" />
 
-        <!--<TextView
-            android:id="@+id/newAd_tvVenue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="12dp"
-            android:text="Venue:"
-            android:textSize="19sp"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@id/newAd_etTime"
-            app:layout_constraintBaseline_toBaselineOf="@id/newAd_tvTime"
-            />
-
-        <EditText
-            android:id="@+id/newAd_etVenue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:minEms="4"
-            android:inputType="text"
-            android:focusable="false"
-            android:longClickable="false"
-            android:layout_marginStart="18dp"
-            app:layout_constraintLeft_toRightOf="@id/newAd_tvVenue"
-            app:layout_constraintBaseline_toBaselineOf="@id/newAd_tvVenue" />-->
-
         <View
             android:id="@+id/newAd_line"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:background="@color/black_trans80"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/newAd_etTime"
@@ -192,4 +167,5 @@
             app:layout_constraintTop_toBottomOf="@+id/newAd_etDescription" />
 
     </android.support.constraint.ConstraintLayout>
+
 </ScrollView>

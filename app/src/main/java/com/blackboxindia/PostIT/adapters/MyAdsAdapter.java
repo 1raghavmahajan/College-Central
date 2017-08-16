@@ -1,7 +1,9 @@
 package com.blackboxindia.PostIT.adapters;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
@@ -167,25 +169,39 @@ public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHo
             btn_Delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final ProgressDialog dialog = ProgressDialog.show(context, "Deleting...", "", true, false);
-                    NetworkMethods methods = new NetworkMethods(context);
-                    methods.deleteAd(((MainActivity)context).userInfo, currentAd, new onDeleteListener() {
-                        @Override
-                        public void onSuccess(UserInfo userInfo) {
-                            dialog.cancel();
-                            userAds.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position, getItemCount());
-                            ((MainActivity)context).UpdateUI(userInfo,false);
-                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
-                        }
+                    new AlertDialog.Builder(context)
+                            .setTitle("Confirm Delete")
+                            .setMessage("Are you sure?")
+                            .setCancelable(true)
+                            .setNegativeButton("No", null)
+                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    final ProgressDialog dialog = ProgressDialog.show(context, "Deleting...", "", true, false);
+                                    NetworkMethods methods = new NetworkMethods(context);
+                                    methods.deleteAd(((MainActivity)context).userInfo, currentAd, new onDeleteListener() {
+                                        @Override
+                                        public void onSuccess(UserInfo userInfo) {
+                                            dialog.cancel();
+                                            userAds.remove(position);
+                                            notifyItemRemoved(position);
+                                            notifyItemRangeChanged(position, getItemCount());
+                                            ((MainActivity)context).UpdateUI(userInfo,false);
+                                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
+                                        }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            dialog.cancel();
-                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_LONG, true);
-                        }
-                    });
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            dialog.cancel();
+                                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_LONG, true);
+                                        }
+                                    });
+                                }
+                            })
+                            .create()
+                            .show();
+
                 }
             });
             btn_Edit.setOnClickListener(new View.OnClickListener() {

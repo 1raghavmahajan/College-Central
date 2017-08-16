@@ -49,7 +49,8 @@
                 android:layout_below="@+id/Ad_imgRecycler"
                 android:gravity="end"
                 android:text="@string/setPrice"
-                android:textSize="26sp" />
+                android:textSize="26sp"
+                />
 
             <TextView
                 android:id="@+id/Ad_tv1"

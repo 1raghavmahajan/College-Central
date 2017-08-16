@@ -1,9 +1,11 @@
 package com.blackboxindia.PostIT.Fragments;
 
+        import android.app.AlertDialog;
         import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
+        import android.content.DialogInterface;
+        import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -62,23 +64,34 @@ public class Frag_ViewMyAd extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.toolbar_delete){
 
-                    final ProgressDialog dialog = ProgressDialog.show(context, "Deleting...", "", true, false);
-                    NetworkMethods methods = new NetworkMethods(context);
-                    methods.deleteAd(((MainActivity) getActivity()).userInfo, adData, new onDeleteListener() {
-                        @Override
-                        public void onSuccess(UserInfo userInfo) {
-                            dialog.cancel();
-                            ((MainActivity)context).onBackPressed();
-                            ((MainActivity)context).UpdateUI(userInfo,false);
-                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
-                        }
+                    new AlertDialog.Builder(context)
+                            .setTitle("Confirm Delete")
+                            .setMessage("Are you sure?")
+                            .setCancelable(true)
+                            .setNegativeButton("No", null)
+                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    final ProgressDialog dialog = ProgressDialog.show(context, "Deleting...", "", true, false);
+                                    NetworkMethods methods = new NetworkMethods(context);
+                                    methods.deleteAd(((MainActivity) getActivity()).userInfo, adData, new onDeleteListener() {
+                                        @Override
+                                        public void onSuccess(UserInfo userInfo) {
+                                            dialog.cancel();
+                                            ((MainActivity)context).onBackPressed();
+                                            ((MainActivity)context).UpdateUI(userInfo,false);
+                                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
+                                        }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            dialog.cancel();
-                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_INDEFINITE, true);
-                        }
-                    });
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            dialog.cancel();
+                                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_INDEFINITE, true);
+                                        }
+                                    });
+                                }
+                            }).create().show();
                 }
                 return true;
             }
@@ -152,9 +165,10 @@ public class Frag_ViewMyAd extends Fragment {
                     tv_Price.setText(getString(R.string.free));
                 else
                     tv_Price.setText(String.format(getString(R.string.currency), adData.getPrice()));
-            }else {
-                tv_Price.setVisibility(View.GONE);
             }
+            else
+                tv_Price.setVisibility(View.INVISIBLE);
+
 
             tv_Title.setText(adData.getTitle());
             tv_Description.setText(adData.getDescription());

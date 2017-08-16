@@ -141,7 +141,7 @@ public class Frag_EditAd extends Fragment {
                 if (ad.getPrice() == 0)
                     etPrice.setText(getString(R.string.free));
                 else
-                    etPrice.setText(String.format(getString(R.string.currency), ad.getPrice()));
+                    etPrice.setText(ad.getPrice());
             }
             else
                 etPrice.setVisibility(View.INVISIBLE);
@@ -179,17 +179,12 @@ public class Frag_EditAd extends Fragment {
         }
         switch (adType){
             case TYPE_SELL:
-                etPrice.setText("0");
                 break;
             case TYPE_LOSTFOUND:
-                etDescription.setHint(R.string.hintDescriptionLostFound);
-                tvPrice.setVisibility(View.GONE);
-                etPrice.setVisibility(View.GONE);
-                break;
             case TYPE_TEACH:
-                etDescription.setHint(R.string.hintDescriptionTeach);
                 tvPrice.setVisibility(View.GONE);
                 etPrice.setVisibility(View.GONE);
+                view.findViewById(R.id.Ad_div).setVisibility(View.INVISIBLE);
                 break;
         }
     }

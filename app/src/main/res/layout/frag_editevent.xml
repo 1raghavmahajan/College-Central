@@ -123,8 +123,8 @@
             android:layout_height="1dp"
             android:background="@color/black_trans80"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/newAd_etTime"
@@ -169,4 +169,5 @@
             app:layout_constraintTop_toBottomOf="@+id/newAd_etDescription" />
 
     </android.support.constraint.ConstraintLayout>
+
 </com.blackboxindia.PostIT.CustomViews.LockableScrollView>

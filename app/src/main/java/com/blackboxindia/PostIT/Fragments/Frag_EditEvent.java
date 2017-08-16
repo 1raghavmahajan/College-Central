@@ -135,7 +135,7 @@ public class Frag_EditEvent extends Fragment {
 
         if(event!=null) {
 
-            etTime.setText(event.getTitle());
+            etTitle.setText(event.getTitle());
             etDescription.setText(event.getDescription());
 
             String myFormat = "dd/MM/yy";

@@ -95,13 +95,13 @@
             app:layout_constraintTop_toBottomOf="@+id/newAd_recyclerFrame" />
 
         <View
-            android:id="@+id/newAd_line"
+            android:id="@+id/Ad_div"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:background="@color/black_trans80"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="2dp"
-            android:layout_marginEnd="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/newAd_etPrice"
@@ -116,7 +116,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/newAd_line"
+            app:layout_constraintTop_toBottomOf="@+id/Ad_div"
             />
 
         <EditText

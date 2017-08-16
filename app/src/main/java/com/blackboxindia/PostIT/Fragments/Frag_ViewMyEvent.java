@@ -1,8 +1,10 @@
 package com.blackboxindia.PostIT.Fragments;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -58,23 +60,34 @@ public class Frag_ViewMyEvent extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.toolbar_delete){
 
-                    final ProgressDialog dialog = ProgressDialog.show(context, "Deleting...", "", true, false);
-                    NetworkMethods methods = new NetworkMethods(context);
-                    methods.deleteAd(((MainActivity) getActivity()).userInfo, event, new onDeleteListener() {
-                        @Override
-                        public void onSuccess(UserInfo userInfo) {
-                            dialog.cancel();
-                            ((MainActivity)context).onBackPressed();
-                            ((MainActivity)context).UpdateUI(userInfo,false);
-                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
-                        }
+                    new AlertDialog.Builder(context)
+                            .setTitle("Confirm Delete")
+                            .setMessage("Are you sure?")
+                            .setCancelable(true)
+                            .setNegativeButton("No", null)
+                            .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                    final ProgressDialog dialog = ProgressDialog.show(context, "Deleting...", "", true, false);
+                                    NetworkMethods methods = new NetworkMethods(context);
+                                    methods.deleteAd(((MainActivity) getActivity()).userInfo, event, new onDeleteListener() {
+                                        @Override
+                                        public void onSuccess(UserInfo userInfo) {
+                                            dialog.cancel();
+                                            ((MainActivity)context).onBackPressed();
+                                            ((MainActivity)context).UpdateUI(userInfo,false);
+                                            ((MainActivity)context).createSnackbar("Ad Deleted Successfully");
+                                        }
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            dialog.cancel();
-                            ((MainActivity)context).createSnackbar(e.getMessage(),Snackbar.LENGTH_INDEFINITE, true);
-                        }
-                    });
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            dialog.cancel();
+                                            ((MainActivity)context).createSnackbar(e.getMessage(), Snackbar.LENGTH_INDEFINITE, true);
+                                        }
+                                    });
+                                }
+                            }).create().show();
                 }
                 return true;
             }

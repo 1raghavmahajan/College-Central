@@ -393,9 +393,7 @@ public class Frag_Ads extends Fragment {
                 filterList();
                 if(recyclerView!=null) {
                     if (recyclerView.getAdapter() == null) {
-                        if(adType.equals(TYPE_EVENT))
-                            checkDeleteEvents();
-                        orderAds();
+                        checkOrderDelete();
                         setUpRecyclerView();
                     }
                     else {
@@ -404,9 +402,7 @@ public class Frag_Ads extends Fragment {
                             view.findViewById(R.id.ads_default).setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
-                        if(adType.equals(TYPE_EVENT))
-                            checkDeleteEvents();
-                        orderAds();
+                        checkOrderDelete();
                         switch (adType) {
                             case TYPE_TEACH:
                                 ((teachingAdAdapter) recyclerView.getAdapter()).change(allAds);
@@ -455,20 +451,41 @@ public class Frag_Ads extends Fragment {
 
     }
 
-    private void checkDeleteEvents() {
+    private void checkOrderDelete() {
 
-        for (int i=0; i<allAds.size();i++) {
-            Calendar calender = allAds.get(i).getDateTime().toCalender();
-            calender.add(Calendar.HOUR_OF_DAY,12);
-            if(calender.before(Calendar.getInstance())) {
-                //Log.i(TAG, "checkDeleteEvents: to delete: "+allAds.get(i).getTitle());
-                networkMethods.deleteEvent(userInfo,allAds.get(i));
-                allAds.remove(i);
-            }
+        switch (adType) {
+            case TYPE_EVENT:
+                for (int i = 0; i < allAds.size(); i++) {
+                    Calendar calender = allAds.get(i).getDateTime().toCalender();
+                    calender.add(Calendar.HOUR_OF_DAY, 12);
+                    if (calender.before(Calendar.getInstance())) {
+                        networkMethods.deleteEvent(userInfo, allAds.get(i));
+                        allAds.remove(i);
+                    }
+                }
+                break;
+            case TYPE_LOSTFOUND:
+                for (int i = 0; i < allAds.size(); i++) {
+                    Calendar calender = allAds.get(i).getDateTime().toCalender();
+                    calender.add(Calendar.DAY_OF_MONTH, 30);
+                    if (calender.before(Calendar.getInstance())) {
+                        networkMethods.deleteEvent(userInfo, allAds.get(i));
+                        allAds.remove(i);
+                    }
+                }
+                break;
+            case TYPE_SELL:
+                for (int i = 0; i < allAds.size(); i++) {
+                    Calendar calender = allAds.get(i).getDateTime().toCalender();
+                    calender.add(Calendar.DAY_OF_MONTH, 45);
+                    if (calender.before(Calendar.getInstance())) {
+                        networkMethods.deleteEvent(userInfo, allAds.get(i));
+                        allAds.remove(i);
+                    }
+                }
+                break;
         }
-    }
 
-    private void orderAds(){
         Collections.sort(allAds, new Comparator<AdData>() {
             @Override
             public int compare(AdData o1, AdData o2) {
