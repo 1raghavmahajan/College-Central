@@ -266,7 +266,6 @@ public class Frag_Ads extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-
     //endregion
 
     public void refresh() {
@@ -395,7 +394,8 @@ public class Frag_Ads extends Fragment {
                 if(recyclerView!=null) {
                     if (recyclerView.getAdapter() == null) {
                         if(adType.equals(TYPE_EVENT))
-                            checkDeleteOrderEvents();
+                            checkDeleteEvents();
+                        orderAds();
                         setUpRecyclerView();
                     }
                     else {
@@ -404,14 +404,18 @@ public class Frag_Ads extends Fragment {
                             view.findViewById(R.id.ads_default).setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
-
+                        if(adType.equals(TYPE_EVENT))
+                            checkDeleteEvents();
+                        orderAds();
                         switch (adType) {
                             case TYPE_TEACH:
                                 ((teachingAdAdapter) recyclerView.getAdapter()).change(allAds);
                                 break;
                             case TYPE_EVENT:
-                                checkDeleteOrderEvents();
                                 ((EventsAdapter) recyclerView.getAdapter()).change(allAds);
+                                break;
+                            case TYPE_LOSTFOUND:
+                                ((LostFoundAdapter) recyclerView.getAdapter()).change(allAds);
                                 break;
                             default:
                                 ((MainAdapter) recyclerView.getAdapter()).change(allAds);
@@ -451,20 +455,20 @@ public class Frag_Ads extends Fragment {
 
     }
 
-    private void checkDeleteOrderEvents() {
-
-        //Log.i(TAG, "checkDeleteOrderEvents: ");
+    private void checkDeleteEvents() {
 
         for (int i=0; i<allAds.size();i++) {
             Calendar calender = allAds.get(i).getDateTime().toCalender();
             calender.add(Calendar.HOUR_OF_DAY,12);
             if(calender.before(Calendar.getInstance())) {
-                //Log.i(TAG, "checkDeleteOrderEvents: to delete: "+allAds.get(i).getTitle());
+                //Log.i(TAG, "checkDeleteEvents: to delete: "+allAds.get(i).getTitle());
                 networkMethods.deleteEvent(userInfo,allAds.get(i));
                 allAds.remove(i);
             }
         }
+    }
 
+    private void orderAds(){
         Collections.sort(allAds, new Comparator<AdData>() {
             @Override
             public int compare(AdData o1, AdData o2) {
@@ -478,7 +482,6 @@ public class Frag_Ads extends Fragment {
                     return 0;
             }
         });
-
     }
 
 }

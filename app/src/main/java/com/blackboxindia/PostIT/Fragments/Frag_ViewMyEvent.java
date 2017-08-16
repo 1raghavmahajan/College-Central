@@ -158,6 +158,8 @@ public class Frag_ViewMyEvent extends Fragment {
             SimpleDateFormat tf = new SimpleDateFormat(timeFormat, Locale.US);
             tv_Time.setText(tf.format(event.getDateTime().toCalender().getTime()));
 
+            view.findViewById(R.id.posted_by_details).setVisibility(View.GONE);
+
             setUpImgRecycler();
         }
 

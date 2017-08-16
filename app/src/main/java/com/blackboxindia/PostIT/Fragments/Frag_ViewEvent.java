@@ -2,7 +2,6 @@ package com.blackboxindia.PostIT.Fragments;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,7 +36,7 @@ public class Frag_ViewEvent extends Fragment {
     RecyclerView imgRecyclerView;
     TextView tv_Title, tv_Description;
     TextView tv_Date, tv_Time;
-    TextView tv_Name, tv_Address, tv_Phone, tv_College;
+    TextView tv_Name, tv_Address, tv_Phone, tv_Email, tv_Hostel;
     ImageView imageView;
     View view;
     Context context;
@@ -81,7 +80,8 @@ public class Frag_ViewEvent extends Fragment {
         tv_Name = view.findViewById(R.id.Ad_tvName);
         tv_Address = view.findViewById(R.id.Ad_tvRoomNumber);
         tv_Phone = view.findViewById(R.id.Ad_tvPhone);
-        tv_College = view.findViewById(R.id.Ad_tvCollege);
+        tv_Hostel = view.findViewById(R.id.Ad_tvHostel);
+        tv_Email = view.findViewById(R.id.Ad_tvEmail);
         imageView = view.findViewById(R.id.Ad_Profile);
 
     }
@@ -121,15 +121,8 @@ public class Frag_ViewEvent extends Fragment {
             tv_Name.setText(userInfo.getName());
             tv_Address.setText(userInfo.getRoomNumber());
             tv_Phone.setText(userInfo.getPhone());
-            tv_College.setText(userInfo.getCollegeName());
-            tv_Phone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL);
-                    intent.setData(Uri.parse("tel:"+tv_Phone.getText()));
-                    startActivity(intent);
-                }
-            });
+            tv_Hostel.setText(userInfo.getHostel());
+            tv_Email.setText(userInfo.getEmail());
 
             String dateFormat = "dd/MM/yy";
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);

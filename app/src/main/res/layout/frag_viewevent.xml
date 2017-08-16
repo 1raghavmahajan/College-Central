@@ -2,7 +2,6 @@
 <com.blackboxindia.PostIT.CustomViews.LockableScrollView
     android:id="@+id/lockableScrollView"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -24,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_margin="6dp"
+                android:layout_margin="12dp"
                 android:maxLines="2"
                 android:maxLength="@integer/Max_Title_Length"
                 android:text="@string/sampleTitle"
@@ -39,13 +38,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/viewAdImageSize"
                 android:layout_below="@+id/Ad_tvTitle"
+                android:layout_marginBottom="12dp"
                 />
 
             <TextView
                 android:id="@+id/Ad_tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="8dp"
                 android:text="@string/date"
                 android:textSize="19sp"
                 android:textStyle="bold"
@@ -83,15 +84,28 @@
                 android:layout_toEndOf="@id/Ad_tvTime"
                  />
 
+            <View
+                android:id="@+id/Ad_div"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/black_trans80"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_below="@id/Ad_tvDate"/>
+
             <TextView
                 android:id="@+id/Ad_tv1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/Ad_tvTime"
-                android:layout_margin="12dp"
+                android:layout_below="@id/Ad_div"
+                android:layout_marginStart="12dp"
+                android:layout_marginBottom="12dp"
                 android:text="@string/labelDescription"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/Ad_tvDescription"
                 android:layout_width="match_parent"
@@ -103,78 +117,105 @@
                 android:textSize="15sp"
                 android:maxLength="@integer/Max_Description_Size"
                 android:linksClickable="true"
-                android:autoLink="all"/>
+                android:autoLink="all"
+                android:textColorLink="@color/dark_blue"/>
 
-            <TextView
-                android:id="@+id/Ad_tv2"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/posted_by_details"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/Ad_tvDescription"
-                android:text="@string/posted_by"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:layout_margin="12dp"
-                />
-            <TextView
-                android:id="@+id/Ad_tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/Ad_tv2"
-                android:text="@string/name"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="3dp"
-                android:textSize="15sp"
-                />
-            <TextView
-                android:id="@+id/Ad_tvRoomNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/Ad_tvName"
-                android:text="@string/room_number"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="3dp"
-                android:textSize="15sp"
-                />
-            <TextView
-                android:id="@+id/Ad_tvHostel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/Ad_tvRoomNumber"
-                android:text="@string/hostel"
-                android:layout_marginStart="16dp"
+                android:layout_below="@id/Ad_tvDescription">
 
-                android:textSize="15sp"
-                />
-            <TextView
-                android:id="@+id/Ad_tvPhone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/Ad_tvHostel"
-                android:text="@string/phone_number"
-                android:layout_marginStart="16dp"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp"
-                android:textSize="15sp"
-                />
-            <TextView
-                android:id="@+id/Ad_tvCollege"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/Ad_tvPhone"
-                android:text="@string/sample_college"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="20dp"
-                android:textSize="15sp"/>
+                <View
+                    android:id="@+id/Ad_div2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black_trans80"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/Ad_Profile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/avatar"
-                android:layout_marginEnd="22dp"
-                android:layout_alignTop="@id/Ad_tvName"
-                android:layout_alignEnd="@+id/Ad_tvDescription"
-                android:layout_marginBottom="20dp"/>
+                <TextView
+                    android:id="@+id/Ad_tv2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Ad_div2"
+                    android:text="@string/posted_by"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginBottom="12dp"
+                    />
+                <TextView
+                    android:id="@+id/Ad_tvName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Ad_tv2"
+                    android:text="@string/name"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="3dp"
+                    android:textSize="15sp"
+                    />
+                <TextView
+                    android:id="@+id/Ad_tvRoomNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Ad_tvName"
+                    android:text="@string/roomNumber"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="3dp"
+                    android:textSize="15sp"
+                    />
+                <TextView
+                    android:id="@+id/Ad_tvHostel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Ad_tvName"
+                    android:layout_toEndOf="@id/Ad_tvRoomNumber"
+                    android:text="@string/hostel"
+                    android:layout_marginStart="16dp"
+                    android:textSize="15sp"
+                    />
+                <TextView
+                    android:id="@+id/Ad_tvPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Ad_tvHostel"
+                    android:text="@string/phone_number"
+                    android:layout_marginStart="16dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:textSize="15sp"
+                    android:linksClickable="true"
+                    android:autoLink="all"
+                    android:textColorLink="@color/dark_blue"
+                    />
+                <TextView
+                    android:id="@+id/Ad_tvEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/Ad_tvPhone"
+                    android:text="@string/email"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="20dp"
+                    android:textSize="15sp"
+                    android:linksClickable="true"
+                    android:autoLink="all"
+                    android:textColorLink="@color/dark_blue"/>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/Ad_Profile"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:src="@drawable/avatar"
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@id/Ad_tvName"
+                    android:layout_marginBottom="20dp"/>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

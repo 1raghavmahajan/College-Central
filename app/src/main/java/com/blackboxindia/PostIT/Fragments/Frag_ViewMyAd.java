@@ -9,7 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+        import android.util.Log;
+        import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class Frag_ViewMyAd extends Fragment {
 
     @Override
     public void onResume() {
+        Log.i(TAG, "onResume: ");
         ((MainActivity)context).toolbar.setTitle(TITLE_ViewAd);
         MenuItem item = ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete);
         item.setVisible(true);
@@ -100,8 +102,10 @@ public class Frag_ViewMyAd extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.frag_viewmyad, container, false);
+        view = inflater.inflate(R.layout.frag_viewad, container, false);
         context = view.getContext();
+
+        Log.i(TAG, "onCreateView: ");
 
         initVariables();
 
@@ -119,6 +123,7 @@ public class Frag_ViewMyAd extends Fragment {
 
     @Override
     public void onStop() {
+        Log.i(TAG, "onStop: ");
         super.onStop();
         List<FileDownloadTask> activeDownloadTasks = FirebaseStorage.getInstance().getReference().getActiveDownloadTasks();
         for (FileDownloadTask task :
@@ -129,6 +134,7 @@ public class Frag_ViewMyAd extends Fragment {
 
     @Override
     public void onDestroy() {
+        Log.i(TAG, "onDestroy: ");
         super.onDestroy();
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_delete).setVisible(false);
         ((MainActivity) getActivity()).toolbar.getMenu().findItem(R.id.toolbar_edit).setVisible(false);
@@ -138,7 +144,6 @@ public class Frag_ViewMyAd extends Fragment {
     //endregion
 
     void populateViews() {
-
         if(adData!=null) {
             //Log.i(TAG,"AdData not null");
 
@@ -154,10 +159,10 @@ public class Frag_ViewMyAd extends Fragment {
             tv_Title.setText(adData.getTitle());
             tv_Description.setText(adData.getDescription());
 
+            view.findViewById(R.id.posted_by_details).setVisibility(View.GONE);
+
             setUpImgRecycler();
         }
-//        else
-            //Log.i("Frag_ViewAd YOYO","no adDATA");
     }
 
     void setUpImgRecycler() {
@@ -171,5 +176,10 @@ public class Frag_ViewMyAd extends Fragment {
             imgRecyclerView.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onPause() {
+        Log.i(TAG, "onPause: ");
+        super.onPause();
+    }
 }
 

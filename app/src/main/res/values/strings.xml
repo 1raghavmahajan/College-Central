@@ -43,7 +43,7 @@
     <string name="Profile_image">Profile Image</string>
     <string name="change">Change</string>
     <string name="Sample_Name">Set Name</string>
-    <string name="roomNumber">Room Number</string>
+    <string name="roomNumber">Room</string>
     <string name="phone">Phone</string>
     <string name="label_update_changes">Update Changes</string>
     <string name="create_account">Create Account</string>
@@ -63,7 +63,6 @@
     <string name="refresh">Refresh</string>
     <string name="delete">Delete</string>
     <string name="posted_by">Posted by:</string>
-    <string name="room_number">Room Number</string>
     <string name="phone_number">Phone Number</string>
     <string name="title_activity_onboarding">OnboardingActivity</string>
 
@@ -123,5 +122,7 @@
     <string name="broadcast">Broadcast!</string>
     <string name="posted_on">Posted on:</string>
     <string name="edit">Edit</string>
+    <string name="update">Update</string>
+    <string name="create_event">Create Event</string>
 
 </resources>
