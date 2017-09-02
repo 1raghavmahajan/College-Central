@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="2dp">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black_trans50"
+        android:layout_marginBottom="2dp"
+        app:cardElevation="1dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daily toast"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:background="@drawable/ripple3"
+            android:clickable="true"
+            />
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="10dp"
+            />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black_trans50"
+        android:layout_marginBottom="2dp"
+        app:cardElevation="1dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daily toast time"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:background="@drawable/ripple3"
+            android:clickable="true"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minEms="3"
+            android:padding="10dp"
+            android:text="1:00 PM"
+            android:textSize="17sp"
+            android:textColor="@android:color/black"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="4dp"
+            />
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black_trans50"
+        android:layout_marginBottom="2dp"
+        app:cardElevation="1dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Event"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:background="@drawable/ripple3"
+            android:clickable="true"
+            />
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="10dp"
+            />
+
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black_trans50"
+        android:layout_marginBottom="2dp"
+        app:cardElevation="1dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Document"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:background="@drawable/ripple3"
+            android:clickable="true"
+            />
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="10dp"
+            />
+
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black_trans50"
+        android:layout_marginBottom="2dp"
+        app:cardElevation="1dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Broadcasts"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            android:gravity="start|center_vertical"
+            android:padding="16dp"
+            android:textStyle="normal"
+            android:textAllCaps="false"
+            android:background="@drawable/ripple3"
+            android:clickable="true"
+            />
+        <CheckBox
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="10dp"
+            />
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -30,6 +30,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -149,7 +150,30 @@ public class CloudStorageMethods {
 
         if(cachedIcons.containsKey(AdID)) {
             //Log.i(TAG,"getMajorImage cached");
-            listener.onSuccess(cachedIcons.get(AdID));
+            Uri uri = cachedIcons.get(AdID);
+            File file = new File(URI.create(uri.toString()));
+            if(file.exists())
+                listener.onSuccess(uri);
+            else{
+                final File localFile;
+
+                localFile = new File(context.getCacheDir(), AdID + ".webp");
+
+                storage.getReference().child("images/" + AdID + "/0s").getFile(localFile)
+                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+//                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getPath());
+                                cachedIcons.put(AdID,Uri.fromFile(localFile));
+                                listener.onSuccess(Uri.fromFile(localFile));
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onFailure(e);
+                    }
+                });
+            }
         }
         else {
             final File localFile;
@@ -178,7 +202,29 @@ public class CloudStorageMethods {
 
         if(cachedBigImages.containsKey(AdID + i)) {
             //Log.i(TAG,"Getting image from cache "+ AdID + i );
-            listener.onSuccess(cachedBigImages.get(AdID + i));
+            Uri uri = cachedBigImages.get(AdID + i);
+            File file = new File(URI.create(uri.toString()));
+            if(file.exists())
+                listener.onSuccess(cachedBigImages.get(AdID + i));
+            else {
+                final File localFile;
+                localFile = new File(context.getCacheDir(), AdID + i + ".bmp");
+
+                storage.getReference().child("images/" + AdID + "/" + i).getFile(localFile)
+                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                //Log.i(TAG,"uri:" + Uri.fromFile(localFile));
+                                cachedBigImages.put(AdID+i,Uri.fromFile(localFile));
+                                listener.onSuccess(Uri.fromFile(localFile));
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        listener.onFailure(exception);
+                    }
+                });
+            }
         }
         else {
             //Log.i(TAG,"Getting image from internet "+ AdID + i );
@@ -200,7 +246,6 @@ public class CloudStorageMethods {
                     listener.onFailure(exception);
                 }
             });
-
         }
     }
 
@@ -215,43 +260,66 @@ public class CloudStorageMethods {
 
         if(cachedProfileImages.containsKey(uID)) {
             Log.i(TAG, "getProfileImage: containsKey");
-            listener.onSuccess(Uri.fromFile(new File(context.getCacheDir(), uID + "_image.webp")));
-            storage.getReference().child("user/"+uID+"/profileImage").getMetadata()
-                    .addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-                        @Override
-                        public void onSuccess(final StorageMetadata storageMetadata) {
-                            if(cachedProfileImages.get(uID).timeStamp< storageMetadata.getUpdatedTimeMillis())
-                            {
-                                final File localFile;
-                                localFile = new File(context.getCacheDir(), uID + "_image.webp");
-                                storage.getReference().child("user/"+uID+"/profileImage").getFile(localFile)
-                                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                                            @Override
-                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                                cachedProfileImages.put(uID,new UriNew(Uri.fromFile(localFile),storageMetadata.getUpdatedTimeMillis()));
-                                                listener.onSuccess(Uri.fromFile(localFile));
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                                //Log.e(TAG, "onFailure: getNewImage",e);
-                                                listener.onSuccess(cachedProfileImages.get(uID).uri);
-                                            }
-                                        });
+            File ProfileImage = new File(context.getCacheDir(), uID + "_image.webp");
+            if(ProfileImage.exists()) {
+                listener.onSuccess(Uri.fromFile(ProfileImage));
+                storage.getReference().child("user/" + uID + "/profileImage").getMetadata()
+                        .addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                            @Override
+                            public void onSuccess(final StorageMetadata storageMetadata) {
+                                if (cachedProfileImages.get(uID).timeStamp < storageMetadata.getUpdatedTimeMillis()) {
+                                    final File localFile;
+                                    localFile = new File(context.getCacheDir(), uID + "_image.webp");
+                                    storage.getReference().child("user/" + uID + "/profileImage").getFile(localFile)
+                                            .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                                @Override
+                                                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                                    cachedProfileImages.put(uID, new UriNew(Uri.fromFile(localFile), storageMetadata.getUpdatedTimeMillis()));
+                                                    listener.onSuccess(Uri.fromFile(localFile));
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            //Log.e(TAG, "onFailure: getNewImage",e);
+                                            listener.onSuccess(cachedProfileImages.get(uID).uri);
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e(TAG, "onFailure: getMetaData",e);
-//                            listener.onSuccess(cachedProfileImages.get(uID).uri);
-                        }
-                    });
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "onFailure: getMetaData", e);
+                        //                            listener.onSuccess(cachedProfileImages.get(uID).uri);
+                    }
+                });
+            }else{
+                final File localFile;
+                localFile = new File(context.getCacheDir(), uID + "_image.webp");
+
+                storage.getReference().child("user/"+uID+"/profileImage").getFile(localFile)
+                        .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                storage.getReference().child("user/"+uID+"/profileImage").getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                    @Override
+                                    public void onSuccess(StorageMetadata storageMetadata) {
+                                        cachedProfileImages.put(uID,new UriNew(Uri.fromFile(localFile),storageMetadata.getUpdatedTimeMillis()));
+                                    }
+                                });
+                                listener.onSuccess(Uri.fromFile(localFile));
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onFailure(e);
+                    }
+                });
+            }
         }
         else {
             Log.i(TAG, "getProfileImage: no key");
             final File localFile;
-
             localFile = new File(context.getCacheDir(), uID + "_image.webp");
 
             storage.getReference().child("user/"+uID+"/profileImage").getFile(localFile)
@@ -491,7 +559,5 @@ public class CloudStorageMethods {
     public void uploadFile(String name, String college, final onCompleteListener<Uri> listener) {
 
     }
-
-
 
 }

@@ -30,6 +30,7 @@
     <!--<color name="quantum_grey_600">#757575</color>-->
 
     <color name="black_trans80">#33000000</color>
+    <color name="black_trans50">#142a2a2a</color>
     <color name="trans30">#1e000000</color>
     <color name="indicator_unselected">#4D000000</color>
 

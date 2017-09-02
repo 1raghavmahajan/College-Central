@@ -83,6 +83,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
         root = dir;
         Directory d = root;
         for (Integer integer : path) {
+
             if(d.folders.size()<integer)
                 d = d.folders.get(integer);
             else{
@@ -204,6 +205,7 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewH
                                 new CloudStorageMethods(context).downloadFile(name, collegeName, new onCompleteListener<File>() {
                                     @Override
                                     public void onSuccess(File file) {
+                                        doneIcon.setVisibility(View.VISIBLE);
                                         dialog.cancel();
                                         try {
                                             FileOpener.using(context).openFile(file);
