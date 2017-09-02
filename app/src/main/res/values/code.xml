@@ -4,6 +4,7 @@
     <integer name="Min_Password_Size">6</integer>
 
     <integer name="Max_Title_Length">40</integer>
-    <integer name="Max_Description_Size">2000</integer>
+    <integer name="Max_Description_Size">3000</integer>
 
+    <integer name="backgroundAlpha">100</integer>
 </resources>

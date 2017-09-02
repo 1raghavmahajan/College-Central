@@ -89,7 +89,7 @@
                     android:id="@+id/Ad_div2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/black_trans80"
+                    android:background="@color/black_trans50"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginStart="4dp"

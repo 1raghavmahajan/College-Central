@@ -54,7 +54,7 @@ public class OnboardingActivity extends AppCompatActivity {
             R.color.colorAccent,
             R.color.dark_green,
             R.color.BlueGrey700,
-            R.color.Black_85,
+            R.color.black_trans180,
             R.color.appIcon_back };
 
     static String title[] = {

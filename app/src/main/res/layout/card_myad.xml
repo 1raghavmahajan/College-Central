@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="21dp"
             android:src="@drawable/ic_delete"
-            android:tint="@color/Black_85"
+            android:tint="@color/black_trans180"
             app:layout_constraintRight_toRightOf="parent"/>
 
         <ImageView
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="21dp"
             android:src="@drawable/ic_edit"
-            android:tint="@color/Black_85"
+            android:tint="@color/black_trans180"
             android:layout_marginEnd="2dp"
             android:layout_marginStart="2dp"
             app:layout_constraintRight_toLeftOf="@id/adItem_Delete"/>

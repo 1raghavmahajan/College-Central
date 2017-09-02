@@ -1,5 +1,6 @@
 package com.blackboxindia.PostIT.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.TimePickerDialog;
@@ -10,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -20,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -37,6 +40,7 @@ import com.blackboxindia.PostIT.dataModels.UserInfo;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class Frag_newEvent extends Fragment {
@@ -46,8 +50,10 @@ public class Frag_newEvent extends Fragment {
     private static String TAG = Frag_newEvent.class.getSimpleName()+" YOYO";
     private static Integer ADD_PHOTO_CODE = 154;
 
-    EditText etTitle, etDate, etTime, etDescription;
-    Button btn_newImg, btn_Create;
+    EditText etTitle, etDescription;
+    TextView etDate, etTime;
+    Button btn_newImg;
+    CardView btn_Create;
     RecyclerView recyclerView;
     NewAdImageAdapter adapter;
     View view;
@@ -101,6 +107,8 @@ public class Frag_newEvent extends Fragment {
 
         setUpRecycler();
 
+        populateDateTime();
+
         setUpListeners();
 
         initCamera();
@@ -136,6 +144,27 @@ public class Frag_newEvent extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false));
     }
 
+    @SuppressLint("SimpleDateFormat")
+    private void populateDateTime(){
+        Calendar currentDate= Calendar.getInstance();
+
+        SimpleDateFormat format = new SimpleDateFormat("d", Locale.US);
+        String date = format.format(new Date());
+        if(date.endsWith("1") && !date.endsWith("11"))
+            format = new SimpleDateFormat("EEEE, d'st' MMMM ''yy");
+        else if(date.endsWith("2") && !date.endsWith("12"))
+            format = new SimpleDateFormat("EEEE, d'nd' MMMM ''yy");
+        else if(date.endsWith("3") && !date.endsWith("13"))
+            format = new SimpleDateFormat("EEEE, d'rd' MMMM ''yy");
+        else
+            format = new SimpleDateFormat("EEEE, d'th' MMMM ''yy");
+
+        etDate.setText(format.format(currentDate.getTime()));
+
+        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm a", Locale.US);
+        etTime.setText( sdf.format(currentDate.getTime()));
+    }
+
     private void setUpListeners() {
 
         btn_Create.setOnClickListener(new View.OnClickListener() {
@@ -164,7 +193,8 @@ public class Frag_newEvent extends Fragment {
                                 myCalendar.set(Calendar.MONTH, monthOfYear);
                                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                                String myFormat = "dd/MM/yy";
+//                                String myFormat = "EEEE'th,'dd/MM/yy";
+                                String myFormat = "EEEE, MMMM d ''yy";
                                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
                                 etDate.setText(sdf.format(myCalendar.getTime()));
                             }

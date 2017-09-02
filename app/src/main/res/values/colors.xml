@@ -20,18 +20,15 @@
     <color name="colorEvents">#607d8b</color>
     <color name="colorTeaching">#673AB7</color>
 
-     <!--<color name="colorPrimary">#37474f</color>-->
-    <!--<color name="colorPrimaryDark">#263238</color>-->
-    <!--<color name="colorAccent">#a4b220</color>-->
-    <!--<color name="colorCardBackground">#d378909c</color>-->
+    <color name="black">#000000</color>
+    <color name="black_trans220">#dc000000</color>
+    <color name="black_trans180">#b4000000</color>
+    <color name="black_trans50">#32000000</color>
+    <color name="black_trans30">#1e000000</color>
+    <color name="black_trans20">#14000000</color>
+    <color name="black_trans10">#0a000000</color>
+    <color name="black_trans0">#00000000</color>
 
-    <!--<color name="colorSearch">#7f7b04</color>-->
-
-    <!--<color name="quantum_grey_600">#757575</color>-->
-
-    <color name="black_trans80">#33000000</color>
-    <color name="black_trans50">#142a2a2a</color>
-    <color name="trans30">#1e000000</color>
     <color name="indicator_unselected">#4D000000</color>
 
     <color name="BlueGrey900">#263238</color>
@@ -66,11 +63,12 @@
     <color name="white_30">#46ffffff</color>
     <color name="white_70">#B3FFFFFF</color>
     <color name="white_85">#c8ffffff</color>
-    <color name="Black_85">#b41b1b1b</color>
+
     <color name="cyan_50">#E0F7FA</color>
     <color name="amber_50">#FFF8E1</color>
     <color name="purple_50">#F3E5F5</color>
 
+    <color name="redlite">#c62828</color>
     <color name="redAccent">#d50000</color>
     <color name="amberLight">#aaffc107</color>
     <color name="amberDark">#e2ac0c</color>

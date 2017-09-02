@@ -5,7 +5,7 @@
     android:color="@color/colorAccent"
     tools:targetApi="lollipop">
 
-    <item android:drawable="@color/black_trans80"/>
+    <item android:drawable="@color/black_trans50"/>
 
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">

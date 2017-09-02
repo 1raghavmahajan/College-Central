@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
 
         View backgroundImage = findViewById(R.id.frame_layout);
         Drawable background = backgroundImage.getBackground();
-        background.setAlpha(10);
+        background.setAlpha(getResources().getInteger(R.integer.backgroundAlpha));
 
         initVariables();
 

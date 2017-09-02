@@ -126,7 +126,7 @@
 
         <com.blackboxindia.PostIT.CustomViews.SquareCard
             android:id="@+id/mainCard3"
-            app:cardBackgroundColor="@color/Black_85"
+            app:cardBackgroundColor="@color/black_trans180"
             android:foreground="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:background="@drawable/ripple2"
