@@ -9,14 +9,14 @@ import android.widget.Toast;
 
 import com.blackboxindia.PostIT.R;
 
-public class CustomDialog {
+public class OptionsDialog {
 
     private Context context;
 
-    public static CustomDialog using(Context context){
-        CustomDialog customDialog = new CustomDialog();
-        customDialog.context = context;
-        return customDialog;
+    public static OptionsDialog using(Context context){
+        OptionsDialog textDialog = new OptionsDialog();
+        textDialog.context = context;
+        return textDialog;
     }
 
     public void create(String title, final ClickListener listener){
@@ -47,6 +47,10 @@ public class CustomDialog {
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+    }
+
+    void populate(String college){
+//        new NetworkMethods(context)
     }
 
     public interface ClickListener {

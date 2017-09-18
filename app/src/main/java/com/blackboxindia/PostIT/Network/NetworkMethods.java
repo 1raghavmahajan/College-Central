@@ -1002,6 +1002,26 @@ public class NetworkMethods {
             }
         });
     }
+
+    public void getNotificationGroups(String collegeName, final onCompleteListener<ArrayList<String>> listener){
+        mDatabase.child(DIRECTORY_COLLEGES).child(collegeName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                ArrayList<String> hostels;
+                hostels = dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<String>>() {});
+                if(hostels !=null)
+                    listener.onSuccess(hostels);
+                else
+                    listener.onSuccess(null);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailure(databaseError.toException());
+            }
+        });
+    }
     //endregion
 
     //region Folder Management

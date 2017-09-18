@@ -177,7 +177,7 @@ public class Frag_newEvent extends Fragment {
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((EditText)v).setError(null);
+//                ((T)v).setError(null);
                 Calendar currentDate= Calendar.getInstance();
                 int
                     yy = currentDate.get(Calendar.YEAR),
@@ -209,7 +209,7 @@ public class Frag_newEvent extends Fragment {
         etTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((EditText)v).setError(null);
+//                ((EditText)v).setError(null);
                 Calendar mcurrentTime = Calendar.getInstance();
                 int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
                 int minute = mcurrentTime.get(Calendar.MINUTE);
@@ -235,14 +235,14 @@ public class Frag_newEvent extends Fragment {
 
     private boolean validateForm(){
         boolean f = true;
-        if(etDate.getText().toString().trim().equals("")){
-            etDate.setError("Required!");
-            f = false;
-        }
-        if(etTime.getText().toString().trim().equals("")){
-            etTime.setError("Required!");
-            f = false;
-        }
+//        if(etDate.getText().toString().trim().equals("")){
+//            etDate.setError("Required!");
+//            f = false;
+//        }
+//        if(etTime.getText().toString().trim().equals("")){
+//            etTime.setError("Required!");
+//            f = false;
+//        }
         if(etDescription.getText().toString().trim().equals("")){
             etDescription.setError("Please give some details about the event");
             f = false;

@@ -23,7 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blackboxindia.PostIT.HelperClasses.CustomDialog;
+import com.blackboxindia.PostIT.HelperClasses.TextDialog;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
@@ -56,8 +56,8 @@ public class Frag_newAccount extends Fragment {
 
     ArrayList<String> collegeList;
     ArrayList<String> hostelList;
-    CustomDialog.ClickListener collegeListener;
-    CustomDialog.ClickListener hostelListener;
+    TextDialog.ClickListener collegeListener;
+    TextDialog.ClickListener hostelListener;
     NetworkMethods networkMethods;
 
     //endregion
@@ -174,7 +174,7 @@ public class Frag_newAccount extends Fragment {
                 else
                     collegeList = new ArrayList<>();
 
-                collegeListener = new CustomDialog.ClickListener() {
+                collegeListener = new TextDialog.ClickListener() {
 
                     @Override
                     public void onItemSelect(String name) {
@@ -188,7 +188,7 @@ public class Frag_newAccount extends Fragment {
                                 else
                                     hostelList = new ArrayList<>();
 
-                                hostelListener = new CustomDialog.ClickListener() {
+                                hostelListener = new TextDialog.ClickListener() {
                                     @Override
                                     public void onItemSelect(String name) {
 
@@ -286,7 +286,7 @@ public class Frag_newAccount extends Fragment {
         return strings1;
     }
 
-    private void configureCollegeSpinner(final CustomDialog.ClickListener listener){
+    private void configureCollegeSpinner(final TextDialog.ClickListener listener){
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,addStuff(collegeList,0)){
             @Override
@@ -317,7 +317,7 @@ public class Frag_newAccount extends Fragment {
                     size = collegeList.size();
 
                 if (position == size+1) {
-                    CustomDialog.using(context).create("College Name:", listener);
+                    TextDialog.using(context).create("College Name:", listener);
 //                    createCustomDialog("College Name:", listener);
                 }
                 else if(position != 0) {
@@ -332,7 +332,7 @@ public class Frag_newAccount extends Fragment {
         });
     }
 
-    private void configureHostelSpinner(final CustomDialog.ClickListener listener){
+    private void configureHostelSpinner(final TextDialog.ClickListener listener){
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,addStuff(hostelList,1)){
             @Override
@@ -366,7 +366,7 @@ public class Frag_newAccount extends Fragment {
                     size = hostelList.size();
                 }
                 if (position == size+1) {
-                    CustomDialog.using(context).create("Hostel Name:",listener);
+                    TextDialog.using(context).create("Hostel Name:",listener);
                 }
                 else if(position != 0) {
                     ParentView.findViewById(R.id.create_hostelError).setVisibility(View.INVISIBLE);

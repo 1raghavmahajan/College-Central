@@ -16,7 +16,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -180,9 +179,9 @@ public class MainActivity extends AppCompatActivity {
         window.setStatusBarColor(Color.TRANSPARENT);
         window.setNavigationBarColor(Color.TRANSPARENT);
 
-        View backgroundImage = findViewById(R.id.frame_layout);
-        Drawable background = backgroundImage.getBackground();
-        background.setAlpha(getResources().getInteger(R.integer.backgroundAlpha));
+//        View backgroundImage = findViewById(R.id.frame_layout);
+//        Drawable background = backgroundImage.getBackground();
+//        background.setAlpha(getResources().getInteger(R.integer.backgroundAlpha));
 
         initVariables();
 

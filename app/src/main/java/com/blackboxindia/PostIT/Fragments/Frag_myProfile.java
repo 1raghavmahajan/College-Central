@@ -27,7 +27,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.blackboxindia.PostIT.HelperClasses.CustomDialog;
+import com.blackboxindia.PostIT.HelperClasses.TextDialog;
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onUpdateListener;
@@ -67,7 +67,7 @@ public class Frag_myProfile extends Fragment {
     Bitmap newProfileImage;
 
     ArrayList<String> hostelList;
-    CustomDialog.ClickListener hostelListener;
+    TextDialog.ClickListener hostelListener;
 
     boolean recentlySentMail = false;
     FirebaseUser currentUser;
@@ -200,7 +200,7 @@ public class Frag_myProfile extends Fragment {
                 else
                     hostelList = new ArrayList<>();
 
-                hostelListener = new CustomDialog.ClickListener() {
+                hostelListener = new TextDialog.ClickListener() {
                     @Override
                     public void onItemSelect(String name) {
 
@@ -320,7 +320,7 @@ public class Frag_myProfile extends Fragment {
         }
     }
 
-    private void configureHostelSpinner(final CustomDialog.ClickListener listener){
+    private void configureHostelSpinner(final TextDialog.ClickListener listener){
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context,R.layout.spinner_item,addStuff(hostelList)){
             @Override
@@ -355,7 +355,7 @@ public class Frag_myProfile extends Fragment {
                     size = hostelList.size();
                 }
                 if (position == size+1) {
-                    CustomDialog.using(context).create("Hostel Name:",listener);
+                    TextDialog.using(context).create("Hostel Name:",listener);
                 }
                 else if(position != 0) {
                     MainView.findViewById(R.id.profile_hostelError).setVisibility(View.INVISIBLE);
