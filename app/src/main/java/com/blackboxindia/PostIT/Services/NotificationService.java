@@ -14,4 +14,9 @@ public class NotificationService extends FirebaseMessagingService {
     public void onMessageSent(String s) {
         super.onMessageSent(s);
     }
+
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+    }
 }
