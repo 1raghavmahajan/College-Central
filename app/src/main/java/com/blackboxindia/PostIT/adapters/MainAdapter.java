@@ -5,22 +5,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
+import androidx.cardview.widget.CardView;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.dataModels.AdData;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -128,7 +125,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.adItemViewHold
         }
 
         private void setListeners(final AdData currentAd, final adItemViewHolder holder, final int position) {
-            ViewCompat.setTransitionName(holder.getMajorImage(), String.valueOf(position) + "_image");
+          ViewCompat.setTransitionName(holder.getMajorImage(), position + "_image");
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

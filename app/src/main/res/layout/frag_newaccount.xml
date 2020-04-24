@@ -7,7 +7,7 @@
     tools:context="com.blackboxindia.PostIT.Fragments.Frag_newAccount"
     android:id="@+id/create_main">
 
-    <android.support.constraint.ConstraintLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -46,7 +46,7 @@
                 />
         </FrameLayout>
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:id="@+id/create_etNameFrame"
@@ -57,7 +57,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp">
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_etName"
                 android:inputType="textPersonName"
                 android:hint="@string/name"
@@ -65,9 +65,9 @@
                 android:layout_height="wrap_content"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:id="@+id/create_etEmailFrame"
@@ -77,7 +77,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp">
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_etEmail"
                 android:inputType="textEmailAddress"
                 android:hint="@string/email"
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
         <Spinner
             android:id="@+id/create_etCollege"
@@ -123,7 +123,7 @@
 
         </FrameLayout>
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:id="@+id/create_etAddressFrame"
@@ -134,7 +134,7 @@
             android:layout_marginEnd="30dp"
             >
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_etAddress"
                 android:inputType="textPostalAddress"
                 android:hint="@string/roomNumber"
@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
         <Spinner
             android:id="@+id/create_etHostels"
@@ -181,7 +181,7 @@
 
         </FrameLayout>
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:id="@+id/create_etPhoneFrame"
@@ -192,7 +192,7 @@
             android:layout_marginEnd="30dp"
             >
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_etPhone"
                 android:inputType="phone"
                 android:hint="@string/phone"
@@ -200,9 +200,9 @@
                 android:layout_height="wrap_content"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:id="@+id/create_etPasswordFrame"
@@ -213,7 +213,7 @@
             android:layout_marginEnd="30dp"
             >
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_etPassword"
                 android:inputType="textPassword"
                 android:hint="@string/password"
@@ -221,9 +221,9 @@
                 android:layout_height="wrap_content"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:id="@+id/create_etPasswordConfirmFrame"
@@ -233,7 +233,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp">
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_etPasswordConfirm"
                 android:inputType="textPassword"
                 android:hint="@string/confirm_password"
@@ -241,7 +241,7 @@
                 android:layout_height="wrap_content"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/create_btnCreate"
@@ -253,6 +253,6 @@
             android:layout_marginTop="16dp"
             android:text="@string/create_account"/>
 
-    </android.support.constraint.ConstraintLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

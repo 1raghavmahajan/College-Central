@@ -1,21 +1,25 @@
 package com.blackboxindia.PostIT.Fragments;
 
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_TEACH;
+
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.blackboxindia.PostIT.HelperClasses.adViewTransition;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
@@ -29,7 +33,6 @@ import com.blackboxindia.PostIT.dataModels.AdData;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -37,11 +40,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_TEACH;
 
 public class Frag_Ads extends Fragment {
 

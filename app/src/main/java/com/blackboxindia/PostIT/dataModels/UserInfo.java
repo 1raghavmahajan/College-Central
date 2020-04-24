@@ -5,13 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Keep;
 import android.widget.Toast;
-
+import androidx.annotation.Keep;
 import com.blackboxindia.PostIT.Network.Interfaces.onLoginListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
 import com.blackboxindia.PostIT.activities.MainActivity;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -139,8 +137,7 @@ public class UserInfo implements Parcelable{
     }
 
     public void removeUserAd(String userAdKey) {
-        if(userAdKeys.contains(userAdKey))
-            userAdKeys.remove(userAdKey);
+      userAdKeys.remove(userAdKey);
     }
 
     //region Cache User Details

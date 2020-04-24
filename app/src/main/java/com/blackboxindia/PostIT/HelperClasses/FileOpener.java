@@ -3,10 +3,8 @@ package com.blackboxindia.PostIT.HelperClasses;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v4.content.FileProvider;
-
+import androidx.core.content.FileProvider;
 import com.blackboxindia.PostIT.BuildConfig;
-
 import java.io.File;
 import java.io.IOException;
 

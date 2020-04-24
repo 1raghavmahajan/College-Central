@@ -8,7 +8,7 @@
     android:fillViewport="true"
     >
 
-    <android.support.constraint.ConstraintLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="LabelFor"
@@ -38,7 +38,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/AdTitle">
 
-            <android.support.v7.widget.RecyclerView
+          <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ImageRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/viewAdImageSize"
@@ -168,6 +168,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/newAd_etDescription" />
 
-    </android.support.constraint.ConstraintLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.blackboxindia.PostIT.CustomViews.LockableScrollView>

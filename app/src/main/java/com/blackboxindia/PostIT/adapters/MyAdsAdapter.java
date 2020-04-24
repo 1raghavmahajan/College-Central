@@ -1,19 +1,22 @@
 package com.blackboxindia.PostIT.adapters;
 
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_TEACH;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import com.blackboxindia.PostIT.Fragments.Frag_EditAd;
 import com.blackboxindia.PostIT.Fragments.Frag_EditEvent;
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
@@ -25,14 +28,9 @@ import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.dataModels.AdData;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
+import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_TEACH;
 
 
 public class MyAdsAdapter extends RecyclerView.Adapter<MyAdsAdapter.adItemViewHolder> {

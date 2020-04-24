@@ -1,18 +1,19 @@
 package com.blackboxindia.PostIT.adapters;
 
+import static com.blackboxindia.PostIT.Network.NetworkMethods.TYPE_FOLDER;
+import static com.blackboxindia.PostIT.Network.NetworkMethods.TYPE_PDF;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import com.blackboxindia.PostIT.HelperClasses.FileOpener;
 import com.blackboxindia.PostIT.Network.CloudStorageMethods;
 import com.blackboxindia.PostIT.Network.ConnectionDetector;
@@ -21,16 +22,13 @@ import com.blackboxindia.PostIT.R;
 import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.dataModels.Directory;
 import com.github.lzyzsd.circleprogress.DonutProgress;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
-
-import static com.blackboxindia.PostIT.Network.NetworkMethods.TYPE_FOLDER;
-import static com.blackboxindia.PostIT.Network.NetworkMethods.TYPE_PDF;
 
 
 public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.mViewHolder> {

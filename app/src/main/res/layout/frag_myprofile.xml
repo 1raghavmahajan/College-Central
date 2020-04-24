@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -46,7 +46,7 @@
                 />
         </FrameLayout>
 
-        <android.support.design.widget.TextInputEditText
+    <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/profile_etName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
             android:visibility="invisible"
             />
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/profile_etEmailFrame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_etName">
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/profile_etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -96,9 +96,9 @@
                 android:enabled="true"
                 tools:ignore="Deprecated" />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/profile_etAddressFrame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_etEmailFrame">
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/profile_etAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                 android:inputType="textPostalAddress"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
         <Spinner
             android:id="@+id/profile_hostelSpinner"
@@ -154,7 +154,7 @@
 
         </FrameLayout>
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/profile_etCollegeFrame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_hostelSpinner">
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/profile_etCollege"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,9 +176,9 @@
                 tools:ignore="Deprecated"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/profile_etPhoneFrame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -188,7 +188,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile_etCollegeFrame">
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/profile_etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -196,7 +196,7 @@
                 android:inputType="phone"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/profile_btnUpdate"
@@ -209,6 +209,6 @@
             app:layout_constraintTop_toBottomOf="@+id/profile_etPhoneFrame"
             />
 
-    </android.support.constraint.ConstraintLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

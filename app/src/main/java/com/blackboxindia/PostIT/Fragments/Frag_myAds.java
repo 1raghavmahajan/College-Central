@@ -1,19 +1,20 @@
 package com.blackboxindia.PostIT.Fragments;
 
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
+
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
-
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onUpdateListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
@@ -22,12 +23,9 @@ import com.blackboxindia.PostIT.activities.MainActivity;
 import com.blackboxindia.PostIT.adapters.MyAdsAdapter;
 import com.blackboxindia.PostIT.dataModels.AdData;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
 
 
 public class Frag_myAds extends Fragment {

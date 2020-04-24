@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -14,7 +14,7 @@
     app:layout_constraintBottom_toTopOf="@+id/newAd_btnCreate"
     android:fillViewport="true">
 
-    <android.support.constraint.ConstraintLayout
+  <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
@@ -47,7 +47,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/AdTitle">
 
-            <android.support.v7.widget.RecyclerView
+          <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ImageRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -157,7 +157,7 @@
             app:layout_constraintTop_toBottomOf="@+id/newAd_line"
             />
 
-        <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
@@ -171,7 +171,7 @@
             app:counterEnabled="true"
             app:counterMaxLength="@integer/Max_Description_Size">
 
-            <android.support.design.widget.TextInputEditText
+      <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/newAd_etDescription"
                 android:hint="@string/hintDescriptionEvent"
                 android:inputType="textMultiLine"
@@ -184,13 +184,13 @@
                 android:minHeight="140dp"
                 />
 
-        </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    </android.support.constraint.ConstraintLayout>
+  </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
 
-    <android.support.v7.widget.CardView
+  <androidx.cardview.widget.CardView
         android:id="@+id/newAd_btnCreate"
         android:foreground="?android:attr/selectableItemBackground"
         android:background="@drawable/ripple3"
@@ -213,5 +213,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
-    </android.support.v7.widget.CardView>
-</android.support.constraint.ConstraintLayout>
+  </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

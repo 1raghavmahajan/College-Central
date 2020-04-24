@@ -1,5 +1,12 @@
 package com.blackboxindia.PostIT.activities;
 
+import static com.blackboxindia.PostIT.activities.OnboardingActivity.PREFERENCES_FILE;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_INFO;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
+import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_TEACH;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
@@ -19,22 +26,7 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BaseTransientBottomBar;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -47,7 +39,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import com.blackboxindia.PostIT.Fragments.Frag_Ads;
 import com.blackboxindia.PostIT.Fragments.Frag_LoginPage;
 import com.blackboxindia.PostIT.Fragments.Frag_Main;
@@ -68,15 +68,13 @@ import com.blackboxindia.PostIT.dataModels.UserCred;
 import com.blackboxindia.PostIT.dataModels.UserInfo;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import static com.blackboxindia.PostIT.activities.OnboardingActivity.PREFERENCES_FILE;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_EVENT;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_INFO;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_LOSTFOUND;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_SELL;
-import static com.blackboxindia.PostIT.dataModels.AdTypes.TYPE_TEACH;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -231,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
                                         createSnackbar("Network Error. Retry login?", Snackbar.LENGTH_INDEFINITE, true, "Retry", new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                @SuppressWarnings("deprecation")
                                                 final ProgressDialog dialog = ProgressDialog.show(context, "Logging you in...", "", true, false);
                                                 networkMethods.Login(userCred.getEmail(), userCred.getpwd(), new onLoginListener() {
                                                     @Override
@@ -455,8 +452,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 launchOtherFragment(new Frag_LoginPage(), LOGIN_PAGE_TAG, true);
-                if(drawer.isDrawerOpen(Gravity.START))
-                    drawer.closeDrawer(Gravity.START);
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START);
+                }
             }
         });
 
@@ -696,13 +694,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
-        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+        super.onNewIntent(intent);
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             if (fragmentManager.findFragmentByTag(ALL_FRAG_TAG) != null) {
-                if(fragmentManager.findFragmentByTag(ALL_FRAG_TAG).isVisible())
+                if (fragmentManager.findFragmentByTag(ALL_FRAG_TAG).isVisible()) {
                     ((Frag_Ads) (fragmentManager.findFragmentByTag(ALL_FRAG_TAG))).filter(query);
+                }
             }
-            
         }
     }
 

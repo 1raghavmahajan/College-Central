@@ -32,7 +32,7 @@
                 android:textStyle="bold"
                 />
 
-            <android.support.v7.widget.RecyclerView
+          <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/Ad_imgRecycler"
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"

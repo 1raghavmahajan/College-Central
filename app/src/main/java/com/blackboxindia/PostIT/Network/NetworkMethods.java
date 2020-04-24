@@ -5,10 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
 import com.blackboxindia.PostIT.Fragments.Frag_VerifyEmail;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onDeleteListener;
@@ -34,7 +33,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -647,14 +645,14 @@ public class NetworkMethods {
             mDatabase.child(DIRECTORY_ADS).child(adID).addListenerForSingleValueEvent(new ValueEventListener() {
 
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     AdData adData = dataSnapshot.getValue(AdData.class);
                     listener.onSuccess(adData);
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                     //Log.w(TAG, "getAd: onCancelled", databaseError.toException());
                     listener.onFailure(databaseError.toException());
@@ -680,7 +678,7 @@ public class NetworkMethods {
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
                             listener.onFailure(databaseError.toException());
                         }
                     });
@@ -689,7 +687,7 @@ public class NetworkMethods {
             mDatabase.child(DIRECTORY_ADS)
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             ArrayList<AdData> list = new ArrayList<>();
                             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                                 list.add(postSnapshot.getValue(AdData.class));
@@ -699,7 +697,7 @@ public class NetworkMethods {
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
                             listener.onFailure(databaseError.toException());
                         }
                     });
@@ -923,7 +921,7 @@ public class NetworkMethods {
         //Log.i(TAG, "getCollegeOptions: called");
         mDatabase.child(DIRECTORY_COLLEGES).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 //Log.i(TAG, "onDataChange: getCollegeOptions");
                 ArrayList<String> colleges;
                 colleges = new ArrayList<>();
@@ -940,7 +938,7 @@ public class NetworkMethods {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 listener.onFailure(databaseError.toException());
             }
         });
@@ -970,7 +968,7 @@ public class NetworkMethods {
     public void getHostelOptions(String collegeName, final onCompleteListener<ArrayList<String>> listener){
         mDatabase.child(DIRECTORY_HOSTELS).child(collegeName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 ArrayList<String> hostels;
                 hostels = dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<String>>() {});
@@ -982,7 +980,7 @@ public class NetworkMethods {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 listener.onFailure(databaseError.toException());
             }
         });
@@ -1006,7 +1004,7 @@ public class NetworkMethods {
     public void getNotificationGroups(String collegeName, final onCompleteListener<ArrayList<String>> listener){
         mDatabase.child(DIRECTORY_COLLEGES).child(collegeName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 ArrayList<String> hostels;
                 hostels = dataSnapshot.getValue(new GenericTypeIndicator<ArrayList<String>>() {});
@@ -1017,7 +1015,7 @@ public class NetworkMethods {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 listener.onFailure(databaseError.toException());
             }
         });
@@ -1047,14 +1045,14 @@ public class NetworkMethods {
     public void getAllFiles(String college, final onCompleteListener<Directory> listener) {
         mDatabase.child(DIRECTORY_DATA).child(college).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Directory root = new Directory("root");
                 getDet(dataSnapshot,root);
                 listener.onSuccess(root);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 listener.onFailure(databaseError.toException());
             }
         });

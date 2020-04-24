@@ -4,13 +4,6 @@ import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +11,13 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import com.blackboxindia.PostIT.R;
 
 public class OnboardingActivity extends AppCompatActivity {
@@ -49,29 +48,27 @@ public class OnboardingActivity extends AppCompatActivity {
             R.drawable.page5_docs,
             R.drawable.app_icon };
 
-    int colors[] = {
-            R.color.cyan,
-            R.color.colorAccent,
-            R.color.dark_green,
-            R.color.BlueGrey700,
-            R.color.black_trans180,
-            R.color.appIcon_back };
-
-    static String title[] = {
+  static String[] title = {
             "Buy / Sell",
             "Lost and Found",
             "Events",
             "Teach",
             "Documents",
             "College Central" };
-
-    static String subtitle[] = {
+  static String[] subtitle = {
             "Post an ad and get rid of the crap in your room",
             "Lost something? Inform everyone without spamming through mail",
             "See all upcoming events at one place and never miss a thing.",
             "Spread your skills and meet your juniors",
             "See all important documents at one place without going through mail every time",
             "Welcome to College Central, create an account or login to get things started!" };
+  int[] colors = {
+      R.color.cyan,
+      R.color.colorAccent,
+      R.color.dark_green,
+      R.color.BlueGrey700,
+      R.color.black_trans180,
+      R.color.appIcon_back};
 
     //endregion
 

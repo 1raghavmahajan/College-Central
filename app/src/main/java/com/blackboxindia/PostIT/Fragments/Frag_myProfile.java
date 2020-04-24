@@ -10,11 +10,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AlertDialog;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +21,11 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.blackboxindia.PostIT.HelperClasses.TextDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import com.blackboxindia.PostIT.HelperClasses.GlideApp;
+import com.blackboxindia.PostIT.HelperClasses.TextDialog;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.Network.Interfaces.onUpdateListener;
 import com.blackboxindia.PostIT.Network.NetworkMethods;
@@ -41,9 +38,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import java.util.ArrayList;
 
 public class Frag_myProfile extends Fragment {
@@ -244,7 +242,6 @@ public class Frag_myProfile extends Fragment {
         });
     }
 
-    @SuppressWarnings("ConstantConditions")
     void checkVerified(){
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser!=null) {
@@ -279,7 +276,6 @@ public class Frag_myProfile extends Fragment {
                                                     .setNeutralButton("Resend Email", new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialog, int which) {
-                                                            //noinspection ConstantConditions
                                                             //Log.i(TAG, "onClick: resend");
                                                             if (!recentlySentMail) {
                                                                 currentUser.sendEmailVerification()
@@ -425,7 +421,7 @@ public class Frag_myProfile extends Fragment {
 
     boolean validateDetails(UserInfo userInfo) {
 
-        Boolean f = true;
+        boolean f = true;
         if(userInfo.getName().equals("")) {
             etName.setError("Field Required");
             f = false;

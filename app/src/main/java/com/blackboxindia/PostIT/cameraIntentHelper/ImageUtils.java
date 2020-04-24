@@ -21,19 +21,17 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.graphics.drawable.DrawableCompat;
 import com.blackboxindia.PostIT.BuildConfig;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -98,15 +96,27 @@ public class ImageUtils {
     }
 
     /**
-     * Get file name from path
+     * Get Image from the given path
      *
-     * @param path
+     * @param file_name
+     * @param file_path
      * @return
      */
 
-    public String getfilename_from_path(String path) {
-        return path.substring(path.lastIndexOf('/') + 1, path.length());
+    public static Bitmap getImage(String file_name, String file_path) {
 
+        File path;
+        path = new File(file_path);
+        File file = new File(path, file_name);
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        options.inSampleSize = 2;
+        options.inTempStorage = new byte[16 * 1024];
+
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
+
+        return bitmap;
     }
 
     /**
@@ -187,7 +197,7 @@ public class ImageUtils {
         // this device has a camera
 // no camera on this device
         return this.context.getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_CAMERA);
+            PackageManager.FEATURE_CAMERA_ANY);
     }
 
 
@@ -744,32 +754,16 @@ public class ImageUtils {
         return flag;
     }
 
-
     /**
-     * Get Image from the given path
+     * Get file name from path
      *
-     * @param file_name
-     * @param file_path
+     * @param path
      * @return
      */
 
-    public static Bitmap getImage(String file_name, String file_path) {
+    public String getfilename_from_path(String path) {
+        return path.substring(path.lastIndexOf('/') + 1);
 
-        File path;
-        path = new File(file_path);
-        File file = new File(path, file_name);
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        options.inSampleSize = 2;
-        options.inTempStorage = new byte[16 * 1024];
-
-        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
-
-        if (bitmap != null)
-            return bitmap;
-        else
-            return null;
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.blackboxindia.PostIT.dataModels;
 
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 @Keep
 public class AdData {

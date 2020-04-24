@@ -1,17 +1,19 @@
 package com.blackboxindia.PostIT.Network;
 
+import static android.os.Environment.DIRECTORY_DOCUMENTS;
+import static com.blackboxindia.PostIT.Network.NetworkMethods.DIRECTORY_DATA;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
 import com.blackboxindia.PostIT.Network.Interfaces.KeepTrack;
 import com.blackboxindia.PostIT.Network.Interfaces.onCompleteListener;
 import com.blackboxindia.PostIT.activities.MainActivity;
@@ -27,7 +29,6 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.net.URI;
@@ -36,9 +37,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import static android.os.Environment.DIRECTORY_DOCUMENTS;
-import static com.blackboxindia.PostIT.Network.NetworkMethods.DIRECTORY_DATA;
 
 @SuppressWarnings("VisibleForTests")
 public class CloudStorageMethods {
@@ -506,7 +504,7 @@ public class CloudStorageMethods {
 
         @Override
         public String toString() {
-            return (uri.toString() + "#" + String.valueOf(timeStamp));
+            return (uri.toString() + "#" + timeStamp);
         }
     }
 
