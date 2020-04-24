@@ -20,7 +20,7 @@ Currently in working condition at IIT Indore.
 <li>Secretaries and senior faculty will be able to broadcast emergency notices to all students instantly!</li>
 </ul>
 
-<h2>Find this app on Play store:</h2>
+<h2>Find this app on Play store (removed from playstore):</h2>
 <a>https://play.google.com/store/apps/details?id=com.blackboxindia.PostIt</a>
 
 <h2>Screenshots:</h2>
